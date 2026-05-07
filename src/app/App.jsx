@@ -1,0 +1,169 @@
+import { useEffect, useState } from "react";
+import {
+  EmailPopup,
+  Footer,
+  Header,
+} from "../components/common";
+import {
+  createEmailLead,
+  hydrateContentFromSupabase,
+} from "../data/contentRepository";
+import {
+  TweakColor,
+  TweakRadio,
+  TweakSection,
+  TweakSlider,
+  TweaksPanel,
+  useTweaks,
+} from "../components/tweaks";
+import { AdminPage } from "../pages/AdminPage";
+import { ConditionsPage, ContactPage } from "../pages/ContactPage";
+import { HomePage } from "../pages/HomePage";
+import { ProjectsPage } from "../pages/ProjectsPage";
+
+const TWEAK_DEFAULTS = {
+  accentColor: "#ff5e5b",
+  density: 1,
+  cardStyle: "soft",
+};
+
+function getInitialRoute() {
+  return window.location.hash.replace("#", "") || "home";
+}
+
+export function App() {
+  const [route, setRoute] = useState(getInitialRoute);
+  const [lang, setLang] = useState(() => localStorage.getItem("galc_lang") || "en");
+  const [popupShown, setPopupShown] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const [, setContentVersion] = useState(0);
+  const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    hydrateContentFromSupabase()
+      .then(() => {
+        if (!cancelled) setContentVersion((version) => version + 1);
+      })
+      .catch((error) => {
+        console.warn("Supabase content fallback:", error.message);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.style.setProperty("--accent", tweaks.accentColor);
+    document.documentElement.style.setProperty("--density", tweaks.density);
+    document.body.dataset.card = tweaks.cardStyle;
+  }, [tweaks]);
+
+  useEffect(() => {
+    localStorage.setItem("galc_lang", lang);
+  }, [lang]);
+
+  useEffect(() => {
+    const handleHashChange = () => setRoute(getInitialRoute());
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, []);
+
+  useEffect(() => {
+    const handleAdminMessage = (event) => {
+      if (event.data?.type !== "admin_scroll_to") return;
+      const el = document.getElementById(event.data.sectionKey);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+    window.addEventListener("message", handleAdminMessage);
+    return () => window.removeEventListener("message", handleAdminMessage);
+  }, []);
+
+  useEffect(() => {
+    if (popupShown || localStorage.getItem("galc_popup_seen")) return undefined;
+
+    const openPopup = () => {
+      setShowPopup(true);
+      setPopupShown(true);
+    };
+    const onLeave = (event) => {
+      if (event.clientY <= 0) openPopup();
+    };
+    const fallback = window.setTimeout(openPopup, 30000);
+
+    document.addEventListener("mouseout", onLeave);
+    return () => {
+      document.removeEventListener("mouseout", onLeave);
+      window.clearTimeout(fallback);
+    };
+  }, [popupShown]);
+
+  const onNav = (nextRoute) => {
+    setRoute(nextRoute);
+    window.location.hash = nextRoute;
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const closePopup = () => {
+    setShowPopup(false);
+    localStorage.setItem("galc_popup_seen", "1");
+  };
+
+  const submitEmail = async (email) => {
+    await createEmailLead({ email, locale: lang });
+  };
+
+  return (
+    <>
+      {route !== "admin" && (
+        <Header route={route} onNav={onNav} lang={lang} onLang={setLang} />
+      )}
+
+      <main>
+        {route === "home" && <HomePage lang={lang} onNav={onNav} />}
+        {route === "projects" && <ProjectsPage lang={lang} onNav={onNav} />}
+        {route === "contact" && <ContactPage lang={lang} onNav={onNav} />}
+        {route === "conditions" && <ConditionsPage lang={lang} />}
+        {route === "admin" && <AdminPage lang={lang} onNav={onNav} />}
+      </main>
+
+      {route !== "admin" && <Footer onNav={onNav} lang={lang} />}
+
+      {showPopup && (
+        <EmailPopup lang={lang} onClose={closePopup} onSubmit={submitEmail} />
+      )}
+
+      {route !== "admin" && (
+        <TweaksPanel title="Tweaks">
+          <TweakSection label="Brand" />
+          <TweakColor
+            label="Accent color"
+            value={tweaks.accentColor}
+            onChange={(value) => setTweak("accentColor", value)}
+          />
+          <TweakSection label="Layout" />
+          <TweakSlider
+            label="Density"
+            value={tweaks.density}
+            min={0.7}
+            max={1.3}
+            step={0.05}
+            onChange={(value) => setTweak("density", value)}
+          />
+          <TweakRadio
+            label="Card style"
+            value={tweaks.cardStyle}
+            options={[
+              { value: "soft", label: "Soft" },
+              { value: "sharp", label: "Sharp" },
+              { value: "outline", label: "Outline" },
+            ]}
+            onChange={(value) => setTweak("cardStyle", value)}
+          />
+        </TweaksPanel>
+      )}
+    </>
+  );
+}
