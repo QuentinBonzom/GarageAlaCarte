@@ -8,6 +8,7 @@ import {
   createEmailLead,
   hydrateContentFromSupabase,
 } from "../data/contentRepository";
+import { applyPageSeo, routeFromLocation, routeToPath } from "../lib/seo";
 import {
   TweakColor,
   TweakRadio,
@@ -28,7 +29,7 @@ const TWEAK_DEFAULTS = {
 };
 
 function getInitialRoute() {
-  return window.location.hash.replace("#", "") || "home";
+  return routeFromLocation(window.location);
 }
 
 export function App() {
@@ -36,7 +37,7 @@ export function App() {
   const [lang, setLang] = useState(() => localStorage.getItem("galc_lang") || "en");
   const [popupShown, setPopupShown] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
-  const [, setContentVersion] = useState(0);
+  const [contentVersion, setContentVersion] = useState(0);
   const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
 
   useEffect(() => {
@@ -66,10 +67,18 @@ export function App() {
   }, [lang]);
 
   useEffect(() => {
-    const handleHashChange = () => setRoute(getInitialRoute());
-    window.addEventListener("hashchange", handleHashChange);
-    return () => window.removeEventListener("hashchange", handleHashChange);
+    const handleRouteChange = () => setRoute(getInitialRoute());
+    window.addEventListener("popstate", handleRouteChange);
+    window.addEventListener("hashchange", handleRouteChange);
+    return () => {
+      window.removeEventListener("popstate", handleRouteChange);
+      window.removeEventListener("hashchange", handleRouteChange);
+    };
   }, []);
+
+  useEffect(() => {
+    applyPageSeo({ route, lang });
+  }, [route, lang, contentVersion]);
 
   useEffect(() => {
     const handleAdminMessage = (event) => {
@@ -102,7 +111,10 @@ export function App() {
 
   const onNav = (nextRoute) => {
     setRoute(nextRoute);
-    window.location.hash = nextRoute;
+    const nextPath = routeToPath(nextRoute);
+    if (window.location.pathname !== nextPath || window.location.hash) {
+      window.history.pushState({}, "", nextPath);
+    }
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 

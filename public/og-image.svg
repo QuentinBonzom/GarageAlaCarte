@@ -1,0 +1,24 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#F7F0E8"/>
+  <rect x="48" y="48" width="1104" height="534" rx="28" fill="#FFF9F0" stroke="#D8CEC0" stroke-width="2"/>
+  <circle cx="144" cy="132" r="34" fill="#FF5E5B"/>
+  <circle cx="144" cy="132" r="22" fill="#FFF9F0" fill-opacity="0.35"/>
+  <text x="202" y="143" fill="#0A2540" font-family="Georgia, 'Times New Roman', serif" font-size="52" font-weight="700">Garage à la Carte</text>
+  <text x="96" y="294" fill="#0A2540" font-family="Georgia, 'Times New Roman', serif" font-size="86" font-weight="700" letter-spacing="-2">
+    Custom garage
+  </text>
+  <text x="96" y="386" fill="#0A2540" font-family="Georgia, 'Times New Roman', serif" font-size="86" font-weight="700" letter-spacing="-2">
+    transformations
+  </text>
+  <text x="100" y="464" fill="#5E7FA0" font-family="'DM Mono', 'Courier New', monospace" font-size="24" letter-spacing="6">
+    ORLANDO, FLORIDA
+  </text>
+  <rect x="786" y="132" width="270" height="366" rx="18" fill="#3A2C22"/>
+  <path d="M816 178H1026" stroke="#B9A179" stroke-width="16" stroke-linecap="round"/>
+  <path d="M816 238H1026" stroke="#7A6450" stroke-width="16" stroke-linecap="round"/>
+  <path d="M816 298H1026" stroke="#B9A179" stroke-width="16" stroke-linecap="round"/>
+  <path d="M816 358H1026" stroke="#7A6450" stroke-width="16" stroke-linecap="round"/>
+  <rect x="836" y="410" width="170" height="34" rx="17" fill="#FF5E5B"/>
+  <path d="M1056 132V498" stroke="#0A2540" stroke-width="22" stroke-linecap="round"/>
+  <path d="M786 498H1056" stroke="#0A2540" stroke-width="22" stroke-linecap="round"/>
+</svg>

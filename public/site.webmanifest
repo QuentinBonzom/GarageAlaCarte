@@ -1,0 +1,22 @@
+{
+  "name": "Garage à la Carte",
+  "short_name": "Garage à la Carte",
+  "description": "Custom garage transformations in Orlando, Florida.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#F7F0E8",
+  "theme_color": "#0A2540",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "64x64",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "755x330",
+      "type": "image/png"
+    }
+  ]
+}

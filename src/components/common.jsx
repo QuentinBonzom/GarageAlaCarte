@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { CONTENT } from "../data/content";
+import { routeToPath } from "../lib/seo";
 
 // ---------- Reveal on scroll ----------
 export function useReveal() {
@@ -36,12 +37,12 @@ export function Header({ route, onNav, lang, onLang }) {
   return (
     <>
       <header className="header">
-        <a href="#home" className="header__logo header__logo--badge" onClick={(e)=>{e.preventDefault();go("home");}} aria-label="Garage à la Carte">
+        <a href={routeToPath("home")} className="header__logo header__logo--badge" onClick={(e)=>{e.preventDefault();go("home");}} aria-label="Garage à la Carte">
           <img src="/logo.png" alt="Garage à la Carte" />
         </a>
         <nav className="header__nav">
           {links.map((l) => (
-            <a key={l.id} href={`#${l.id}`} className={route === l.id ? "active" : ""}
+            <a key={l.id} href={routeToPath(l.id)} className={route === l.id ? "active" : ""}
                onClick={(e)=>{e.preventDefault();onNav(l.id);}}>{l.label}</a>
           ))}
         </nav>
@@ -71,7 +72,7 @@ export function Header({ route, onNav, lang, onLang }) {
               {links.map((l) => (
                 <a
                   key={l.id}
-                  href={`#${l.id}`}
+                  href={routeToPath(l.id)}
                   className={route === l.id ? "active" : ""}
                   onClick={(e)=>{e.preventDefault();go(l.id);}}
                 >
@@ -113,16 +114,16 @@ export function Footer({ onNav, lang }) {
         </div>
         <div className="col">
           <h4>{lang==="en"?"Navigate":"Navigation"}</h4>
-          <a href="#home" onClick={(e)=>{e.preventDefault();onNav("home");}}>{t.home}</a>
-          <a href="#projects" onClick={(e)=>{e.preventDefault();onNav("projects");}}>{t.projects}</a>
-          <a href="#contact" onClick={(e)=>{e.preventDefault();onNav("contact");}}>{t.contact}</a>
+          <a href={routeToPath("home")} onClick={(e)=>{e.preventDefault();onNav("home");}}>{t.home}</a>
+          <a href={routeToPath("projects")} onClick={(e)=>{e.preventDefault();onNav("projects");}}>{t.projects}</a>
+          <a href={routeToPath("contact")} onClick={(e)=>{e.preventDefault();onNav("contact");}}>{t.contact}</a>
         </div>
         <div className="col">
           <h4>{lang==="en"?"Services":"Services"}</h4>
-          <a href="#home" onClick={(e)=>{e.preventDefault();onNav("home");}}>Design Blueprint</a>
-          <a href="#home" onClick={(e)=>{e.preventDefault();onNav("home");}}>Design + Setup</a>
-          <a href="#home" onClick={(e)=>{e.preventDefault();onNav("home");}}>Full Transformation</a>
-          <a href="#home" onClick={(e)=>{e.preventDefault();onNav("home");}}>Smart Integration</a>
+          <a href={routeToPath("home")} onClick={(e)=>{e.preventDefault();onNav("home");}}>Design Blueprint</a>
+          <a href={routeToPath("home")} onClick={(e)=>{e.preventDefault();onNav("home");}}>Design + Setup</a>
+          <a href={routeToPath("home")} onClick={(e)=>{e.preventDefault();onNav("home");}}>Full Transformation</a>
+          <a href={routeToPath("home")} onClick={(e)=>{e.preventDefault();onNav("home");}}>Smart Integration</a>
         </div>
         <div className="col">
           <h4>{lang==="en"?"Contact":"Contact"}</h4>
@@ -132,8 +133,8 @@ export function Footer({ onNav, lang }) {
         </div>
         <div className="col">
           <h4>{lang==="en"?"Legal":"Mentions"}</h4>
-          <a href="#conditions" onClick={(e)=>{e.preventDefault();onNav("conditions");}}>{lang==="en"?"Project conditions":"Conditions de projet"}</a>
-          <a href="#admin" onClick={(e)=>{e.preventDefault();onNav("admin");}}>Admin</a>
+          <a href={routeToPath("conditions")} onClick={(e)=>{e.preventDefault();onNav("conditions");}}>{lang==="en"?"Project conditions":"Conditions de projet"}</a>
+          <a href={routeToPath("admin")} onClick={(e)=>{e.preventDefault();onNav("admin");}}>Admin</a>
         </div>
       </div>
 
