@@ -1,8 +1,11 @@
 import { CONTENT } from "./content";
 import { isSupabaseConfigured, supabase } from "../lib/supabase";
+import { getProjectImagePublicUrl } from "./projectImageUrls";
 
 const byOrder = (a, b) => (a.display_order ?? 0) - (b.display_order ?? 0);
 const padStep = (value) => String(value).padStart(2, "0");
+const localizedText = (value, fallback = "") => value ?? { en: fallback, fr: fallback };
+const localizedList = (value) => value ?? { en: [], fr: [] };
 
 function assertNoError(label, result) {
   if (result.error) {
@@ -133,25 +136,25 @@ function mapProjects(projects, images, servicesById) {
         label: image.label || image.alt_text?.en || null,
         alt: image.alt_text || null,
         color: image.placeholder_color || "#70675d",
-        url: image.image_url || null,
+        url: getProjectImagePublicUrl(image.image_url, project.slug) || null,
       }));
 
     return {
       id: project.slug,
       slug: project.slug,
       placeholder: project.status === "upcoming",
-      name: project.name,
-      tagline: project.tagline,
-      type: project.project_type,
-      size: project.size_label,
-      duration: project.duration_label,
-      service: servicesById[project.service_id]?.title ?? { en: "Project", fr: "Projet" },
+      name: localizedText(project.name, "Untitled project"),
+      tagline: localizedText(project.tagline),
+      type: localizedText(project.project_type),
+      size: localizedText(project.size_label),
+      duration: localizedText(project.duration_label),
+      service: servicesById[project.service_id]?.title ?? project.project_type ?? { en: "Project", fr: "Projet" },
       year: project.year,
       featured: project.is_featured,
       large: project.is_large,
-      description: project.description,
-      includes: project.includes,
-      why: project.value_points,
+      description: localizedText(project.description),
+      includes: localizedList(project.includes),
+      why: localizedList(project.value_points),
       images: projectImages,
     };
   });

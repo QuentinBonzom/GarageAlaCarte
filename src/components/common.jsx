@@ -20,33 +20,78 @@ export function useReveal() {
 // ---------- Header ----------
 export function Header({ route, onNav, lang, onLang }) {
   const t = CONTENT.nav[lang];
+  const [menuOpen, setMenuOpen] = useState(false);
   const links = [
     { id: "home", label: t.home },
     { id: "projects", label: t.projects },
     { id: "contact", label: t.contact }
   ];
+  const go = (id) => { setMenuOpen(false); onNav(id); };
+  useEffect(() => {
+    if (!menuOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = prev; };
+  }, [menuOpen]);
   return (
-    <header className="header">
-      <a href="#home" className="header__logo" onClick={(e)=>{e.preventDefault();onNav("home");}}>
-        <span className="mark"></span>
-        <span>Garage <em style={{fontStyle:"italic", color:"var(--accent)"}}>à la</em> Carte</span>
-      </a>
-      <nav className="header__nav">
-        {links.map((l) => (
-          <a key={l.id} href={`#${l.id}`} className={route === l.id ? "active" : ""}
-             onClick={(e)=>{e.preventDefault();onNav(l.id);}}>{l.label}</a>
-        ))}
-      </nav>
-      <div className="header__right">
-        <div className="lang-switch">
-          <button className={lang==="en"?"on":""} onClick={()=>onLang("en")}>EN</button>
-          <button className={lang==="fr"?"on":""} onClick={()=>onLang("fr")}>FR</button>
+    <>
+      <header className="header">
+        <a href="#home" className="header__logo header__logo--badge" onClick={(e)=>{e.preventDefault();go("home");}} aria-label="Garage à la Carte">
+          <img src="/logo.png" alt="Garage à la Carte" />
+        </a>
+        <nav className="header__nav">
+          {links.map((l) => (
+            <a key={l.id} href={`#${l.id}`} className={route === l.id ? "active" : ""}
+               onClick={(e)=>{e.preventDefault();onNav(l.id);}}>{l.label}</a>
+          ))}
+        </nav>
+        <div className="header__right">
+          <div className="lang-switch">
+            <button className={lang==="en"?"on":""} onClick={()=>onLang("en")}>EN</button>
+            <button className={lang==="fr"?"on":""} onClick={()=>onLang("fr")}>FR</button>
+          </div>
+          <button className="btn" onClick={()=>onNav("contact")}>
+            {lang==="en"?"Free estimate":"Devis gratuit"} <span className="arrow">↗</span>
+          </button>
         </div>
-        <button className="btn" onClick={()=>onNav("contact")}>
-          {lang==="en"?"Free estimate":"Devis gratuit"} <span className="arrow">↗</span>
+        <button
+          type="button"
+          className={`header__burger ${menuOpen ? "is-open" : ""}`}
+          onClick={() => setMenuOpen((v) => !v)}
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={menuOpen}
+        >
+          <span></span><span></span><span></span>
         </button>
-      </div>
-    </header>
+      </header>
+      {menuOpen && (
+        <div className="header__mobile-panel" role="dialog" aria-modal="true" onClick={() => setMenuOpen(false)}>
+          <div className="header__mobile-panel-inner" onClick={(e)=>e.stopPropagation()}>
+            <nav className="header__mobile-nav">
+              {links.map((l) => (
+                <a
+                  key={l.id}
+                  href={`#${l.id}`}
+                  className={route === l.id ? "active" : ""}
+                  onClick={(e)=>{e.preventDefault();go(l.id);}}
+                >
+                  {l.label}
+                </a>
+              ))}
+            </nav>
+            <div className="header__mobile-actions">
+              <div className="lang-switch">
+                <button className={lang==="en"?"on":""} onClick={()=>onLang("en")}>EN</button>
+                <button className={lang==="fr"?"on":""} onClick={()=>onLang("fr")}>FR</button>
+              </div>
+              <button className="btn" onClick={()=>go("contact")}>
+                {lang==="en"?"Free estimate":"Devis gratuit"} <span className="arrow">↗</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

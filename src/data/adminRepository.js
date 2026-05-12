@@ -1,7 +1,11 @@
 import { isSupabaseConfigured, supabase } from "../lib/supabase";
+import {
+  PROJECT_IMAGE_BUCKET,
+  getProjectImagePublicUrl,
+  slugifyProjectImagePart,
+} from "./projectImageUrls";
 
 const adminEmail = import.meta.env.VITE_SUPABASE_ADMIN_EMAIL || "admin@garagealacarte.com";
-const PROJECT_IMAGE_BUCKET = "project-images";
 
 function requireSupabase() {
   if (!isSupabaseConfigured) {
@@ -80,19 +84,25 @@ export async function loadAdminData() {
     supabase.from("project_images").select("*").order("display_order"),
   ]);
 
+  const projectRows = unwrap("projects", projects);
+  const projectSlugsById = Object.fromEntries(projectRows.map((project) => [project.id, project.slug]));
+
   return {
     emailLeads: unwrap("email_leads", emailLeads),
     contactSubmissions: unwrap("contact_submissions", contactSubmissions),
     services: unwrap("services", services),
     teamMembers: unwrap("team_members", teamMembers),
     processSteps: unwrap("process_steps", processSteps),
-    projects: unwrap("projects", projects),
+    projects: projectRows,
     cmsSections: unwrap("cms_sections", cmsSections),
     contactChannels: unwrap("contact_channels", contactChannels),
     legalDocuments: unwrap("legal_documents", legalDocuments),
     legalSections: unwrap("legal_sections", legalSections),
     siteSettings: unwrap("site_settings", siteSettings),
-    projectImages: unwrap("project_images", projectImages),
+    projectImages: unwrap("project_images", projectImages).map((image) => ({
+      ...image,
+      image_url: getProjectImagePublicUrl(image.image_url, projectSlugsById[image.project_id]) || image.image_url,
+    })),
   };
 }
 
@@ -121,6 +131,17 @@ export async function updateCmsSection(id, content) {
     .update({ content })
     .eq("id", id);
   if (error) throw error;
+}
+
+export async function createProject(payload) {
+  requireSupabase();
+  const { data, error } = await supabase
+    .from("projects")
+    .insert(payload)
+    .select("*")
+    .single();
+  if (error) throw error;
+  return data;
 }
 
 export async function updateProject(id, payload) {
@@ -163,9 +184,9 @@ export async function createProjectImage(projectId, displayOrder = 0) {
 
 export async function uploadProjectImageFile({ file, projectSlug, imageId }) {
   requireSupabase();
-  const safeProject = slugifyPathPart(projectSlug || "project");
+  const safeProject = slugifyProjectImagePart(projectSlug || "project");
   const ext = (file.name || "").split(".").pop().toLowerCase();
-  const safeName = slugifyPathPart((file.name || "image").replace(/\.[^.]+$/, "")) + (ext ? `.${ext}` : "");
+  const safeName = slugifyProjectImagePart((file.name || "image").replace(/\.[^.]+$/, "")) + (ext ? `.${ext}` : "");
   const path = `${safeProject}/${imageId}-${Date.now()}-${safeName}`;
 
   const { error } = await supabase.storage
@@ -186,13 +207,44 @@ export async function uploadProjectImageFile({ file, projectSlug, imageId }) {
     throw new Error(`Upload échoué${code ? ` (${code})` : ""}: ${error.message}${hint}`);
   }
 
-  const { data } = supabase.storage
+  return {
+    path,
+    url: getProjectImagePublicUrl(path, safeProject),
+  };
+}
+
+export async function uploadCmsImage({ file, sectionKey, fieldKey }) {
+  requireSupabase();
+  const safeSection = slugifyProjectImagePart(sectionKey || "section");
+  const safeField = slugifyProjectImagePart(fieldKey || "image");
+  const ext = (file.name || "").split(".").pop().toLowerCase();
+  const safeName =
+    slugifyProjectImagePart((file.name || "image").replace(/\.[^.]+$/, "")) +
+    (ext ? `.${ext}` : "");
+  const path = `cms/${safeSection}/${safeField}-${Date.now()}-${safeName}`;
+
+  const { error } = await supabase.storage
     .from(PROJECT_IMAGE_BUCKET)
-    .getPublicUrl(path);
+    .upload(path, file, {
+      cacheControl: "31536000",
+      contentType: file.type || "image/jpeg",
+      upsert: true,
+    });
+
+  if (error) {
+    const code = error.statusCode || error.status || "";
+    const hint =
+      code === "404" || error.message?.includes("Bucket")
+        ? " — Vérifiez que le bucket 'project-images' existe dans Supabase Storage."
+        : code === "403" || error.message?.includes("policy")
+          ? " — Vérifiez les politiques RLS du bucket Supabase."
+          : "";
+    throw new Error(`Upload échoué${code ? ` (${code})` : ""}: ${error.message}${hint}`);
+  }
 
   return {
     path,
-    url: data.publicUrl,
+    url: getProjectImagePublicUrl(path, "cms"),
   };
 }
 
@@ -201,6 +253,26 @@ export async function updateService(id, payload) {
   const { error } = await supabase
     .from("services")
     .update(payload)
+    .eq("id", id);
+  if (error) throw error;
+}
+
+export async function createService(payload) {
+  requireSupabase();
+  const { data, error } = await supabase
+    .from("services")
+    .insert(payload)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+export async function deleteService(id) {
+  requireSupabase();
+  const { error } = await supabase
+    .from("services")
+    .delete()
     .eq("id", id);
   if (error) throw error;
 }
@@ -257,14 +329,4 @@ export async function updateLegalSection(id, payload) {
     .update(payload)
     .eq("id", id);
   if (error) throw error;
-}
-
-function slugifyPathPart(value) {
-  return String(value)
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9._-]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    || "file";
 }

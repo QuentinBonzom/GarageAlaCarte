@@ -46,10 +46,10 @@ export function ContactPage({ lang, onNav }) {
 
       <section className="section" style={{paddingTop:"40px"}}>
         <div className="container">
-          <div style={{display:"grid", gridTemplateColumns:"1.4fr 1fr", gap:"60px", alignItems:"flex-start"}}>
+          <div className="contact-grid" style={{display:"grid", gridTemplateColumns:"1.4fr 1fr", gap:"60px", alignItems:"flex-start"}}>
             {/* FORM */}
             <Reveal>
-              <div style={{background:"var(--paper)", borderRadius:"24px", padding:"60px", border:"1px solid var(--line)"}}>
+              <div className="contact-form-card" style={{background:"var(--paper)", borderRadius:"24px", padding:"60px", border:"1px solid var(--line)"}}>
                 {sent ? (
                   <div style={{textAlign:"center", padding:"60px 0"}}>
                     <div style={{fontFamily:"var(--serif)", fontSize:"80px"}}>✓</div>
@@ -78,7 +78,7 @@ export function ContactPage({ lang, onNav }) {
                         <label>{C.form.service[lang]}</label>
                         <select value={form.service} onChange={(e)=>setForm({...form, service:e.target.value})}>
                           <option value="blueprint">Design Blueprint</option>
-                          <option value="delivery">Design + Setup</option>
+                          <option value="delivery">Design & Setup</option>
                           <option value="transform">Full Transformation</option>
                           <option value="smart">Smart Integration</option>
                           <option value="not-sure">{lang==="en"?"Not sure yet":"Pas encore sûr"}</option>
@@ -107,25 +107,25 @@ export function ContactPage({ lang, onNav }) {
 
             {/* INFO */}
             <Reveal delay={0.15}>
-              <div style={{background:"var(--ink)", color:"var(--cream)", borderRadius:"24px", padding:"40px"}}>
+              <div className="contact-info-card" style={{background:"var(--ink)", color:"var(--cream)", borderRadius:"24px", padding:"40px"}}>
                 <div className="text-mono" style={{color:"var(--brass-soft)"}}>{C.info_title[lang]}</div>
-                <a href={`mailto:${C.main_email}`} style={{display:"block", fontFamily:"var(--serif)", fontSize:"28px", marginTop:"16px", letterSpacing:"-0.02em"}}>{C.main_email}</a>
-                <a href={`tel:${C.main_phone}`} style={{display:"block", fontFamily:"var(--serif)", fontSize:"28px", marginTop:"4px", letterSpacing:"-0.02em", color:"var(--brass-soft)"}}>{C.main_phone}</a>
+                <a className="contact-info-card__contact" href={`mailto:${C.main_email}`} style={{display:"block", fontFamily:"var(--serif)", fontSize:"28px", marginTop:"16px", letterSpacing:"-0.02em", wordBreak:"break-word"}}>{C.main_email}</a>
+                <a className="contact-info-card__contact" href={`tel:${C.main_phone}`} style={{display:"block", fontFamily:"var(--serif)", fontSize:"28px", marginTop:"4px", letterSpacing:"-0.02em", color:"var(--brass-soft)"}}>{C.main_phone}</a>
                 <p style={{color:"rgba(244,237,226,0.6)", fontSize:"14px", marginTop:"24px", paddingTop:"24px", borderTop:"1px solid rgba(244,237,226,0.15)"}}>{C.address[lang]}</p>
               </div>
 
               <div style={{marginTop:"24px"}}>
                 <div className="text-mono text-muted" style={{marginBottom:"20px"}}>{lang==="en"?"THE TEAM":"L'ÉQUIPE"}</div>
-                <div style={{display:"flex", flexDirection:"column", gap:"16px"}}>
+                <div className="contact-team-list">
                   {team.map(m => (
-                    <div key={m.name} style={{padding:"24px", background:"var(--paper)", borderRadius:"16px", border:"1px solid var(--line)"}}>
-                      <div style={{display:"flex", justifyContent:"space-between", alignItems:"baseline"}}>
-                        <div style={{fontFamily:"var(--serif)", fontSize:"24px", letterSpacing:"-0.02em"}}>{m.name}</div>
-                        <div className="text-mono text-muted">{m.role[lang]}</div>
+                    <div key={m.name} className="contact-team-card">
+                      <div className="contact-team-card__head">
+                        <div className="contact-team-card__name">{m.name}</div>
+                        <div className="contact-team-card__role text-mono text-muted">{m.role[lang]}</div>
                       </div>
-                      <div style={{marginTop:"12px", fontSize:"13px", display:"flex", flexDirection:"column", gap:"4px"}}>
-                        {m.email && <a href={`mailto:${m.email}`} style={{color:"var(--ink-soft)", borderBottom:"1px dotted var(--line-strong)", paddingBottom:"2px", alignSelf:"flex-start"}}>{m.email}</a>}
-                        {m.phone && <span style={{color:"var(--muted)", fontFamily:"var(--mono)", fontSize:"12px"}}>{m.phone}</span>}
+                      <div className="contact-team-card__contacts">
+                        {m.email && <a className="contact-team-card__email" href={`mailto:${m.email}`}>{m.email}</a>}
+                        {m.phone && <span className="contact-team-card__phone">{m.phone}</span>}
                       </div>
                     </div>
                   ))}
@@ -219,8 +219,8 @@ export function ConditionsPage({ lang }) {
       </section>
 
       <section className="section" style={{paddingTop:"40px"}}>
-        <div className="container" style={{display:"grid", gridTemplateColumns:"260px 1fr", gap:"60px", alignItems:"start"}}>
-          <aside style={{position:"sticky", top:"110px"}}>
+        <div className="container conditions-grid" style={{display:"grid", gridTemplateColumns:"260px 1fr", gap:"60px", alignItems:"start"}}>
+          <aside className="conditions-aside" style={{position:"sticky", top:"110px"}}>
             <div className="text-mono text-muted" style={{marginBottom:"16px"}}>{lang==="en"?"INDEX":"INDEX"}</div>
             <ul style={{listStyle:"none", padding:0, margin:0}}>
               {sections.map(s => (

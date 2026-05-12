@@ -31,9 +31,10 @@ export const CONTENT = {
   },
 
   hero_caption: {
-    label: { en: "Slide to reveal", fr: "Faire glisser" },
-    before: { en: "Before", fr: "Avant" },
-    after: { en: "After", fr: "Après" }
+    label: { en: "Featured project", fr: "Projet phare" },
+    image: "",
+    featured_label: { en: "FEATURED PROJECT", fr: "PROJET PHARE" },
+    featured_title: { en: "The Social Hub", fr: "The Social Hub" }
   },
 
   marquee_words: {
@@ -50,7 +51,10 @@ export const CONTENT = {
     sub: {
       en: "Aymeric drafts every layout in precise 3D. Juliette dresses each space in materials, light, and atmosphere — so you see your future garage before we touch a wall.",
       fr: "Aymeric dessine chaque plan en 3D précis. Juliette habille l'espace de matières, lumières et atmosphères — pour que vous voyiez votre futur garage avant qu'un mur ne bouge."
-    }
+    },
+    plan_image: "",
+    mood_image: "",
+    interior_image: ""
   },
 
   before_after: {
@@ -66,7 +70,9 @@ export const CONTENT = {
     after: {
       en: "A clean, planned, functional garage designed around your lifestyle.",
       fr: "Un garage propre, pensé, fonctionnel — conçu autour de votre vie."
-    }
+    },
+    before_image: "",
+    after_image: ""
   },
 
   services: {
@@ -83,73 +89,74 @@ export const CONTENT = {
       {
         id: "blueprint",
         num: "01",
-        title: { en: "Design Blueprint", fr: "Plan & Design" },
-        sub: { en: "Plan it right — build it your way.", fr: "Planifiez bien — construisez à votre façon." },
+        title: { en: "Design Blueprint", fr: "Design Blueprint" },
+        sub: { en: "Plan it right. Build it your way.", fr: "Planifiez bien. Construisez à votre façon." },
         description: {
-          en: "Custom 3D floor plans and realistic visuals to help you confidently plan your project.",
-          fr: "Plans 3D sur-mesure et visuels réalistes pour planifier votre projet en toute confiance."
+          en: "Ideal for getting started: see your future garage before you build anything, with a custom layout, 3D design, and expert guidance.",
+          fr: "Idéal pour démarrer : visualisez votre futur garage avant de construire quoi que ce soit, avec un agencement sur-mesure, un design 3D et un accompagnement expert."
         },
-        price: { en: "from $950", fr: "à partir de 950 $" },
+        price: { en: "starts at $950", fr: "à partir de 950 $" },
         led_by: ["Aymeric", "Juliette", "Guillaume"],
         includes: {
-          en: ["1 optimized layout", "2 realistic 3D views", "1 round of minor adjustments", "Expert design guidance"],
-          fr: ["1 agencement optimisé", "2 vues 3D réalistes", "1 série d'ajustements mineurs", "Conseil expert"]
+          en: ["1 optimized layout", "2 realistic views", "1 round of minor adjustments", "Expert design guidance"],
+          fr: ["1 agencement optimisé", "2 vues réalistes", "1 série d'ajustements mineurs", "Conseil expert"]
         },
-        not_included: { en: "No purchasing, delivery, or installation.", fr: "Pas d'achat, livraison ou installation." },
-        on_site: { en: "On-site assessment from $1,350", fr: "Évaluation sur site à partir de 1 350 $" }
+        not_included: { en: "No product purchasing, no delivery, no installation.", fr: "Pas d'achat de produits, pas de livraison, pas d'installation." },
+        on_site: { en: "Design Blueprint + On-Site Assessment starts at $1,350", fr: "Design Blueprint + évaluation sur site à partir de 1 350 $" }
       },
       {
         id: "delivery",
         num: "02",
-        title: { en: "Design + Setup", fr: "Design + Préparation" },
-        sub: { en: "Plan it right — prepare it with confidence.", fr: "Planifiez bien — préparez en confiance." },
+        title: { en: "Design & Setup", fr: "Design & Setup" },
+        sub: { en: "Plan it right. Prepare it with confidence.", fr: "Planifiez bien. Préparez avec confiance." },
         description: {
-          en: "We design it and prepare everything for you — products, materials, and a clear setup plan.",
-          fr: "Nous concevons et préparons tout pour vous — produits, matériaux et plan d'installation."
+          en: "Move from vision to execution without the sourcing headache: design, realistic views, product selection, sourcing guidance, and setup planning.",
+          fr: "Passez de la vision à l'exécution sans la charge du sourcing : design, vues réalistes, sélection produits, accompagnement sourcing et plan de mise en place."
         },
-        price: { en: "from $1,500", fr: "à partir de 1 500 $" },
+        price: { en: "starts at $1,500", fr: "à partir de 1 500 $" },
         badge: { en: "Most popular", fr: "Le plus choisi" },
         led_by: ["Aymeric", "Juliette", "Guillaume"],
         includes: {
-          en: ["Custom layout + 2 realistic views", "Product selection guidance", "Sourcing coordination", "Setup planning for installation"],
-          fr: ["Plan sur-mesure + 2 vues réalistes", "Sélection des produits", "Coordination du sourcing", "Plan d'installation"]
+          en: ["1 optimized layout", "2 realistic views", "Product selection guidance", "Sourcing coordination", "Setup planning for installation", "1 round of minor adjustments"],
+          fr: ["1 agencement optimisé", "2 vues réalistes", "Sélection des produits", "Coordination du sourcing", "Planification de l'installation", "1 série d'ajustements mineurs"]
         },
-        not_included: { en: "No final installation or contractor labor.", fr: "Pas d'installation finale ni de main-d'œuvre." },
+        not_included: { en: "No final installation or contractor labor unless upgraded to Full Transformation.", fr: "Pas d'installation finale ni de main-d'oeuvre entrepreneur sauf évolution vers Transformation Complète." },
         deposit: { en: "50% / 25% / 25%", fr: "50 % / 25 % / 25 %" }
       },
       {
         id: "transform",
         num: "03",
         title: { en: "Full Transformation", fr: "Transformation Complète" },
-        sub: { en: "We handle everything — concept to completion.", fr: "Nous gérons tout — du concept à la livraison." },
+        sub: { en: "From concept to completion. We handle everything.", fr: "Du concept à la livraison. Nous gérons tout." },
         description: {
-          en: "A turnkey solution: design, plan, source, manage, and deliver your full garage transformation.",
-          fr: "Solution clé en main : conception, planification, sourcing, gestion et livraison complète."
+          en: "Our most comprehensive service: a fully designed, fully managed, turnkey garage transformation with execution oversight.",
+          fr: "Notre service le plus complet : une transformation de garage clé en main, entièrement conçue, coordonnée et suivie jusqu'à l'exécution."
         },
-        price: { en: "from $2,750", fr: "à partir de 2 750 $" },
+        price: { en: "starts at $2,750", fr: "à partir de 2 750 $" },
         led_by: ["Guillaume", "Aymeric", "Juliette"],
         includes: {
-          en: ["Custom layout + 4–6 realistic views", "Full material & equipment selection", "Sourcing & logistics coordination", "Project management & oversight", "Final walkthrough"],
-          fr: ["Plan sur-mesure + 4 à 6 vues réalistes", "Sélection complète matériaux & équipements", "Coordination sourcing & logistique", "Gestion de projet", "Visite finale"]
+          en: ["Custom optimized layout", "3D design with 4-6 realistic views", "Full space planning", "Complete material & equipment selection", "Sourcing and logistics coordination", "Project management and execution oversight", "Final walkthrough"],
+          fr: ["Agencement optimisé sur-mesure", "Design 3D avec 4 à 6 vues réalistes", "Planification complète de l'espace", "Sélection complète matériaux & équipements", "Coordination sourcing & logistique", "Gestion de projet et suivi d'exécution", "Visite finale"]
         },
         deposit: { en: "50% / 25% / 25%", fr: "50 % / 25 % / 25 %" }
       },
       {
         id: "smart",
         num: "04",
-        title: { en: "Smart Integration", fr: "Intégration Smart" },
-        sub: { en: "Make your garage fully functional.", fr: "Un garage 100 % fonctionnel." },
+        title: { en: "Smart Integration", fr: "Smart Integration" },
+        sub: { en: "Designed for daily performance, not just visual appeal.", fr: "Pensé pour la performance au quotidien, pas seulement pour l'esthétique." },
         description: {
-          en: "Technical planning for plumbing, electrical, HVAC, lighting, media and smart features — designed in from day one.",
-          fr: "Planification technique : plomberie, électricité, HVAC, éclairage, média et smart features — pensés dès le départ."
+          en: "For projects requiring real functionality: technical planning for plumbing, electrical, HVAC, ventilation, media, smart features, and built-in systems.",
+          fr: "Pour les projets qui demandent une vraie fonctionnalité : planification technique plomberie, électricité, HVAC, ventilation, média, smart features et systèmes intégrés."
         },
-        price: { en: "from $3,500", fr: "à partir de 3 500 $" },
+        price: { en: "starts at $3,500", fr: "à partir de 3 500 $" },
         tag: { en: "Add-on", fr: "Add-on" },
         led_by: ["Guillaume", "Aymeric", "Juliette"],
         includes: {
-          en: ["Technical integration aligned with design", "Plumbing, electrical, HVAC & ventilation", "Built-in storage, media & smart features", "Coordination with licensed pros", "Implementation-ready layouts"],
-          fr: ["Intégration technique alignée au design", "Plomberie, électricité, HVAC, ventilation", "Rangements, média & smart features", "Coordination avec pros agréés", "Plans prêts à exécuter"]
-        }
+          en: ["Technical integration aligned with your design", "Planning of plumbing, electrical, HVAC, and ventilation", "Built-in storage, media setup, and smart features", "Coordination with qualified professionals", "Technical layouts prepared for implementation"],
+          fr: ["Intégration technique alignée avec le design", "Planification plomberie, électricité, HVAC et ventilation", "Rangements intégrés, média et smart features", "Coordination avec des professionnels qualifiés", "Plans techniques prêts pour l'exécution"]
+        },
+        deposit: { en: "Included within your main project deposit structure.", fr: "Inclus dans la structure d'acompte du projet principal." }
       }
     ]
   },
@@ -222,6 +229,9 @@ export const CONTENT = {
   audience: {
     eyebrow: { en: "Section 06 · Who we help", fr: "Section 06 · Qui nous aidons" },
     title: { en: "Built for homes, properties, and real-estate value.", fr: "Pensé pour les foyers, les biens, et la valeur immobilière." },
+    homeowners_image: "",
+    agents_image: "",
+    developers_image: "",
     items: [
       {
         title: { en: "Homeowners", fr: "Propriétaires" },
@@ -268,7 +278,10 @@ export const CONTENT = {
       id: "social-hub",
       slug: "the-social-hub",
       name: { en: "The Social Hub", fr: "Le Social Hub" },
-      tagline: { en: "Built for entertaining, relaxing, everyday enjoyment.", fr: "Conçu pour recevoir, se détendre, profiter au quotidien." },
+      tagline: {
+        en: "Turn your garage into the centerpiece of your home.",
+        fr: "Transformez votre garage en pièce maîtresse de la maison."
+      },
       type: { en: "Entertainment / Bar", fr: "Divertissement / Bar" },
       size: { en: "2–3 car garage", fr: "Garage 2–3 voitures" },
       duration: { en: "8 weeks", fr: "8 semaines" },
@@ -277,16 +290,16 @@ export const CONTENT = {
       featured: true,
       large: true,
       description: {
-        en: "A complete transformation that turns your garage into a social, functional, and high-impact living space — the centerpiece of your home, built for entertaining and everyday enjoyment.",
-        fr: "Une transformation complète qui transforme votre garage en lieu social, fonctionnel et marquant — le cœur de la maison, fait pour recevoir et profiter au quotidien."
+        en: "A complete transformation that turns your garage into a social, functional, and high-impact living space — built for entertaining, relaxing, and everyday enjoyment.",
+        fr: "Une transformation complète qui transforme votre garage en lieu social, fonctionnel et marquant — pensé pour recevoir, se détendre et profiter au quotidien."
       },
       includes: {
         en: ["Wet bar", "Custom cabinetry", "Built-in appliances", "Decorative wood wall panels", "Pool table"],
         fr: ["Bar avec point d'eau", "Mobilier sur-mesure", "Appareils encastrés", "Panneaux muraux bois décoratifs", "Billard"]
       },
       why: {
-        en: ["Dedicated space for entertaining and relaxing", "Comfort and functionality without expanding your home", "High-impact upgrade that increases property value"],
-        fr: ["Un espace dédié à recevoir et se détendre", "Confort et fonctionnalité sans agrandir la maison", "Une plus-value forte sur votre bien"]
+        en: ["Dedicated space for entertaining and relaxing", "Comfort and functionality without expanding your home", "High-impact upgrade that increases property value", "A modern alternative to a traditional home addition"],
+        fr: ["Un espace dédié à recevoir et se détendre", "Confort et fonctionnalité sans agrandir la maison", "Une plus-value forte sur votre bien", "Une alternative moderne à une extension traditionnelle"]
       },
       images: [
         { label: "Hero · Bar view", color: "#3a2c22" },
@@ -298,8 +311,11 @@ export const CONTENT = {
     {
       id: "daily-living",
       slug: "the-daily-living-garage",
-      name: { en: "The Living Garage", fr: "Le Garage à Vivre" },
-      tagline: { en: "A multi-functional garage for work, fitness, and relaxation.", fr: "Un garage multi-fonctions : travail, sport, détente." },
+      name: { en: "The Daily Living Garage", fr: "Le Garage du Quotidien" },
+      tagline: {
+        en: "A multi-functional garage for work, fitness, and relaxation.",
+        fr: "Un garage multi-fonctions pour travailler, bouger et se détendre."
+      },
       type: { en: "Multi-functional / Lifestyle", fr: "Multi-fonctions / Lifestyle" },
       size: { en: "2 car garage", fr: "Garage 2 voitures" },
       duration: { en: "6 weeks", fr: "6 semaines" },
@@ -307,16 +323,16 @@ export const CONTENT = {
       year: "2025",
       featured: true,
       description: {
-        en: "A space designed to support your daily routine — from movement to focus to relaxation. A flexible, everyday living space without expanding your home.",
-        fr: "Un espace pensé pour votre routine — du mouvement à la concentration jusqu'à la détente. Un lieu de vie flexible sans agrandir la maison."
+        en: "A complete transformation that turns your garage into a flexible, everyday living space designed to support your routine — from movement to focus to relaxation.",
+        fr: "Une transformation complète qui fait du garage un espace de vie flexible, pensé pour accompagner votre routine — du mouvement à la concentration jusqu'à la détente."
       },
       includes: {
-        en: ["Home fitness area (cardio, mirror, floor space)", "Lounge zone (sofa, TV, relaxation)", "Compact workspace / home office", "Coffee & utility corner with storage", "Integrated lighting and layout"],
-        fr: ["Zone fitness (cardio, miroir, sol adapté)", "Lounge (canapé, TV, détente)", "Bureau compact", "Coin café & utilitaire avec rangement", "Éclairage et layout intégrés"]
+        en: ["Home fitness area with cardio equipment, floor space, and mirror", "Lounge zone with sofa, TV, and relaxation area", "Compact workspace or home office", "Coffee / utility corner with storage", "Integrated lighting and layout for daily use"],
+        fr: ["Zone fitness avec cardio, espace au sol et miroir", "Lounge avec canapé, TV et espace détente", "Bureau compact ou home office", "Coin café / utilitaire avec rangement", "Éclairage et agencement intégrés pour le quotidien"]
       },
       why: {
-        en: ["Combine multiple functions in one optimised space", "Improve daily comfort without expanding your home", "Practical, organised environment for work and lifestyle"],
-        fr: ["Plusieurs fonctions dans un espace optimisé", "Confort au quotidien sans extension", "Environnement pratique et organisé"]
+        en: ["Combine multiple functions in one optimised space", "Improve daily comfort without expanding your home", "Create a practical, organised environment for work and lifestyle", "Increase your property value with a smart transformation"],
+        fr: ["Plusieurs fonctions dans un espace optimisé", "Confort au quotidien sans extension", "Un environnement pratique et organisé pour le travail et le lifestyle", "Une transformation intelligente qui valorise le bien"]
       },
       images: [
         { label: "Lounge zone", color: "#c4a575" },
@@ -332,20 +348,20 @@ export const CONTENT = {
       type: { en: "Daily living / Utility", fr: "Vie quotidienne / Utilitaire" },
       size: { en: "2 car garage", fr: "Garage 2 voitures" },
       duration: { en: "5 weeks", fr: "5 semaines" },
-      service: { en: "Design + Setup", fr: "Design + Setup" },
+      service: { en: "Full Transformation", fr: "Transformation Complète" },
       year: "2025",
       featured: true,
       description: {
-        en: "A complete transformation that turns your garage into a functional, comfortable extension of your home — designed to simplify your life and elevate your home.",
-        fr: "Une transformation complète qui fait du garage une extension fonctionnelle et confortable — pour simplifier votre vie et valoriser votre maison."
+        en: "A complete transformation that turns your garage into a functional, comfortable extension of your home — combining utility, comfort, and style.",
+        fr: "Une transformation complète qui fait du garage une extension fonctionnelle et confortable de la maison — entre utilité, confort et style."
       },
       includes: {
-        en: ["Integrated laundry and utility area", "Comfortable lounge (TV, relaxation, daily use)", "Smart storage solutions", "Clean, functional environment ready for everyday living"],
-        fr: ["Zone buanderie intégrée", "Lounge confortable (TV, détente)", "Rangements smart", "Environnement clean et prêt à vivre"]
+        en: ["Integrated laundry and utility area", "Comfortable lounge space with TV, relaxation, and daily use", "Smart storage solutions to keep everything organized", "Clean, functional environment ready for everyday living"],
+        fr: ["Zone buanderie et utilitaire intégrée", "Lounge confortable avec TV, détente et usage quotidien", "Rangements smart pour garder l'espace organisé", "Environnement propre, fonctionnel et prêt à vivre"]
       },
       why: {
-        en: ["Free up space in the rest of your home", "Simplify daily routines, reduce clutter", "Improve comfort while increasing property value"],
-        fr: ["Libérez de l'espace dans la maison", "Simplifiez vos routines, réduisez le désordre", "Confort + plus-value immobilière"]
+        en: ["Free up space in the rest of your home", "Simplify your daily routines and reduce clutter", "Improve comfort while increasing your property value"],
+        fr: ["Libérer de l'espace dans le reste de la maison", "Simplifier les routines quotidiennes et réduire le désordre", "Améliorer le confort tout en valorisant le bien"]
       },
       images: [
         { label: "Hero · open view", color: "#a89378" },

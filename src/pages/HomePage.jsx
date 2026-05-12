@@ -20,10 +20,206 @@ export function HomePage({ lang, onNav }) {
   );
 };
 
-// ============================ HERO with before/after drag ============================
+// ============================ HERO with single immersive image ============================
 function Hero({ lang, onNav }) {
   const C = CONTENT.hero;
   const cap = CONTENT.hero_caption;
+  const heroImage = cap.image || cap.after_image;
+
+  return (
+    <section id="hero" className="section hero" style={{padding:0, position:"relative"}}>
+      <div className="hero__stage" style={{
+        position:"relative",
+        width:"100%",
+        height:"min(92vh, 880px)",
+        minHeight:"560px",
+        overflow:"hidden",
+        background:"var(--ink)"
+      }}>
+        {/* Single hero image */}
+        {heroImage ? (
+          <img
+            src={heroImage}
+            alt={cap.featured_title?.[lang] || "Garage à la carte"}
+            style={{position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover", display:"block"}}
+            draggable={false}
+          />
+        ) : (
+          <>
+            <ImagePlaceholder
+              label={cap.featured_title?.[lang] || "The Social Hub"}
+              color="#3a2c22"
+              style={{position:"absolute", inset:0, borderRadius:0}}
+            />
+            <div style={{position:"absolute", inset:0, background:"radial-gradient(circle at 65% 40%, rgba(184,85,58,0.25), transparent 60%)"}}></div>
+          </>
+        )}
+
+        {/* Readability scrim for text overlay */}
+        <div className="hero__scrim" style={{
+          position:"absolute", inset:0, pointerEvents:"none",
+          background:"linear-gradient(180deg, rgba(10,37,64,0.55) 0%, rgba(10,37,64,0.25) 35%, rgba(10,37,64,0.15) 60%, rgba(10,37,64,0.75) 100%)"
+        }}></div>
+
+        {/* Foreground content overlay */}
+        <div className="hero__overlay" style={{
+          position:"absolute", inset:0,
+          padding:"96px clamp(20px, 4vw, 80px) 56px",
+          pointerEvents:"none"
+        }}>
+        <div className="container hero__container" style={{
+          height:"100%",
+          display:"flex", flexDirection:"column", justifyContent:"flex-end",
+          position:"relative"
+        }}>
+          {/* Meta */}
+          <div className="hero__meta text-mono" style={{
+            position:"absolute", top:"24px", left:"50%", transform:"translateX(-50%)",
+            color:"rgba(255,248,240,0.7)"
+          }}>N° 2026 / 001</div>
+
+          {/* Title */}
+          <Reveal as="h1" className="hero__title" style={{
+            color:"var(--cream)",
+            fontFamily:"var(--serif)",
+            fontSize:"clamp(36px, 5.2vw, 84px)",
+            letterSpacing:"-0.03em",
+            lineHeight:0.98,
+            maxWidth:"20ch",
+            textShadow:"0 2px 24px rgba(0,0,0,0.35)"
+          }}>
+            {C.title[lang].map((line, i) => {
+              const words = line.split(" ");
+              return (
+                <span key={i} style={{display:"block"}}>
+                  {words.map((w, j) => {
+                    const isItalic = w === C.italic_word[lang];
+                    return isItalic
+                      ? <em key={j} className="italic" style={{color:"var(--accent)"}}>{w}{j < words.length-1 ? " " : ""}</em>
+                      : <React.Fragment key={j}>{w}{j < words.length-1 ? " " : ""}</React.Fragment>;
+                  })}
+                </span>
+              );
+            })}
+          </Reveal>
+
+          {/* Sub + CTAs */}
+          <div className="hero__cta-row" style={{
+            display:"grid", gridTemplateColumns:"minmax(0, 1fr) auto", gap:"40px",
+            marginTop:"32px", alignItems:"end", pointerEvents:"auto"
+          }}>
+            <Reveal delay={0.15} className="hero__sub-wrap">
+              <p className="hero__sub" style={{
+                color:"rgba(255,248,240,0.88)",
+                fontSize:"clamp(15px, 1.15vw, 18px)",
+                lineHeight:1.5,
+                maxWidth:"52ch",
+                textShadow:"0 1px 12px rgba(0,0,0,0.3)"
+              }}>{C.sub[lang]}</p>
+            </Reveal>
+            <Reveal delay={0.25} className="hero__ctas" style={{display:"flex", gap:"12px", flexWrap:"wrap", justifyContent:"flex-end"}}>
+              <button className="btn" onClick={()=>onNav("contact")}>{C.primary_cta[lang]} <span className="arrow">↗</span></button>
+              <button className="btn btn-ghost hero__ghost" style={{color:"var(--cream)", borderColor:"rgba(255,248,240,0.55)"}} onClick={()=>onNav("contact")}>{C.secondary_cta[lang]}</button>
+            </Reveal>
+          </div>
+
+          {/* Featured project caption */}
+          <div className="hero__featured" style={{
+            marginTop:"28px", paddingTop:"20px",
+            borderTop:"1px solid rgba(255,248,240,0.18)",
+            display:"flex", justifyContent:"space-between", alignItems:"baseline",
+            color:"var(--cream)", gap:"24px", flexWrap:"wrap"
+          }}>
+            <div style={{display:"flex", alignItems:"baseline", gap:"16px", flexWrap:"wrap"}}>
+              <div className="text-mono" style={{color:"rgba(255,248,240,0.55)"}}>{cap.featured_label?.[lang] || "FEATURED PROJECT"}</div>
+              <div style={{fontFamily:"var(--serif)", fontSize:"clamp(18px, 1.8vw, 24px)", letterSpacing:"-0.02em"}}>{cap.featured_title?.[lang] || "The Social Hub"}</div>
+            </div>
+            <div className="hero__featured-link text-mono" style={{color:"rgba(255,248,240,0.55)"}}>{cap.label?.[lang] || (lang === "en" ? "Featured project" : "Projet phare")} →</div>
+          </div>
+        </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ============================ VISUAL STRIP (Aymeric & Juliette) ============================
+function VisualStrip({ lang }) {
+  const C = CONTENT.visual_strip;
+  return (
+    <section id="visual_strip" className="section" style={{paddingTop:"80px", paddingBottom:"40px"}}>
+      <div className="container">
+        <div style={{display:"grid", gridTemplateColumns:"1fr 1.3fr", gap:"60px", alignItems:"center"}}>
+          <Reveal>
+            <h2 className="display-m" style={{marginTop:"24px", maxWidth:"14ch"}}>
+              {C.title[lang].split(".").map((s, i, a) =>
+                s.trim() ? <span key={i} style={{display:"block"}}>{s.trim()}{i < a.length-1 && i < a.length-2 ? "." : "."}</span> : null
+              )}
+            </h2>
+            <p className="lead" style={{marginTop:"24px"}}>{C.sub[lang]}</p>
+            <div style={{display:"flex", gap:"40px", marginTop:"32px", paddingTop:"32px", borderTop:"1px solid var(--line)"}}>
+              <div>
+                <div className="text-mono text-muted">AYMERIC</div>
+                <div style={{fontFamily:"var(--serif)", fontSize:"22px", marginTop:"4px"}}>3D & layout</div>
+              </div>
+              <div>
+                <div className="text-mono text-muted">JULIETTE</div>
+                <div style={{fontFamily:"var(--serif)", fontSize:"22px", marginTop:"4px"}}>Atmosphere</div>
+              </div>
+            </div>
+          </Reveal>
+          <Reveal delay={0.15}>
+            <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:"16px", height:"540px"}}>
+              <VisualStripSlot src={C.plan_image} label="3D PLAN · TOP-DOWN" color="#a89378" style={{height:"100%", borderRadius:"16px"}} />
+              <div style={{display:"grid", gridTemplateRows:"1fr 1fr", gap:"16px"}}>
+                <VisualStripSlot src={C.mood_image} label="MOOD · MATERIALS" color="#5a4334" style={{borderRadius:"16px"}} />
+                <VisualStripSlot src={C.interior_image} label="3D · INTERIOR VIEW" color="#3a2c22" style={{borderRadius:"16px"}} />
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ============================ BEFORE / AFTER STORY (drag slider) ============================
+function BeforeAfterSection({ lang }) {
+  const C = CONTENT.before_after;
+  return (
+    <section id="before_after" className="section">
+      <div className="container">
+        <div style={{display:"flex", justifyContent:"flex-end", alignItems:"baseline", marginBottom:"60px"}}>
+          <div className="text-mono text-muted">02 / 08</div>
+        </div>
+        <Reveal as="h2" className="display-l" style={{maxWidth:"20ch", marginBottom:"56px"}}>
+          {C.title[lang]}
+        </Reveal>
+
+        <Reveal>
+          <BeforeAfterSlider
+            beforeSrc={C.before_image}
+            afterSrc={C.after_image}
+            beforeLabel={lang === "en" ? "Before" : "Avant"}
+            afterLabel={lang === "en" ? "After" : "Après"}
+            height="min(70vh, 680px)"
+          />
+        </Reveal>
+
+        <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:"40px", marginTop:"40px"}}>
+          <Reveal>
+            <p className="lead" style={{fontSize:"18px"}}>{C.before[lang]}</p>
+          </Reveal>
+          <Reveal delay={0.15}>
+            <p className="lead" style={{fontSize:"18px"}}>{C.after[lang]}</p>
+          </Reveal>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function BeforeAfterSlider({ beforeSrc, afterSrc, beforeLabel = "Before", afterLabel = "After", height = "min(70vh, 680px)" }) {
   const [pos, setPos] = useState(50);
   const dragging = useRef(false);
   const containerRef = useRef(null);
@@ -55,193 +251,91 @@ function Hero({ lang, onNav }) {
   }, []);
 
   return (
-    <section id="hero" className="section" style={{paddingTop:"60px", paddingBottom:"80px"}}>
-      <div className="container">
-        {/* Top row: eyebrow + meta */}
-        <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"60px", flexWrap:"wrap", gap:"20px"}}>
-          <div className="eyebrow">{C.eyebrow[lang]}</div>
-          <div className="text-mono text-muted">N° 2026 / 001</div>
-        </div>
+    <div
+      ref={containerRef}
+      style={{
+        position:"relative",
+        width:"100%",
+        height,
+        borderRadius:"24px",
+        overflow:"hidden",
+        userSelect:"none",
+        touchAction:"none",
+        cursor:"ew-resize",
+        background:"var(--ink)"
+      }}
+      onMouseDown={onDown}
+      onTouchStart={onDown}
+    >
+      {/* AFTER (full) */}
+      {afterSrc ? (
+        <img
+          src={afterSrc}
+          alt={afterLabel}
+          style={{position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover", display:"block"}}
+          draggable={false}
+        />
+      ) : (
+        <ImagePlaceholder label={`${afterLabel} · Social Hub`} color="#3a2c22" style={{position:"absolute", inset:0, borderRadius:0}} />
+      )}
 
-        {/* Big title */}
-        <Reveal as="h1" className="display-xl" style={{maxWidth:"18ch"}}>
-          {C.title[lang].map((line, i) => {
-            const words = line.split(" ");
-            return (
-              <span key={i} style={{display:"block", lineHeight:0.95}}>
-                {words.map((w, j) => {
-                  const isItalic = w === C.italic_word[lang];
-                  return isItalic
-                    ? <em key={j} className="italic" style={{color:"var(--accent)"}}>{w}{j < words.length-1 ? " " : ""}</em>
-                    : <React.Fragment key={j}>{w}{j < words.length-1 ? " " : ""}</React.Fragment>;
-                })}
-              </span>
-            );
-          })}
-        </Reveal>
-
-        {/* Sub + CTAs row */}
-        <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:"60px", marginTop:"60px", alignItems:"end"}}>
-          <Reveal delay={0.15}>
-            <p className="lead">{C.sub[lang]}</p>
-          </Reveal>
-          <Reveal delay={0.25} style={{display:"flex", gap:"16px", flexWrap:"wrap", justifyContent:"flex-end"}}>
-            <button className="btn" onClick={()=>onNav("contact")}>{C.primary_cta[lang]} <span className="arrow">↗</span></button>
-            <button className="btn btn-ghost" onClick={()=>onNav("contact")}>{C.secondary_cta[lang]}</button>
-          </Reveal>
-        </div>
-
-        {/* HERO BEFORE/AFTER */}
-        <Reveal delay={0.3} style={{marginTop:"80px"}}>
-          <div
-            ref={containerRef}
-            style={{
-              position:"relative",
-              width:"100%",
-              height:"min(72vh, 760px)",
-              borderRadius:"24px",
-              overflow:"hidden",
-              userSelect:"none",
-              touchAction:"none",
-              cursor:"ew-resize"
-            }}
-            onMouseDown={onDown}
-            onTouchStart={onDown}
-          >
-            {/* AFTER (full) */}
-            <ImagePlaceholder
-              label={`${cap.after[lang]} · The Social Hub`}
-              color="#3a2c22"
-              style={{position:"absolute", inset:0, borderRadius:0}}
-            />
-            <div style={{position:"absolute", inset:0, background:"radial-gradient(circle at 65% 40%, rgba(184,85,58,0.25), transparent 60%)"}}></div>
-
-            {/* BEFORE (clipped) */}
-            <div style={{position:"absolute", inset:0, clipPath:`inset(0 ${100-pos}% 0 0)`}}>
-              <ImagePlaceholder
-                label={`${cap.before[lang]} · cluttered storage`}
-                color="#7a6450"
-                style={{position:"absolute", inset:0, borderRadius:0, filter:"saturate(0.5) brightness(0.85)"}}
-              />
-              <div style={{position:"absolute", inset:0, background:"repeating-linear-gradient(0deg, transparent, transparent 12px, rgba(0,0,0,0.05) 12px, rgba(0,0,0,0.05) 13px)"}}></div>
-            </div>
-
-            {/* Slider handle */}
-            <div style={{
-              position:"absolute", top:0, bottom:0, left:`${pos}%`,
-              width:"2px", background:"var(--cream)",
-              boxShadow:"0 0 24px rgba(0,0,0,0.4)",
-              pointerEvents:"none"
-            }}>
-              <div style={{
-                position:"absolute", top:"50%", left:"50%", transform:"translate(-50%, -50%)",
-                width:"56px", height:"56px", borderRadius:"50%",
-                background:"var(--cream)", border:"1px solid rgba(0,0,0,0.1)",
-                display:"flex", alignItems:"center", justifyContent:"center",
-                color:"var(--ink)", fontFamily:"var(--mono)", fontSize:"18px",
-                boxShadow:"0 8px 32px rgba(0,0,0,0.3)"
-              }}>⇄</div>
-            </div>
-
-            {/* Labels */}
-            <div style={{position:"absolute", top:"24px", left:"24px"}}>
-              <span className="tag" style={{background:"rgba(244,237,226,0.95)"}}>{cap.before[lang]}</span>
-            </div>
-            <div style={{position:"absolute", top:"24px", right:"24px"}}>
-              <span className="tag" style={{background:"var(--accent)", color:"var(--cream)"}}>{cap.after[lang]}</span>
-            </div>
-            <div style={{position:"absolute", bottom:"24px", left:"24px", right:"24px", display:"flex", justifyContent:"space-between", alignItems:"flex-end", color:"var(--cream)"}}>
-              <div>
-                <div className="text-mono" style={{color:"rgba(244,237,226,0.6)"}}>FEATURED PROJECT</div>
-                <div style={{fontFamily:"var(--serif)", fontSize:"32px", letterSpacing:"-0.02em", marginTop:"4px"}}>The Social Hub</div>
-              </div>
-              <div className="text-mono" style={{color:"rgba(244,237,226,0.6)"}}>{cap.label[lang]} →</div>
-            </div>
-          </div>
-        </Reveal>
+      {/* BEFORE (clipped) */}
+      <div style={{position:"absolute", inset:0, clipPath:`inset(0 ${100-pos}% 0 0)`}}>
+        {beforeSrc ? (
+          <img
+            src={beforeSrc}
+            alt={beforeLabel}
+            style={{position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover", display:"block"}}
+            draggable={false}
+          />
+        ) : (
+          <ImagePlaceholder
+            label={`${beforeLabel} · garage clutter`}
+            color="#7a6450"
+            style={{position:"absolute", inset:0, borderRadius:0, filter:"saturate(0.5) brightness(0.85)"}}
+          />
+        )}
       </div>
-    </section>
+
+      {/* Slider handle */}
+      <div style={{
+        position:"absolute", top:0, bottom:0, left:`${pos}%`,
+        width:"2px", background:"var(--cream)",
+        boxShadow:"0 0 24px rgba(0,0,0,0.4)",
+        pointerEvents:"none"
+      }}>
+        <div style={{
+          position:"absolute", top:"50%", left:"50%", transform:"translate(-50%, -50%)",
+          width:"56px", height:"56px", borderRadius:"50%",
+          background:"var(--cream)", border:"1px solid rgba(0,0,0,0.1)",
+          display:"flex", alignItems:"center", justifyContent:"center",
+          color:"var(--ink)", fontFamily:"var(--mono)", fontSize:"18px",
+          boxShadow:"0 8px 32px rgba(0,0,0,0.3)"
+        }}>⇄</div>
+      </div>
+
+      {/* Labels */}
+      <div style={{position:"absolute", top:"24px", left:"24px", pointerEvents:"none"}}>
+        <span className="tag" style={{background:"rgba(255,248,240,0.95)"}}>{beforeLabel}</span>
+      </div>
+      <div style={{position:"absolute", top:"24px", right:"24px", pointerEvents:"none"}}>
+        <span className="tag" style={{background:"var(--accent)", color:"var(--cream)"}}>{afterLabel}</span>
+      </div>
+    </div>
   );
 }
 
-// ============================ VISUAL STRIP (Aymeric & Juliette) ============================
-function VisualStrip({ lang }) {
-  const C = CONTENT.visual_strip;
-  return (
-    <section id="visual_strip" className="section" style={{paddingTop:"80px", paddingBottom:"40px"}}>
-      <div className="container">
-        <div style={{display:"grid", gridTemplateColumns:"1fr 1.3fr", gap:"60px", alignItems:"center"}}>
-          <Reveal>
-            <div className="eyebrow">{C.eyebrow[lang]}</div>
-            <h2 className="display-m" style={{marginTop:"24px", maxWidth:"14ch"}}>
-              {C.title[lang].split(".").map((s, i, a) =>
-                s.trim() ? <span key={i} style={{display:"block"}}>{s.trim()}{i < a.length-1 && i < a.length-2 ? "." : "."}</span> : null
-              )}
-            </h2>
-            <p className="lead" style={{marginTop:"24px"}}>{C.sub[lang]}</p>
-            <div style={{display:"flex", gap:"40px", marginTop:"32px", paddingTop:"32px", borderTop:"1px solid var(--line)"}}>
-              <div>
-                <div className="text-mono text-muted">AYMERIC</div>
-                <div style={{fontFamily:"var(--serif)", fontSize:"22px", marginTop:"4px"}}>3D & layout</div>
-              </div>
-              <div>
-                <div className="text-mono text-muted">JULIETTE</div>
-                <div style={{fontFamily:"var(--serif)", fontSize:"22px", marginTop:"4px"}}>Atmosphere</div>
-              </div>
-            </div>
-          </Reveal>
-          <Reveal delay={0.15}>
-            <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:"16px", height:"540px"}}>
-              <ImagePlaceholder label="3D PLAN · TOP-DOWN" color="#a89378" style={{height:"100%", borderRadius:"16px"}} />
-              <div style={{display:"grid", gridTemplateRows:"1fr 1fr", gap:"16px"}}>
-                <ImagePlaceholder label="MOOD · MATERIALS" color="#5a4334" style={{borderRadius:"16px"}} />
-                <ImagePlaceholder label="3D · INTERIOR VIEW" color="#3a2c22" style={{borderRadius:"16px"}} />
-              </div>
-            </div>
-          </Reveal>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ============================ BEFORE / AFTER STORY ============================
-function BeforeAfterSection({ lang }) {
-  const C = CONTENT.before_after;
-  return (
-    <section id="before_after" className="section">
-      <div className="container">
-        <div style={{display:"flex", justifyContent:"space-between", alignItems:"baseline", marginBottom:"60px"}}>
-          <div className="eyebrow">{C.eyebrow[lang]}</div>
-          <div className="text-mono text-muted">02 / 08</div>
-        </div>
-        <Reveal as="h2" className="display-l" style={{maxWidth:"20ch", marginBottom:"80px"}}>
-          {C.title[lang]}
-        </Reveal>
-
-        <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:"40px"}}>
-          <Reveal>
-            <div style={{position:"relative"}}>
-              <ImagePlaceholder label="BEFORE · garage clutter" color="#7a6450" style={{height:"500px", borderRadius:"16px", filter:"saturate(0.6) brightness(0.85)"}} />
-              <div style={{position:"absolute", top:"24px", left:"24px"}}>
-                <span className="tag" style={{background:"var(--cream)"}}>Before</span>
-              </div>
-            </div>
-            <p className="lead" style={{marginTop:"24px", fontSize:"18px"}}>{C.before[lang]}</p>
-          </Reveal>
-          <Reveal delay={0.2}>
-            <div style={{position:"relative"}}>
-              <ImagePlaceholder label="AFTER · Social Hub" color="#3a2c22" style={{height:"500px", borderRadius:"16px"}} />
-              <div style={{position:"absolute", top:"24px", left:"24px"}}>
-                <span className="tag" style={{background:"var(--accent)", color:"var(--cream)"}}>After</span>
-              </div>
-            </div>
-            <p className="lead" style={{marginTop:"24px", fontSize:"18px"}}>{C.after[lang]}</p>
-          </Reveal>
-        </div>
-      </div>
-    </section>
-  );
+function VisualStripSlot({ src, label, color, style }) {
+  if (src) {
+    return (
+      <img
+        src={src}
+        alt={label}
+        style={{ ...style, width: "100%", objectFit: "cover", display: "block" }}
+      />
+    );
+  }
+  return <ImagePlaceholder label={label} color={color} style={style} />;
 }
 
 // ============================ SERVICES ============================
@@ -252,7 +346,6 @@ function ServicesSection({ lang, onNav }) {
       <div className="container">
         <div style={{display:"grid", gridTemplateColumns:"1fr 1.2fr", gap:"60px", marginBottom:"80px"}}>
           <Reveal>
-            <div className="eyebrow">{C.eyebrow[lang]}</div>
             <h2 className="display-l" style={{marginTop:"24px"}}>{C.title[lang]}</h2>
           </Reveal>
           <Reveal delay={0.15}>
@@ -376,7 +469,6 @@ function WhySection({ lang }) {
   return (
     <section id="why" className="section">
       <div className="container">
-        <div className="eyebrow">{C.eyebrow[lang]}</div>
         <Reveal as="h2" className="display-l" style={{marginTop:"32px", maxWidth:"22ch"}}>{C.title[lang]}</Reveal>
         <Reveal delay={0.15}>
           <p className="lead" style={{marginTop:"32px", maxWidth:"60ch"}}>{C.sub[lang]}</p>
@@ -404,7 +496,6 @@ function TeamSection({ lang }) {
       <div className="container">
         <div style={{display:"grid", gridTemplateColumns:"1fr 1.2fr", gap:"60px", marginBottom:"60px"}}>
           <Reveal>
-            <div className="eyebrow" style={{color:"var(--brass-soft)"}}>{C.eyebrow[lang]}</div>
             <h2 className="display-l" style={{marginTop:"24px"}}>{C.title[lang]}</h2>
           </Reveal>
           <Reveal delay={0.15}>
@@ -432,23 +523,42 @@ function TeamSection({ lang }) {
 // ============================ AUDIENCE ============================
 function AudienceSection({ lang }) {
   const C = CONTENT.audience;
+  const slotImages = [C.homeowners_image, C.agents_image, C.developers_image];
+  const slotMeta = [
+    { color: "#c4a575", label: lang === "en" ? "LIFESTYLE GARAGE" : "GARAGE À VIVRE" },
+    { color: "#5a4334", label: lang === "en" ? "BUYER POTENTIAL" : "POTENTIEL ACHETEUR" },
+    { color: "#a89378", label: lang === "en" ? "PROPERTY VALUE" : "VALEUR DU BIEN" }
+  ];
+
   return (
     <section id="audience" className="section">
       <div className="container">
-        <div className="eyebrow">{C.eyebrow[lang]}</div>
         <Reveal as="h2" className="display-l" style={{marginTop:"24px", maxWidth:"22ch"}}>{C.title[lang]}</Reveal>
-        <div style={{display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(280px, 1fr))", gap:"24px", marginTop:"80px"}}>
-          {C.items.map((it, i) => (
-            <Reveal key={i} delay={i * 0.1}>
-              <div className="card" style={{minHeight:"360px", display:"flex", flexDirection:"column", justifyContent:"space-between"}}>
-                <div className="text-mono text-muted">0{i+1}</div>
-                <div>
-                  <h3 className="display-s">{it.title[lang]}</h3>
-                  <p style={{color:"var(--muted)", marginTop:"16px", fontSize:"15px", lineHeight:1.6}}>{it.text[lang]}</p>
+        <div className="audience-grid">
+          {C.items.map((it, i) => {
+            const src = slotImages[i] || "";
+            const meta = slotMeta[i] || slotMeta[0];
+            return (
+              <Reveal key={i} delay={i * 0.1}>
+                <div className="card audience-card">
+                  <ImagePlaceholder
+                    src={src}
+                    alt={it.title[lang]}
+                    color={meta.color}
+                    label={!src ? meta.label : undefined}
+                    style={{height:"100%", borderRadius:"14px"}}
+                  />
+                  <div className="audience-card__body">
+                    <div className="audience-card__meta">
+                      <span className="text-mono text-muted">0{i+1}</span>
+                    </div>
+                    <h3 className="display-s">{it.title[lang]}</h3>
+                    <p style={{color:"var(--muted)", marginTop:"16px", fontSize:"15px", lineHeight:1.6}}>{it.text[lang]}</p>
+                  </div>
                 </div>
-              </div>
-            </Reveal>
-          ))}
+              </Reveal>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -461,7 +571,6 @@ function ProcessSection({ lang }) {
   return (
     <section id="process_intro" className="section" style={{background:"var(--paper)"}}>
       <div className="container">
-        <div className="eyebrow">{C.eyebrow[lang]}</div>
         <Reveal as="h2" className="display-l" style={{marginTop:"24px"}}>{C.title[lang]}</Reveal>
         <div style={{marginTop:"80px"}}>
           {C.steps.map((s, i) => (

@@ -15,12 +15,12 @@ export function ProjectsPage({ lang, onNav }) {
       <section id="projects_page" className="section" style={{paddingTop:"60px", paddingBottom:"40px"}}>
         <div className="container">
           <div style={{display:"flex", justifyContent:"space-between", alignItems:"baseline", marginBottom:"40px"}}>
-            <div className="eyebrow">{C.eyebrow[lang]}</div>
+            <div className="eyebrow">{text(C.eyebrow, lang)}</div>
             <div className="text-mono text-muted">{filtered.length} / {projects.length}</div>
           </div>
-          <Reveal as="h1" className="display-xl" style={{maxWidth:"16ch"}}>{C.title[lang]}</Reveal>
+          <Reveal as="h1" className="display-xl" style={{maxWidth:"16ch"}}>{text(C.title, lang)}</Reveal>
           <Reveal delay={0.15} style={{display:"grid", gridTemplateColumns:"1fr auto", gap:"40px", alignItems:"end", marginTop:"40px"}}>
-            <p className="lead">{C.sub[lang]}</p>
+            <p className="lead">{text(C.sub, lang)}</p>
             <div style={{display:"flex", gap:"4px", padding:"4px", border:"1px solid var(--line-strong)", borderRadius:"100px", fontFamily:"var(--mono)", fontSize:"11px"}}>
               {[
                 {id:"all", l:lang==="en"?"All":"Tous"},
@@ -37,7 +37,7 @@ export function ProjectsPage({ lang, onNav }) {
       {/* Masonry grid */}
       <section className="section" style={{paddingTop:"40px"}}>
         <div className="container">
-          <div style={{display:"grid", gridTemplateColumns:"repeat(12, 1fr)", gap:"24px", gridAutoRows:"100px"}}>
+          <div className="projects-grid" style={{display:"grid", gridTemplateColumns:"repeat(12, 1fr)", gap:"24px", gridAutoRows:"100px"}}>
             {filtered.map((p, i) => {
               const layout = getLayout(i, p);
               return <ProjectTile key={p.id} project={p} lang={lang} layout={layout} onClick={()=>!p.placeholder && setActive(p)} index={i} />;
@@ -77,6 +77,10 @@ function ProjectTile({ project, lang, layout, onClick, index }) {
   const [hover, setHover] = useState(false);
   const isPh = project.placeholder;
   const heroImage = getProjectImage(project);
+  const projectName = text(project.name, lang, lang === "en" ? "Untitled project" : "Projet sans titre");
+  const tagline = text(project.tagline, lang, "");
+  const size = text(project.size, lang, lang === "en" ? "Size TBD" : "Taille à définir");
+  const service = text(project.service, lang, lang === "en" ? "Project" : "Projet");
 
   return (
     <div
@@ -100,23 +104,23 @@ function ProjectTile({ project, lang, layout, onClick, index }) {
         label={isPh ? "COMING SOON" : heroImage?.label}
         color={heroImage?.color || "#70675d"}
         src={heroImage?.url}
-        alt={text(heroImage?.alt, lang, text(project.name, lang, ""))}
+        alt={text(heroImage?.alt, lang, projectName)}
         style={{position:"absolute", inset:0, borderRadius:"16px", transform: hover && !isPh ? "scale(1.04)" : "scale(1)", transition:"transform 0.6s cubic-bezier(.2,.7,.3,1)"}}
       />
       <div style={{position:"absolute", inset:0, background:"linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%)"}}></div>
 
       {/* Top tags */}
       <div style={{position:"absolute", top:"20px", left:"20px", right:"20px", display:"flex", justifyContent:"space-between", alignItems:"flex-start"}}>
-        <span className="tag" style={{background: isPh ? "rgba(244,237,226,0.85)" : "var(--cream)"}}>{isPh ? (lang==="en"?"Upcoming":"À venir") : project.year}</span>
-        {!isPh && <span className="tag" style={{background:"var(--accent)", color:"var(--cream)"}}>{project.service[lang]}</span>}
+        <span className="tag" style={{background: isPh ? "rgba(244,237,226,0.85)" : "var(--cream)"}}>{isPh ? (lang==="en"?"Upcoming":"À venir") : (project.year || "—")}</span>
+        {!isPh && <span className="tag" style={{background:"var(--accent)", color:"var(--cream)"}}>{service}</span>}
       </div>
 
       {/* Bottom info */}
       <div style={{position:"absolute", bottom:"24px", left:"24px", right:"24px", color:"var(--cream)"}}>
-        <div style={{fontFamily:"var(--serif)", fontSize:"clamp(22px, 2.4vw, 36px)", letterSpacing:"-0.02em", lineHeight:1.05}}>{project.name[lang]}</div>
-        {!isPh && <div style={{fontSize:"13px", color:"rgba(244,237,226,0.75)", marginTop:"6px", maxWidth:"38ch"}}>{project.tagline[lang]}</div>}
+        <div style={{fontFamily:"var(--serif)", fontSize:"clamp(22px, 2.4vw, 36px)", letterSpacing:"-0.02em", lineHeight:1.05}}>{projectName}</div>
+        {!isPh && tagline && <div style={{fontSize:"13px", color:"rgba(244,237,226,0.75)", marginTop:"6px", maxWidth:"38ch"}}>{tagline}</div>}
         {!isPh && <div style={{marginTop:"16px", fontFamily:"var(--mono)", fontSize:"11px", letterSpacing:"0.15em", color:"rgba(244,237,226,0.6)", textTransform:"uppercase", display:"flex", justifyContent:"space-between"}}>
-          <span>{project.size[lang]}</span>
+          <span>{size}</span>
           <span style={{color:"var(--brass-soft)"}}>{lang==="en"?"View case →":"Voir →"}</span>
         </div>}
       </div>
@@ -126,6 +130,13 @@ function ProjectTile({ project, lang, layout, onClick, index }) {
 
 function ProjectModal({ project, lang, onClose, onNav }) {
   const heroImage = getProjectImage(project);
+  const projectName = text(project.name, lang, lang === "en" ? "Untitled project" : "Projet sans titre");
+  const tagline = text(project.tagline, lang, "");
+  const service = text(project.service, lang, lang === "en" ? "Project" : "Projet");
+  const description = text(project.description, lang, "");
+  const includes = list(project.includes, lang);
+  const why = list(project.why, lang);
+  const images = project.images || [];
 
   return (
     <div className="modal-backdrop" onClick={onClose}>
@@ -138,55 +149,57 @@ function ProjectModal({ project, lang, onClose, onNav }) {
             color={heroImage?.color || "#70675d"}
             label={heroImage?.label}
             src={heroImage?.url}
-            alt={text(heroImage?.alt, lang, text(project.name, lang, ""))}
+            alt={text(heroImage?.alt, lang, projectName)}
             style={{position:"absolute", inset:0, borderRadius:"24px 24px 0 0"}}
           />
           <div style={{position:"absolute", inset:0, background:"linear-gradient(to top, rgba(0,0,0,0.7), transparent 50%)", borderRadius:"24px 24px 0 0"}}></div>
           <div style={{position:"absolute", bottom:"40px", left:"40px", right:"40px", color:"var(--cream)"}}>
-            <span className="tag" style={{background:"var(--accent)", color:"var(--cream)"}}>{project.service[lang]}</span>
-            <h2 className="display-l" style={{marginTop:"16px", color:"var(--cream)"}}>{project.name[lang]}</h2>
-            <p style={{fontStyle:"italic", fontSize:"22px", marginTop:"12px", color:"rgba(244,237,226,0.85)"}}>{project.tagline[lang]}</p>
+            <span className="tag" style={{background:"var(--accent)", color:"var(--cream)"}}>{service}</span>
+            <h2 className="display-l" style={{marginTop:"16px", color:"var(--cream)"}}>{projectName}</h2>
+            {tagline && <p style={{fontStyle:"italic", fontSize:"22px", marginTop:"12px", color:"rgba(244,237,226,0.85)"}}>{tagline}</p>}
           </div>
         </div>
 
         <div style={{padding:"60px"}}>
           <div style={{display:"grid", gridTemplateColumns:"repeat(4, 1fr)", gap:"24px", marginBottom:"48px", paddingBottom:"48px", borderBottom:"1px solid var(--line)"}}>
-            <Meta label={lang==="en"?"Type":"Type"} value={project.type[lang]} />
-            <Meta label={lang==="en"?"Size":"Taille"} value={project.size[lang]} />
-            <Meta label={lang==="en"?"Duration":"Durée"} value={project.duration[lang]} />
-            <Meta label={lang==="en"?"Year":"Année"} value={project.year} />
+            <Meta label={lang==="en"?"Type":"Type"} value={text(project.type, lang)} />
+            <Meta label={lang==="en"?"Size":"Taille"} value={text(project.size, lang)} />
+            <Meta label={lang==="en"?"Duration":"Durée"} value={text(project.duration, lang)} />
+            <Meta label={lang==="en"?"Year":"Année"} value={project.year || "—"} />
           </div>
 
           <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:"60px"}}>
             <div>
-              <p className="lead">{project.description[lang]}</p>
+              {description && <p className="lead">{description}</p>}
 
-              <div style={{marginTop:"40px"}}>
+              {includes.length > 0 && <div style={{marginTop:"40px"}}>
                 <div className="text-mono text-muted" style={{marginBottom:"16px"}}>{lang==="en"?"WHAT'S INCLUDED":"INCLUS"}</div>
                 <ul style={{listStyle:"none", padding:0, margin:0}}>
-                  {project.includes[lang].map((it, i) => (
+                  {includes.map((it, i) => (
                     <li key={i} style={{padding:"12px 0", borderBottom:"1px solid var(--line)", display:"flex", gap:"16px"}}>
                       <span style={{color:"var(--accent)", fontFamily:"var(--mono)", fontSize:"12px"}}>0{i+1}</span>
                       <span>{it}</span>
                     </li>
                   ))}
                 </ul>
-              </div>
+              </div>}
             </div>
 
             <div>
-              <div className="text-mono text-muted" style={{marginBottom:"16px"}}>{lang==="en"?"WHY THIS MATTERS":"POURQUOI"}</div>
-              <ul style={{listStyle:"none", padding:0, margin:0}}>
-                {project.why[lang].map((it, i) => (
-                  <li key={i} style={{padding:"16px", background:"var(--cream-deep)", borderRadius:"8px", marginBottom:"12px", fontSize:"15px", lineHeight:1.5}}>
-                    {it}
-                  </li>
-                ))}
-              </ul>
+              {why.length > 0 && <>
+                <div className="text-mono text-muted" style={{marginBottom:"16px"}}>{lang==="en"?"WHY THIS MATTERS":"POURQUOI"}</div>
+                <ul style={{listStyle:"none", padding:0, margin:0}}>
+                  {why.map((it, i) => (
+                    <li key={i} style={{padding:"16px", background:"var(--cream-deep)", borderRadius:"8px", marginBottom:"12px", fontSize:"15px", lineHeight:1.5}}>
+                      {it}
+                    </li>
+                  ))}
+                </ul>
+              </>}
 
-              {project.images.length > 1 && (
+              {images.length > 1 && (
                 <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:"12px", marginTop:"32px"}}>
-                  {project.images.slice(1).map((img, i) => (
+                  {images.slice(1).map((img, i) => (
                     <ImagePlaceholder
                       key={i}
                       color={img.color}
@@ -230,4 +243,10 @@ function text(value, lang, fallback = "—") {
   if (!value) return fallback;
   if (typeof value === "string") return value;
   return value[lang] || value.en || value.fr || fallback;
+}
+
+function list(value, lang) {
+  if (!value) return [];
+  if (Array.isArray(value)) return value;
+  return value[lang] || value.en || value.fr || [];
 }
