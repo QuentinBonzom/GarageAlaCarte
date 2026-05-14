@@ -75,7 +75,7 @@ function Hero({ lang, onNav }) {
           <div className="hero__meta text-mono" style={{
             position:"absolute", top:"24px", left:"50%", transform:"translateX(-50%)",
             color:"rgba(255,248,240,0.7)"
-          }}>N° 2026 / 001</div>
+          }}></div>
 
           {/* Title */}
           <Reveal as="h1" className="hero__title" style={{
@@ -150,7 +150,7 @@ function VisualStrip({ lang }) {
       <div className="container">
         <div style={{display:"grid", gridTemplateColumns:"1fr 1.3fr", gap:"60px", alignItems:"center"}}>
           <Reveal>
-            <h2 className="display-m" style={{marginTop:"24px", maxWidth:"14ch"}}>
+            <h2 className="display-l" style={{marginTop:"24px", maxWidth:"14ch"}}>
               {C.title[lang].split(".").map((s, i, a) =>
                 s.trim() ? <span key={i} style={{display:"block"}}>{s.trim()}{i < a.length-1 && i < a.length-2 ? "." : "."}</span> : null
               )}
@@ -189,7 +189,6 @@ function BeforeAfterSection({ lang }) {
     <section id="before_after" className="section">
       <div className="container">
         <div style={{display:"flex", justifyContent:"flex-end", alignItems:"baseline", marginBottom:"60px"}}>
-          <div className="text-mono text-muted">02 / 08</div>
         </div>
         <Reveal as="h2" className="display-l" style={{maxWidth:"20ch", marginBottom:"56px"}}>
           {C.title[lang]}
@@ -369,32 +368,24 @@ function ServiceCard({ svc, lang, index, onNav }) {
     <>
       <div
         ref={ref}
-        className="reveal card hoverable"
-        style={{
-          transitionDelay: `${index * 0.08}s`,
-          minHeight:"460px", display:"flex", flexDirection:"column", justifyContent:"space-between",
-          cursor:"pointer"
-        }}
+        className="reveal card hoverable service-card"
+        style={{ transitionDelay: `${index * 0.08}s` }}
         onClick={() => setOpen(true)}
       >
-        <div>
-          <div style={{display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:"32px"}}>
-            <div style={{fontFamily:"var(--mono)", fontSize:"12px", letterSpacing:"0.15em", color:"var(--brass)"}}>{svc.num}</div>
-            {svc.badge && <span className="tag">{svc.badge[lang]}</span>}
-            {svc.tag && !svc.badge && <span className="tag">{svc.tag[lang]}</span>}
-          </div>
-          <h3 className="display-s">{svc.title[lang]}</h3>
-          <p style={{fontStyle:"italic", color:"var(--accent)", marginTop:"8px", fontSize:"15px"}}>{svc.sub[lang]}</p>
-          <p style={{color:"var(--muted)", marginTop:"24px", fontSize:"14px", lineHeight:1.6}}>{svc.description[lang]}</p>
+        <div className="service-card__head">
+          <div className="service-card__num">{svc.num}</div>
+          {svc.badge && <span className="tag">{svc.badge[lang]}</span>}
+          {svc.tag && !svc.badge && <span className="tag">{svc.tag[lang]}</span>}
         </div>
-        <div>
-          <div style={{borderTop:"1px solid var(--line)", paddingTop:"20px", marginTop:"32px", display:"flex", justifyContent:"space-between", alignItems:"baseline"}}>
-            <div>
-              <div className="text-mono text-muted" style={{marginBottom:"4px"}}>{lang==="en"?"Service fee":"Honoraires"}</div>
-              <div style={{fontFamily:"var(--serif)", fontSize:"24px", letterSpacing:"-0.02em"}}>{svc.price[lang]}</div>
-            </div>
-            <div style={{fontFamily:"var(--mono)", fontSize:"11px", color:"var(--muted)"}}>{lang==="en"?"View details":"Détails"} →</div>
+        <h3 className="service-card__title">{svc.title[lang]}</h3>
+        <p className="service-card__sub">{svc.sub[lang]}</p>
+        <p className="service-card__desc">{svc.description[lang]}</p>
+        <div className="service-card__foot">
+          <div>
+            <div className="text-mono text-muted service-card__fee-label">{lang === "en" ? "Service fee" : "Honoraires"}</div>
+            <div className="service-card__price">{svc.price[lang]}</div>
           </div>
+          <div className="service-card__cta text-mono">{lang === "en" ? "View details" : "Détails"} →</div>
         </div>
       </div>
       {open && <ServiceModal svc={svc} lang={lang} onClose={()=>setOpen(false)} onNav={onNav} />}
@@ -589,7 +580,7 @@ function FinalCTA({ lang, onNav }) {
   return (
     <section id="final_cta" className="section" style={{paddingTop:"160px", paddingBottom:"160px"}}>
       <div className="container" style={{textAlign:"center"}}>
-        <Reveal as="h2" className="display-xl" style={{maxWidth:"18ch", margin:"0 auto"}}>{C.title[lang]}</Reveal>
+        <Reveal as="h2" className="display-l" style={{maxWidth:"22ch", margin:"0 auto"}}>{C.title[lang]}</Reveal>
         <Reveal delay={0.15}>
           <p className="lead" style={{margin:"32px auto 0", textAlign:"center"}}>{C.sub[lang]}</p>
         </Reveal>

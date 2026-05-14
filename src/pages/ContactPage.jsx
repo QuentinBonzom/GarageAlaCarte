@@ -187,22 +187,39 @@ export function ContactPage({ lang, onNav }) {
         <div className="container">
           <div className="contact-team-section__head">
             <div className="eyebrow">{lang === "en" ? "The team" : "L'équipe"}</div>
-            <Reveal as="h2" className="display-m contact-team-section__title">
+            <Reveal as="h2" className="display-l contact-team-section__title">
               {lang === "en" ? "Real people behind every project." : "De vraies personnes derrière chaque projet."}
             </Reveal>
           </div>
           <div className="contact-team-grid">
-            {team.map((m) => {
+            {team.map((m, i) => {
               const initial = (m.name || "?").trim().charAt(0).toUpperCase();
               return (
                 <Reveal key={m.name}>
-                  <article className="contact-team-card">
-                    <div className="contact-team-card__avatar" aria-hidden>{initial}</div>
+                  <article className={`contact-team-card contact-team-card--v${(i % 4) + 1}`}>
+                    <div className="contact-team-card__top">
+                      <span className="contact-team-card__role-chip">{m.role[lang]}</span>
+                      <div className="contact-team-card__avatar" aria-hidden>{initial}</div>
+                    </div>
                     <div className="contact-team-card__name">{m.name}</div>
-                    <div className="contact-team-card__role text-mono text-muted">{m.role[lang]}</div>
                     <div className="contact-team-card__contacts">
-                      {m.email && <a className="contact-team-card__email" href={`mailto:${m.email}`}>{m.email}</a>}
-                      {m.phone && <span className="contact-team-card__phone">{m.phone}</span>}
+                      {m.email && (
+                        <a className="contact-team-card__row" href={`mailto:${m.email}`}>
+                          <svg className="contact-team-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                            <rect x="3" y="5" width="18" height="14" rx="2"/>
+                            <path d="m3 7 9 6 9-6"/>
+                          </svg>
+                          <span>{m.email}</span>
+                        </a>
+                      )}
+                      {m.phone && (
+                        <a className="contact-team-card__row contact-team-card__row--muted" href={`tel:${m.phone.replace(/\s+/g, "")}`}>
+                          <svg className="contact-team-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92Z"/>
+                          </svg>
+                          <span>{m.phone}</span>
+                        </a>
+                      )}
                     </div>
                   </article>
                 </Reveal>
