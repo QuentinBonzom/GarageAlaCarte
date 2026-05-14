@@ -12,7 +12,6 @@ export function HomePage({ lang, onNav }) {
       <BeforeAfterSection lang={lang} />
       <ServicesSection lang={lang} onNav={onNav} />
       <WhySection lang={lang} />
-      <TeamSection lang={lang} />
       <AudienceSection lang={lang} />
       <ProcessSection lang={lang} />
       <FinalCTA lang={lang} onNav={onNav} />
@@ -88,12 +87,12 @@ function Hero({ lang, onNav }) {
             maxWidth:"20ch",
             textShadow:"0 2px 24px rgba(0,0,0,0.35)"
           }}>
-            {C.title[lang].map((line, i) => {
-              const words = line.split(" ");
+            {(Array.isArray(C.title?.[lang]) ? C.title[lang] : String(C.title?.[lang] || "").split("\n")).map((line, i) => {
+              const words = String(line).split(" ");
               return (
                 <span key={i} style={{display:"block"}}>
                   {words.map((w, j) => {
-                    const isItalic = w === C.italic_word[lang];
+                    const isItalic = w === C.italic_word?.[lang];
                     return isItalic
                       ? <em key={j} className="italic" style={{color:"var(--accent)"}}>{w}{j < words.length-1 ? " " : ""}</em>
                       : <React.Fragment key={j}>{w}{j < words.length-1 ? " " : ""}</React.Fragment>;
@@ -404,6 +403,8 @@ function ServiceCard({ svc, lang, index, onNav }) {
 }
 
 function ServiceModal({ svc, lang, onClose, onNav }) {
+  const includes = svc.includes?.[lang] ?? [];
+  const details = svc.details ?? svc.detail_sections ?? [];
   return (
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal" onClick={(e)=>e.stopPropagation()} style={{padding:"60px"}}>
@@ -415,22 +416,48 @@ function ServiceModal({ svc, lang, onClose, onNav }) {
             <p style={{fontStyle:"italic", color:"var(--accent)", fontSize:"20px", marginTop:"12px"}}>{svc.sub[lang]}</p>
             <p className="lead" style={{marginTop:"24px"}}>{svc.description[lang]}</p>
 
-            <div style={{marginTop:"40px"}}>
+            {includes.length > 0 && <div style={{marginTop:"40px"}}>
               <div className="text-mono text-muted" style={{marginBottom:"16px"}}>{lang==="en"?"WHAT YOU GET":"CE QUE VOUS RECEVEZ"}</div>
               <ul style={{listStyle:"none", padding:0, margin:0}}>
-                {svc.includes[lang].map((it, i) => (
+                {includes.map((it, i) => (
                   <li key={i} style={{padding:"12px 0", borderBottom:"1px solid var(--line)", display:"flex", gap:"16px"}}>
                     <span style={{color:"var(--accent)", fontFamily:"var(--mono)", fontSize:"12px"}}>0{i+1}</span>
                     <span>{it}</span>
                   </li>
                 ))}
               </ul>
-            </div>
+            </div>}
 
             {svc.not_included && (
               <p style={{marginTop:"24px", padding:"16px", background:"var(--cream-deep)", borderRadius:"8px", fontSize:"13px", color:"var(--muted)"}}>
                 <strong>{lang==="en"?"Not included: ":"Non inclus : "}</strong>{svc.not_included[lang]}
               </p>
+            )}
+
+            {details.length > 0 && (
+              <div style={{marginTop:"36px", display:"grid", gap:"18px"}}>
+                {details.map((section, sectionIndex) => {
+                  const title = section.title?.[lang] || section.title?.en || "";
+                  const body = section.body?.[lang] || section.body?.en || "";
+                  const items = section.items?.[lang] || section.items?.en || [];
+                  return (
+                    <div key={`${title}-${sectionIndex}`} style={{paddingTop:"18px", borderTop:"1px solid var(--line)"}}>
+                      {title && <div className="text-mono text-muted" style={{marginBottom:"10px"}}>{title}</div>}
+                      {body && <p style={{color:"var(--ink-soft)", fontSize:"14px", lineHeight:1.65}}>{body}</p>}
+                      {items.length > 0 && (
+                        <ul style={{listStyle:"none", padding:0, margin:body ? "12px 0 0" : 0, display:"grid", gap:"8px"}}>
+                          {items.map((item, itemIndex) => (
+                            <li key={itemIndex} style={{display:"flex", gap:"10px", color:"var(--ink-soft)", fontSize:"14px", lineHeight:1.5}}>
+                              <span style={{color:"var(--accent)", lineHeight:1.4}}>•</span>
+                              <span>{item}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             )}
           </div>
           <div>
@@ -480,38 +507,6 @@ function WhySection({ lang }) {
                 <Counter to={s.num} suffix={s.suffix||""} />
               </div>
               <div className="text-mono" style={{marginTop:"16px", color:"var(--muted)"}}>{s.label[lang]}</div>
-            </Reveal>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ============================ TEAM ============================
-function TeamSection({ lang }) {
-  const C = CONTENT.team;
-  return (
-    <section id="team_intro" className="section" style={{background:"var(--ink)", color:"var(--cream)"}}>
-      <div className="container">
-        <div style={{display:"grid", gridTemplateColumns:"1fr 1.2fr", gap:"60px", marginBottom:"60px"}}>
-          <Reveal>
-            <h2 className="display-l" style={{marginTop:"24px"}}>{C.title[lang]}</h2>
-          </Reveal>
-          <Reveal delay={0.15}>
-            <p className="lead" style={{color:"rgba(244,237,226,0.7)", marginTop:"40px"}}>{C.sub[lang]}</p>
-          </Reveal>
-        </div>
-        <div style={{display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(260px, 1fr))", gap:"24px"}}>
-          {C.members.map((m, i) => (
-            <Reveal key={m.name} delay={i * 0.08}>
-              <div style={{padding:"32px", border:"1px solid rgba(244,237,226,0.15)", borderRadius:"16px", height:"100%", background:"rgba(255,255,255,0.02)", transition:"background 0.3s"}}
-                   className="hoverable">
-                <ImagePlaceholder color={["#5a4334", "#7a6450", "#a89378", "#3a2c22"][i % 4]} style={{height:"320px", marginBottom:"24px", borderRadius:"12px"}} label={`PORTRAIT · ${m.name.toUpperCase()}`} />
-                <div style={{fontFamily:"var(--serif)", fontSize:"32px", letterSpacing:"-0.02em"}}>{m.name}</div>
-                <div className="text-mono" style={{color:"var(--brass-soft)", marginTop:"8px"}}>{m.role[lang]}</div>
-                <p style={{color:"rgba(244,237,226,0.6)", fontSize:"13px", marginTop:"16px", lineHeight:1.6}}>{m.bio[lang]}</p>
-              </div>
             </Reveal>
           ))}
         </div>

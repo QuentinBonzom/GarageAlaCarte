@@ -29,109 +29,185 @@ export function ContactPage({ lang, onNav }) {
 
   const team = CONTENT.team.members;
 
+  const promises = [
+    { num: "48h", label: lang === "en" ? "average reply time" : "délai de réponse moyen" },
+    { num: "100%", label: lang === "en" ? "free estimate" : "devis gratuit" },
+    { num: "0", label: lang === "en" ? "obligation, ever" : "engagement, jamais" }
+  ];
+
   return (
-    <div className="page">
-      <section id="contact_page" className="section" style={{paddingTop:"60px", paddingBottom:"40px"}}>
+    <div className="page contact-page">
+      {/* ── Hero ─────────────────────────────────── */}
+      <section id="contact_page" className="section contact-hero">
         <div className="container">
-          <div style={{display:"flex", justifyContent:"space-between", alignItems:"baseline", marginBottom:"40px"}}>
+          <div className="contact-hero__top">
             <div className="eyebrow">{C.eyebrow[lang]}</div>
-            <div className="text-mono text-muted">{lang==="en"?"Reply within 48h":"Réponse sous 48h"}</div>
+            <div className="text-mono text-muted">{lang === "en" ? "Reply within 48h" : "Réponse sous 48h"}</div>
           </div>
-          <Reveal as="h1" className="display-xl" style={{maxWidth:"14ch"}}>{C.title[lang]}</Reveal>
-          <Reveal delay={0.15}>
-            <p className="lead" style={{marginTop:"32px"}}>{C.sub[lang]}</p>
+          <Reveal as="h1" className="display-l contact-hero__title">{C.title[lang]}</Reveal>
+          <Reveal delay={0.1}>
+            <p className="lead contact-hero__lead">{C.sub[lang]}</p>
+          </Reveal>
+          <Reveal delay={0.18}>
+            <ul className="contact-hero__promises" aria-label="Our promises">
+              {promises.map((p) => (
+                <li key={p.label}>
+                  <span className="contact-hero__promise-num">{p.num}</span>
+                  <span className="contact-hero__promise-label">{p.label}</span>
+                </li>
+              ))}
+            </ul>
           </Reveal>
         </div>
       </section>
 
-      <section className="section" style={{paddingTop:"40px"}}>
+      {/* ── Form + Direct line ───────────────────── */}
+      <section className="section contact-main">
         <div className="container">
-          <div className="contact-grid" style={{display:"grid", gridTemplateColumns:"1.4fr 1fr", gap:"60px", alignItems:"flex-start"}}>
+          <div className="contact-grid">
             {/* FORM */}
             <Reveal>
-              <div className="contact-form-card" style={{background:"var(--paper)", borderRadius:"24px", padding:"60px", border:"1px solid var(--line)"}}>
+              <div className="contact-form-card">
+                <div className="contact-form-card__head">
+                  <div className="text-mono text-muted">{lang === "en" ? "01 · Project brief" : "01 · Votre projet"}</div>
+                  <h2 className="display-s" style={{marginTop: "8px"}}>{lang === "en" ? "Tell us about your space." : "Parlez-nous de votre espace."}</h2>
+                </div>
+
                 {sent ? (
-                  <div style={{textAlign:"center", padding:"60px 0"}}>
-                    <div style={{fontFamily:"var(--serif)", fontSize:"80px"}}>✓</div>
-                    <h3 className="display-s" style={{marginTop:"16px"}}>{lang==="en"?"Message received.":"Message reçu."}</h3>
-                    <p className="lead" style={{marginTop:"16px", margin:"16px auto 0"}}>{lang==="en"?"We'll come back to you within 48 hours.":"Nous revenons vers vous sous 48h."}</p>
-                    <button className="btn" style={{marginTop:"32px"}} onClick={()=>setSent(false)}>{lang==="en"?"Send another":"Envoyer un autre"}</button>
+                  <div className="contact-form-card__sent">
+                    <div className="contact-form-card__check" aria-hidden>✓</div>
+                    <h3 className="display-s">{lang === "en" ? "Message received." : "Message reçu."}</h3>
+                    <p className="lead">{lang === "en" ? "We'll come back to you within 48 hours." : "Nous revenons vers vous sous 48h."}</p>
+                    <button className="btn" onClick={() => setSent(false)}>
+                      {lang === "en" ? "Send another" : "Envoyer un autre"} <span className="arrow">↗</span>
+                    </button>
                   </div>
                 ) : (
-                  <form onSubmit={submit} style={{display:"flex", flexDirection:"column", gap:"32px"}}>
-                    <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:"32px"}}>
+                  <form onSubmit={submit} className="contact-form">
+                    <div className="contact-form__row">
                       <div className="field">
                         <label>{C.form.name[lang]}</label>
-                        <input value={form.name} onChange={(e)=>setForm({...form, name:e.target.value})} required />
+                        <input value={form.name} onChange={(e) => setForm({...form, name: e.target.value})} required />
                       </div>
                       <div className="field">
                         <label>{C.form.email[lang]}</label>
-                        <input type="email" value={form.email} onChange={(e)=>setForm({...form, email:e.target.value})} required />
+                        <input type="email" value={form.email} onChange={(e) => setForm({...form, email: e.target.value})} required />
                       </div>
                     </div>
-                    <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:"32px"}}>
+                    <div className="contact-form__row">
                       <div className="field">
                         <label>{C.form.phone[lang]}</label>
-                        <input value={form.phone} onChange={(e)=>setForm({...form, phone:e.target.value})} />
+                        <input value={form.phone} onChange={(e) => setForm({...form, phone: e.target.value})} />
                       </div>
                       <div className="field">
                         <label>{C.form.service[lang]}</label>
-                        <select value={form.service} onChange={(e)=>setForm({...form, service:e.target.value})}>
+                        <select value={form.service} onChange={(e) => setForm({...form, service: e.target.value})}>
                           <option value="blueprint">Design Blueprint</option>
                           <option value="delivery">Design & Setup</option>
                           <option value="transform">Full Transformation</option>
                           <option value="smart">Smart Integration</option>
-                          <option value="not-sure">{lang==="en"?"Not sure yet":"Pas encore sûr"}</option>
+                          <option value="not-sure">{lang === "en" ? "Not sure yet" : "Pas encore sûr"}</option>
                         </select>
                       </div>
                     </div>
                     <div className="field">
                       <label>{C.form.message[lang]}</label>
-                      <textarea value={form.message} onChange={(e)=>setForm({...form, message:e.target.value})} required />
+                      <textarea
+                        value={form.message}
+                        onChange={(e) => setForm({...form, message: e.target.value})}
+                        placeholder={lang === "en" ? "Size, goals, timeline, anything we should know…" : "Surface, objectifs, calendrier, tout ce qui peut nous aider…"}
+                        required
+                      />
                     </div>
                     <label className="checkbox">
-                      <input type="checkbox" checked={form.consent} onChange={(e)=>setForm({...form, consent:e.target.checked})} required />
+                      <input type="checkbox" checked={form.consent} onChange={(e) => setForm({...form, consent: e.target.checked})} required />
                       <span>{C.form.consent[lang]}{" "}
-                        <a onClick={(e)=>{e.preventDefault(); onNav("conditions");}} style={{textDecoration:"underline", cursor:"pointer"}}>{C.form.consent_link[lang]}</a>
-                        .
+                        <a onClick={(e) => { e.preventDefault(); onNav("conditions"); }} style={{textDecoration: "underline", cursor: "pointer"}}>{C.form.consent_link[lang]}</a>.
                       </span>
                     </label>
-                    <button type="submit" className="btn" style={{alignSelf:"flex-start"}} disabled={!form.consent || submitting}>
-                      {submitting ? (lang==="en"?"Sending...":"Envoi...") : C.form.submit[lang]} <span className="arrow">↗</span>
-                    </button>
-                    {error && <div style={{color:"var(--accent-deep)", fontSize:"14px"}}>{error}</div>}
+                    <div className="contact-form__submit">
+                      <button type="submit" className="btn" disabled={!form.consent || submitting}>
+                        {submitting ? (lang === "en" ? "Sending..." : "Envoi...") : C.form.submit[lang]} <span className="arrow">↗</span>
+                      </button>
+                      <span className="contact-form__hint text-mono text-muted">
+                        {lang === "en" ? "We reply in person, not from a bot." : "Une vraie personne vous répond."}
+                      </span>
+                    </div>
+                    {error && <div className="contact-form__error">{error}</div>}
                   </form>
                 )}
               </div>
             </Reveal>
 
-            {/* INFO */}
+            {/* DIRECT LINE + Why us */}
             <Reveal delay={0.15}>
-              <div className="contact-info-card" style={{background:"var(--ink)", color:"var(--cream)", borderRadius:"24px", padding:"40px"}}>
-                <div className="text-mono" style={{color:"var(--brass-soft)"}}>{C.info_title[lang]}</div>
-                <a className="contact-info-card__contact" href={`mailto:${C.main_email}`} style={{display:"block", fontFamily:"var(--serif)", fontSize:"28px", marginTop:"16px", letterSpacing:"-0.02em", wordBreak:"break-word"}}>{C.main_email}</a>
-                <a className="contact-info-card__contact" href={`tel:${C.main_phone}`} style={{display:"block", fontFamily:"var(--serif)", fontSize:"28px", marginTop:"4px", letterSpacing:"-0.02em", color:"var(--brass-soft)"}}>{C.main_phone}</a>
-                <p style={{color:"rgba(244,237,226,0.6)", fontSize:"14px", marginTop:"24px", paddingTop:"24px", borderTop:"1px solid rgba(244,237,226,0.15)"}}>{C.address[lang]}</p>
-              </div>
-
-              <div style={{marginTop:"24px"}}>
-                <div className="text-mono text-muted" style={{marginBottom:"20px"}}>{lang==="en"?"THE TEAM":"L'ÉQUIPE"}</div>
-                <div className="contact-team-list">
-                  {team.map(m => (
-                    <div key={m.name} className="contact-team-card">
-                      <div className="contact-team-card__head">
-                        <div className="contact-team-card__name">{m.name}</div>
-                        <div className="contact-team-card__role text-mono text-muted">{m.role[lang]}</div>
-                      </div>
-                      <div className="contact-team-card__contacts">
-                        {m.email && <a className="contact-team-card__email" href={`mailto:${m.email}`}>{m.email}</a>}
-                        {m.phone && <span className="contact-team-card__phone">{m.phone}</span>}
-                      </div>
-                    </div>
-                  ))}
+              <aside className="contact-sidebar">
+                <div className="contact-info-card">
+                  <div className="contact-info-card__eyebrow text-mono">{C.info_title[lang]}</div>
+                  <a className="contact-info-card__contact" href={`mailto:${C.main_email}`}>{C.main_email}</a>
+                  <a className="contact-info-card__contact contact-info-card__contact--brass" href={`tel:${C.main_phone}`}>{C.main_phone}</a>
+                  <div className="contact-info-card__divider"></div>
+                  <p className="contact-info-card__address">{C.address[lang]}</p>
                 </div>
-              </div>
+
+                <div className="contact-trust-card">
+                  <div className="text-mono text-muted">{lang === "en" ? "WHAT TO EXPECT" : "À QUOI S'ATTENDRE"}</div>
+                  <ol className="contact-trust-card__steps">
+                    <li>
+                      <span className="contact-trust-card__num">01</span>
+                      <div>
+                        <strong>{lang === "en" ? "We listen first." : "On vous écoute d'abord."}</strong>
+                        <p>{lang === "en" ? "A short call to understand your space, needs, and budget." : "Un échange rapide pour comprendre votre espace, vos besoins et votre budget."}</p>
+                      </div>
+                    </li>
+                    <li>
+                      <span className="contact-trust-card__num">02</span>
+                      <div>
+                        <strong>{lang === "en" ? "Free, tailored estimate." : "Devis gratuit et sur-mesure."}</strong>
+                        <p>{lang === "en" ? "Clear scope and pricing — no surprises, no pressure." : "Périmètre et prix clairs — pas de surprise, pas de pression."}</p>
+                      </div>
+                    </li>
+                    <li>
+                      <span className="contact-trust-card__num">03</span>
+                      <div>
+                        <strong>{lang === "en" ? "You choose what's next." : "Vous décidez de la suite."}</strong>
+                        <p>{lang === "en" ? "Design only, full transformation, or anywhere between." : "Plan seul, transformation complète, ou n'importe quoi entre les deux."}</p>
+                      </div>
+                    </li>
+                  </ol>
+                </div>
+              </aside>
             </Reveal>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Team ─────────────────────────────────── */}
+      <section className="section contact-team-section">
+        <div className="container">
+          <div className="contact-team-section__head">
+            <div className="eyebrow">{lang === "en" ? "The team" : "L'équipe"}</div>
+            <Reveal as="h2" className="display-m contact-team-section__title">
+              {lang === "en" ? "Real people behind every project." : "De vraies personnes derrière chaque projet."}
+            </Reveal>
+          </div>
+          <div className="contact-team-grid">
+            {team.map((m) => {
+              const initial = (m.name || "?").trim().charAt(0).toUpperCase();
+              return (
+                <Reveal key={m.name}>
+                  <article className="contact-team-card">
+                    <div className="contact-team-card__avatar" aria-hidden>{initial}</div>
+                    <div className="contact-team-card__name">{m.name}</div>
+                    <div className="contact-team-card__role text-mono text-muted">{m.role[lang]}</div>
+                    <div className="contact-team-card__contacts">
+                      {m.email && <a className="contact-team-card__email" href={`mailto:${m.email}`}>{m.email}</a>}
+                      {m.phone && <span className="contact-team-card__phone">{m.phone}</span>}
+                    </div>
+                  </article>
+                </Reveal>
+              );
+            })}
           </div>
         </div>
       </section>

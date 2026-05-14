@@ -83,6 +83,7 @@ create table if not exists public.services (
   not_included jsonb,
   deposit_schedule jsonb,
   onsite_label jsonb,
+  detail_sections jsonb not null default '[]'::jsonb,
   display_order integer not null default 0,
   is_active boolean not null default true,
   updated_at timestamptz not null default now(),
@@ -316,12 +317,14 @@ begin
     alter table public.services add column if not exists not_included jsonb;
     alter table public.services add column if not exists deposit_schedule jsonb;
     alter table public.services add column if not exists onsite_label jsonb;
+    alter table public.services add column if not exists detail_sections jsonb not null default '[]'::jsonb;
 
     update public.services
     set service_number = coalesce(service_number, lpad(coalesce(display_order, 0)::text, 2, '0')),
         subtitle = coalesce(subtitle, jsonb_build_object('en', '', 'fr', '')),
         price_label = coalesce(price_label, jsonb_build_object('en', '', 'fr', '')),
-        includes = coalesce(includes, '{"en": [], "fr": []}'::jsonb);
+        includes = coalesce(includes, '{"en": [], "fr": []}'::jsonb),
+        detail_sections = coalesce(detail_sections, '[]'::jsonb);
 
     if exists (
       select 1 from information_schema.columns

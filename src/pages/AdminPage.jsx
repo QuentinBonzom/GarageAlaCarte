@@ -257,6 +257,7 @@ function buildNewServicePayload(existing = []) {
     description: { en: "", fr: "" },
     price_label: { en: "", fr: "" },
     includes: { en: [], fr: [] },
+    detail_sections: [],
     display_order: maxOrder + 10,
     is_active: true,
   };
@@ -275,6 +276,7 @@ const SERVICE_FIELDS = [
   { key: "not_included", label: "Non inclus", fallback: { en: "", fr: "" }, optionalLocalized: true },
   { key: "deposit_schedule", label: "Paiement", fallback: { en: "", fr: "" }, optionalLocalized: true },
   { key: "onsite_label", label: "Option sur site", fallback: { en: "", fr: "" }, optionalLocalized: true },
+  { key: "detail_sections", label: "Détails popup", fallback: [] },
   { key: "display_order", label: "Ordre", type: "number" },
   { key: "is_active", label: "Visible", type: "checkbox" },
 ];

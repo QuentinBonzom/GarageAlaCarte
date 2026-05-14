@@ -151,7 +151,9 @@ export function Footer({ onNav, lang }) {
 
       <div style={{display:"flex", justifyContent:"space-between", fontFamily:"var(--mono)", fontSize:"11px", letterSpacing:"0.1em", color:"rgba(244,237,226,0.4)", textTransform:"uppercase"}}>
         <span>© 2026 Garage à la Carte. All rights reserved.</span>
-        <span>v 1.0 — Orlando, FL</span>
+        <a href="https://webcodestudio.fr" target="_blank" rel="noreferrer noopener" style={{color:"rgba(244,237,226,0.55)"}}>
+          Designed by WebCode Studio
+        </a>
       </div>
     </footer>
   );

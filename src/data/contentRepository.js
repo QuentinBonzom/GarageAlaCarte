@@ -76,6 +76,7 @@ function mergeContactChannels(nextContent, channels) {
 }
 
 function mapServices(services, serviceTeams) {
+  const fallbackServicesBySlug = Object.fromEntries(CONTENT.services.items.map((service) => [service.id, service]));
   const teamsByServiceId = serviceTeams.reduce((acc, row) => {
     const serviceId = row.service_id;
     const name = row.team_members?.name;
@@ -85,23 +86,31 @@ function mapServices(services, serviceTeams) {
     return acc;
   }, {});
 
-  return services.sort(byOrder).map((service) => ({
-    id: service.slug,
-    num: service.service_number,
-    title: service.title,
-    sub: service.subtitle,
-    description: service.description,
-    price: service.price_label,
-    badge: service.badge_label,
-    tag: service.tag_label,
-    led_by: (teamsByServiceId[service.id] ?? [])
-      .sort((a, b) => a.order - b.order)
-      .map((member) => member.name),
-    includes: service.includes,
-    not_included: service.not_included,
-    deposit: service.deposit_schedule,
-    on_site: service.onsite_label,
-  }));
+  return services.sort(byOrder).map((service) => {
+    const fallback = fallbackServicesBySlug[service.slug] ?? {};
+    const detailSections = Array.isArray(service.detail_sections) && service.detail_sections.length
+      ? service.detail_sections
+      : fallback.details ?? [];
+
+    return {
+      id: service.slug,
+      num: service.service_number,
+      title: service.title,
+      sub: service.subtitle,
+      description: service.description,
+      price: service.price_label,
+      badge: service.badge_label,
+      tag: service.tag_label,
+      led_by: (teamsByServiceId[service.id] ?? [])
+        .sort((a, b) => a.order - b.order)
+        .map((member) => member.name),
+      includes: service.includes,
+      not_included: service.not_included,
+      deposit: service.deposit_schedule,
+      on_site: service.onsite_label,
+      details: detailSections,
+    };
+  });
 }
 
 function mapTeamMembers(members) {

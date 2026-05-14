@@ -78,6 +78,7 @@ export function App() {
 
   useEffect(() => {
     applyPageSeo({ route, lang });
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
   }, [route, lang, contentVersion]);
 
   useEffect(() => {
@@ -115,7 +116,6 @@ export function App() {
     if (window.location.pathname !== nextPath || window.location.hash) {
       window.history.pushState({}, "", nextPath);
     }
-    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const closePopup = () => {
