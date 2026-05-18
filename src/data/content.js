@@ -16,18 +16,21 @@ export const CONTENT = {
   },
 
   hero: {
-    eyebrow: { en: "Orlando, FL · Est. 2024", fr: "Orlando, FL · Depuis 2024" },
-    title: {
-      en: ["Transform your garage", "into a space that", "works for your life."],
-      fr: ["Transformez votre garage", "en un espace pensé", "pour votre vie."]
+    eyebrow: {
+      en: "Orlando, FL · Custom garage transformations",
+      fr: "Orlando, FL · Transformations de garage sur-mesure"
     },
-    italic_word: { en: "works", fr: "pensé" },
+    title: {
+      en: ["Your garage,", "reimagined."],
+      fr: ["Votre garage,", "réinventé."]
+    },
+    italic_word: { en: "reimagined.", fr: "réinventé." },
     sub: {
-      en: "Custom garage transformations for homeowners, real-estate professionals, and developers — from a clear plan to full execution.",
-      fr: "Transformations de garage sur-mesure pour propriétaires, agents immobiliers et promoteurs — du plan détaillé à la réalisation complète."
+      en: "Custom garage transformations in Orlando.",
+      fr: "Transformations de garage sur-mesure à Orlando."
     },
     primary_cta: { en: "Get my free estimate", fr: "Obtenir mon devis gratuit" },
-    secondary_cta: { en: "Schedule a call", fr: "Planifier un appel" }
+    secondary_cta: { en: "See our work", fr: "Voir nos réalisations" }
   },
 
   hero_caption: {
@@ -441,16 +444,99 @@ export const CONTENT = {
     eyebrow: { en: "Section 07 · Process", fr: "Section 07 · Processus" },
     title: { en: "How it works.", fr: "Comment ça marche." },
     steps: [
-      { num: "01", title: { en: "Tell us your vision", fr: "Dites-nous votre vision" }, text: { en: "We learn about your garage, needs, style, and goals.", fr: "On découvre votre garage, vos besoins, votre style." } },
-      { num: "02", title: { en: "Choose your level", fr: "Choisissez votre formule" }, text: { en: "Design only, design + setup, full transformation, or smart integration.", fr: "Plan seul, design + setup, transformation complète ou intégration smart." } },
-      { num: "03", title: { en: "Plan before spending", fr: "Planifiez avant de dépenser" }, text: { en: "We define layout, visuals, materials, and execution steps.", fr: "On définit plan, visuels, matériaux et étapes." } },
-      { num: "04", title: { en: "Bring it to life", fr: "Donnez-lui vie" }, text: { en: "Build it yourself, request support, or let us manage everything.", fr: "Construisez vous-même, demandez du support ou laissez-nous tout gérer." } }
+      { num: "01", title: { en: "Tell us your vision", fr: "Dites-nous votre vision" }, text: { en: "Free 30-minute consultation.", fr: "Consultation gratuite de 30 minutes." } },
+      { num: "02", title: { en: "Choose your level", fr: "Choisissez votre formule" }, text: { en: "Four à la carte tiers.", fr: "Quatre formules à la carte." } },
+      { num: "03", title: { en: "Plan before spending", fr: "Planifiez avant de dépenser" }, text: { en: "See it in 3D first.", fr: "Voyez votre garage en 3D." } },
+      { num: "04", title: { en: "Bring it to life", fr: "Donnez-lui vie" }, text: { en: "DIY, supported, or turnkey.", fr: "Vous-même, accompagné ou clé en main." } }
     ]
   },
 
   final_cta: {
-    title: { en: "Ready to transform your garage?", fr: "Prêt à transformer votre garage ?" },
-    sub: { en: "Start with a free estimate and see what your garage could become.", fr: "Commencez par un devis gratuit et découvrez ce que votre garage peut devenir." }
+    title: { en: "Ready to reimagine your garage?", fr: "Prêt à réinventer votre garage ?" },
+    sub: { en: "Tell us about your space. We'll send a free estimate within 48 hours.", fr: "Parlez-nous de votre espace. Nous envoyons un devis gratuit sous 48h." }
+  },
+
+  // ===== USE CASES (Landing V2) — 4 cas d'usage visuels =====
+  use_cases: {
+    eyebrow: { en: "Transformations", fr: "Transformations" },
+    title: { en: "Pick your room.", fr: "Choisissez votre pièce." },
+    sub: { en: "Four ways homeowners reclaim their garage.", fr: "Quatre façons de récupérer son garage." },
+    items: [
+      {
+        image: "/usecase-gym.svg",
+        name: { en: "Home Gym", fr: "Salle de sport" },
+        tagline: { en: "Train at home, every day.", fr: "S'entraîner chez soi, tous les jours." },
+        bullets: {
+          en: ["Mirrored wall", "Rubber flooring", "Smart storage"],
+          fr: ["Mur miroir", "Sol caoutchouc", "Rangements smart"]
+        }
+      },
+      {
+        image: "/usecase-lounge.svg",
+        name: { en: "Lounge & Bar", fr: "Lounge & Bar" },
+        tagline: { en: "The room you actually use on Fridays.", fr: "La pièce que vous utilisez vraiment le vendredi." },
+        bullets: {
+          en: ["Wet bar", "Custom cabinetry", "Built-in screen"],
+          fr: ["Bar avec point d'eau", "Mobilier sur-mesure", "Écran encastré"]
+        }
+      },
+      {
+        image: "/usecase-office.svg",
+        name: { en: "Home Office", fr: "Bureau" },
+        tagline: { en: "Quiet work, just outside the house.", fr: "Travailler au calme, juste à côté." },
+        bullets: {
+          en: ["Soundproofing", "Climate control", "Built-in desk"],
+          fr: ["Isolation phonique", "Climatisation", "Bureau intégré"]
+        }
+      },
+      {
+        image: "/usecase-storage.svg",
+        name: { en: "Smart Storage", fr: "Rangement Smart" },
+        tagline: { en: "Everything in its place, finally.", fr: "Tout à sa place, enfin." },
+        bullets: {
+          en: ["Floor-to-ceiling cabinetry", "EV charging", "Sport gear racks"],
+          fr: ["Rangements pleine hauteur", "Recharge VE", "Racks sport"]
+        }
+      }
+    ]
+  },
+
+  // ===== TESTIMONIALS (Landing V2) =====
+  testimonials_v2: {
+    eyebrow: { en: "Real homeowners, real stories", fr: "De vrais clients, de vraies histoires" },
+    title: {
+      en: "Where Orlando homeowners fall in love with their garage.",
+      fr: "Là où les propriétaires d'Orlando tombent amoureux de leur garage."
+    },
+    items: [
+      {
+        quote: {
+          en: "We turned an unused two-car garage into our favorite room. The 3D plan made every decision easy.",
+          fr: "Nous avons transformé un garage 2 voitures inutilisé en notre pièce préférée. Le plan 3D a rendu chaque décision simple."
+        },
+        name: "Sarah & Michael K.",
+        city: "Winter Park, FL",
+        rating: 5
+      },
+      {
+        quote: {
+          en: "Clear pricing, beautiful renders, flawless execution. Worth every penny.",
+          fr: "Prix clairs, rendus magnifiques, exécution irréprochable. Chaque dollar bien dépensé."
+        },
+        name: "James R.",
+        city: "Lake Nona, FL",
+        rating: 5
+      },
+      {
+        quote: {
+          en: "They listened first, then designed. The lounge is now where we spend every Friday night.",
+          fr: "Ils ont d'abord écouté, puis dessiné. Le lounge est devenu notre QG du vendredi soir."
+        },
+        name: "Priya S.",
+        city: "Windermere, FL",
+        rating: 5
+      }
+    ]
   },
 
   // ===== RÉALISATIONS =====
@@ -458,8 +544,8 @@ export const CONTENT = {
     eyebrow: { en: "Selected work", fr: "Sélection" },
     title: { en: "Our garages, redesigned.", fr: "Nos garages, repensés." },
     sub: {
-      en: "Each space is a fully customised transformation. Click any project for the full story.",
-      fr: "Chaque espace est une transformation sur-mesure. Cliquez pour lire l'histoire complète."
+      en: "Custom transformations. Tap any project for the full story.",
+      fr: "Transformations sur-mesure. Cliquez pour l'histoire complète."
     }
   },
   projects: [

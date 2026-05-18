@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1500" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="of-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#EBE3D5"/>
+      <stop offset="100%" stop-color="#a89378"/>
+    </linearGradient>
+    <radialGradient id="of-light" cx="0.65" cy="0.2" r="0.55">
+      <stop offset="0%" stop-color="#FFFDF8" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#FFFDF8" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="1500" fill="url(#of-bg)"/>
+  <rect width="1200" height="1500" fill="url(#of-light)"/>
+  <!-- Window frame -->
+  <g fill="#0A2540">
+    <rect x="120" y="180" width="960" height="600" rx="6" fill="#1F3A5F" opacity="0.85"/>
+    <line x1="600" y1="180" x2="600" y2="780" stroke="#0A2540" stroke-width="8"/>
+    <line x1="120" y1="480" x2="1080" y2="480" stroke="#0A2540" stroke-width="8"/>
+  </g>
+  <!-- Window sky reflection -->
+  <rect x="130" y="190" width="940" height="580" fill="url(#of-light)" opacity="0.6"/>
+  <!-- Desk -->
+  <rect x="100" y="960" width="1000" height="40" rx="6" fill="#3a2c22"/>
+  <rect x="160" y="1000" width="40" height="280" fill="#3a2c22"/>
+  <rect x="1000" y="1000" width="40" height="280" fill="#3a2c22"/>
+  <!-- Monitor -->
+  <rect x="380" y="820" width="440" height="280" rx="10" fill="#0A2540"/>
+  <rect x="395" y="835" width="410" height="250" rx="6" fill="#1F3A5F"/>
+  <rect x="580" y="1100" width="40" height="40" fill="#3a2c22"/>
+  <rect x="520" y="1140" width="160" height="14" rx="4" fill="#3a2c22"/>
+  <!-- Chair -->
+  <g fill="#C97B5A">
+    <rect x="540" y="1180" width="120" height="180" rx="8"/>
+    <rect x="560" y="1320" width="80" height="80" rx="4" fill="#0A2540"/>
+  </g>
+  <!-- Plant -->
+  <g>
+    <rect x="100" y="1200" width="90" height="100" rx="6" fill="#3a2c22"/>
+    <path d="M120 1200 Q100 1100 110 1020 M145 1200 Q160 1080 150 1000 M170 1200 Q190 1100 180 1030"
+          stroke="#2a9d8f" stroke-width="14" fill="none" stroke-linecap="round"/>
+  </g>
+</svg>

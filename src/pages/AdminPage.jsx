@@ -131,6 +131,8 @@ const SECTION_LABELS = {
   audience: "Audiences",
   process_intro: "Intro process",
   final_cta: "CTA final",
+  use_cases: "Cas d'usage (4 pièces)",
+  testimonials_v2: "Témoignages",
   projects_page: "Page réalisations",
   contact_page: "Page contact",
   popup: "Popup email",
@@ -173,6 +175,12 @@ const FIELD_LABELS = {
   homeowners_image: "Image carte 01 · Propriétaires",
   agents_image: "Image carte 02 · Agents immobiliers",
   developers_image: "Image carte 03 · Promoteurs",
+  quote: "Citation",
+  city: "Ville",
+  rating: "Note (1-5)",
+  tagline: "Accroche",
+  bullets: "Bullets (3 max)",
+  avatar_image: "Photo (avatar)",
 };
 
 const KNOWN_SECTION_DEFAULTS = {
@@ -191,6 +199,21 @@ const KNOWN_SECTION_DEFAULTS = {
     homeowners_image: "",
     agents_image: "",
     developers_image: "",
+  },
+  testimonials_v2: {
+    eyebrow: { en: "Real homeowners, real stories", fr: "De vrais clients, de vraies histoires" },
+    title: { en: "Where Orlando homeowners fall in love with their garage.", fr: "Là où les propriétaires d'Orlando tombent amoureux de leur garage." },
+    items: [
+      { quote: { en: "", fr: "" }, name: "", city: "", rating: 5, avatar_image: "" },
+    ],
+  },
+  use_cases: {
+    eyebrow: { en: "Transformations", fr: "Transformations" },
+    title: { en: "Pick your room.", fr: "Choisissez votre pièce." },
+    sub: { en: "Four ways homeowners reclaim their garage.", fr: "Quatre façons de récupérer son garage." },
+    items: [
+      { image: "", name: { en: "", fr: "" }, tagline: { en: "", fr: "" }, bullets: { en: [], fr: [] } },
+    ],
   },
 };
 
@@ -809,7 +832,7 @@ function useEditorState(initial) {
    Public component
    ========================================================================== */
 
-export function AdminPage({ onNav }) {
+function AdminPage({ onNav }) {
   return (
     <ConfirmProvider>
       <ToastProvider>
@@ -4718,3 +4741,5 @@ const jsonTextareaStyle = {
   fontSize: "12px",
   lineHeight: 1.6,
 };
+
+export default AdminPage;
