@@ -19,7 +19,12 @@ function mergeCmsSections(nextContent, sections) {
 
   if (sectionMap.nav) nextContent.nav = sectionMap.nav;
   if (sectionMap.hero) nextContent.hero = sectionMap.hero;
-  if (sectionMap.hero_caption) nextContent.hero_caption = sectionMap.hero_caption;
+  if (sectionMap.hero_caption) {
+    nextContent.hero_caption = {
+      ...nextContent.hero_caption,
+      ...sectionMap.hero_caption,
+    };
+  }
   if (sectionMap.marquee_words) nextContent.marquee_words = sectionMap.marquee_words;
   if (sectionMap.visual_strip) nextContent.visual_strip = sectionMap.visual_strip;
   if (sectionMap.before_after) nextContent.before_after = sectionMap.before_after;

@@ -165,6 +165,7 @@ const FIELD_LABELS = {
   before_image: "Image avant",
   after_image: "Image après",
   image: "Image",
+  video_url: "URL vidéo",
   featured_label: "Eyebrow projet phare",
   featured_title: "Titre projet phare",
   plan_image: "Image plan 3D (gauche)",
@@ -179,6 +180,7 @@ const KNOWN_SECTION_DEFAULTS = {
   before_after: { before_image: "", after_image: "" },
   hero_caption: {
     image: "",
+    video_url: "",
     featured_label: { en: "FEATURED PROJECT", fr: "PROJET PHARE" },
     featured_title: { en: "The Social Hub", fr: "The Social Hub" },
   },
@@ -192,10 +194,35 @@ const KNOWN_SECTION_DEFAULTS = {
     agents_image: "",
     developers_image: "",
   },
+<<<<<<< Updated upstream
+=======
+  testimonials_v2: {
+    eyebrow: { en: "Real homeowners, real stories", fr: "De vrais clients, de vraies histoires" },
+    title: { en: "Where Orlando homeowners fall in love with their garage.", fr: "Là où les propriétaires d'Orlando tombent amoureux de leur garage." },
+    items: [
+      { quote: { en: "", fr: "" }, name: "", city: "", rating: 5, avatar_image: "" },
+    ],
+  },
+  use_cases: {
+    eyebrow: { en: "Transformations", fr: "Transformations" },
+    title: { en: "Pick your room.", fr: "Choisissez votre pièce." },
+    sub: {
+      en: "We specialize in garage remodeling, makeovers, and custom storage solutions for homeowners, real estate agencies, developers, builders, and property managers across Orlando and the surrounding areas.",
+      fr: "Nous sommes spécialisés dans la rénovation de garages, les transformations et les solutions de rangement sur-mesure pour les propriétaires, les agences immobilières, les promoteurs, les constructeurs et les gestionnaires de biens à Orlando et ses environs."
+    },
+    items: [
+      { image: "", name: { en: "", fr: "" }, tagline: { en: "", fr: "" }, bullets: { en: [], fr: [] } },
+    ],
+  },
+>>>>>>> Stashed changes
 };
 
 function isImageKey(key) {
-  return /(^image$|_image$|image_url$|_url$)/i.test(key);
+  return /(^image$|_image$|image_url$|_image_url$)/i.test(key);
+}
+
+function isVideoKey(key) {
+  return /(^video$|_video$|video_url$|_video_url$)/i.test(key);
 }
 
 function withKnownDefaults(sectionKey, content) {
@@ -2603,6 +2630,18 @@ function ObjectField({ label, value, onChange, root, depth }) {
         {Object.entries(value).map(([key, nextValue]) => {
           const label = FIELD_LABELS[key] || humanize(key);
           const setKey = (updated) => onChange({ ...value, [key]: updated });
+          if (isVideoKey(key) && (typeof nextValue === "string" || nextValue == null)) {
+            return (
+              <ImageField
+                key={key}
+                label={label}
+                fieldKey={key}
+                value={nextValue || ""}
+                onChange={setKey}
+                mediaType="video"
+              />
+            );
+          }
           if (isImageKey(key) && (typeof nextValue === "string" || nextValue == null)) {
             return (
               <ImageField key={key} label={label} fieldKey={key} value={nextValue || ""} onChange={setKey} />
@@ -2623,11 +2662,12 @@ function ObjectField({ label, value, onChange, root, depth }) {
   );
 }
 
-function ImageField({ label, fieldKey, value, onChange }) {
+function ImageField({ label, fieldKey, value, onChange, mediaType = "image" }) {
   const { sectionKey, commitImage } = useContext(CmsSectionContext);
   const { push: pushToast } = useToast();
   const [uploading, setUploading] = useState(false);
   const fileRef = useRef(null);
+  const isVideo = mediaType === "video";
 
   const handleFile = async (file) => {
     if (!file) return;
@@ -2642,7 +2682,7 @@ function ImageField({ label, fieldKey, value, onChange }) {
       if (commitImage) {
         try {
           await commitImage(fieldKey, url);
-          pushToast({ type: "success", title: "Image enregistrée" });
+          pushToast({ type: "success", title: isVideo ? "Vidéo enregistrée" : "Image enregistrée" });
         } catch (saveErr) {
           pushToast({
             type: "error",
@@ -2651,7 +2691,7 @@ function ImageField({ label, fieldKey, value, onChange }) {
           });
         }
       } else {
-        pushToast({ type: "success", title: "Image uploadée — pensez à enregistrer" });
+        pushToast({ type: "success", title: isVideo ? "Vidéo uploadée — pensez à enregistrer" : "Image uploadée — pensez à enregistrer" });
       }
     } catch (err) {
       pushToast({ type: "error", title: "Upload échoué", message: err.message });
@@ -2700,13 +2740,22 @@ function ImageField({ label, fieldKey, value, onChange }) {
           title="Cliquer pour importer"
         >
           {value ? (
-            <img
-              src={value}
-              alt=""
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
-            />
+            isVideo ? (
+              <video
+                src={value}
+                muted
+                playsInline
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              />
+            ) : (
+              <img
+                src={value}
+                alt=""
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              />
+            )
           ) : (
-            <ImageIcon size={24} />
+            isVideo ? <Upload size={24} /> : <ImageIcon size={24} />
           )}
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: "8px", minWidth: 0 }}>
@@ -2714,7 +2763,7 @@ function ImageField({ label, fieldKey, value, onChange }) {
             className="admin-input"
             value={value || ""}
             onChange={(event) => onChange(event.target.value)}
-            placeholder="URL de l'image ou laisser vide"
+            placeholder={isVideo ? "URL de la vidéo ou laisser vide" : "URL de l'image ou laisser vide"}
           />
           <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
             <button
@@ -2747,7 +2796,7 @@ function ImageField({ label, fieldKey, value, onChange }) {
       <input
         ref={fileRef}
         type="file"
-        accept="image/jpeg,image/png,image/webp,image/gif"
+        accept={isVideo ? "video/mp4,video/webm,video/quicktime" : "image/jpeg,image/png,image/webp,image/gif"}
         style={{ display: "none" }}
         onChange={(event) => {
           const file = event.target.files?.[0];

@@ -11,9 +11,12 @@ export function HomePage({ lang, onNav }) {
       <VisualStrip lang={lang} />
       <BeforeAfterSection lang={lang} />
       <ServicesSection lang={lang} onNav={onNav} />
+<<<<<<< Updated upstream
       <WhySection lang={lang} />
       <AudienceSection lang={lang} />
       <ProcessSection lang={lang} />
+=======
+>>>>>>> Stashed changes
       <FinalCTA lang={lang} onNav={onNav} />
     </div>
   );
@@ -22,8 +25,19 @@ export function HomePage({ lang, onNav }) {
 // ============================ HERO with single immersive image ============================
 function Hero({ lang, onNav }) {
   const C = CONTENT.hero;
+<<<<<<< Updated upstream
   const cap = CONTENT.hero_caption;
   const heroImage = cap.image || cap.after_image;
+=======
+  const cap = CONTENT.hero_caption || {};
+  const heroImage = cap.image || cap.after_image || "";
+  const heroVideo = cap.video_url || cap.video || "";
+
+  const titleLines = Array.isArray(C.title?.[lang])
+    ? C.title[lang]
+    : String(C.title?.[lang] || "").split("\n").filter(Boolean);
+  const italicWord = C.italic_word?.[lang];
+>>>>>>> Stashed changes
 
   return (
     <section id="hero" className="section hero" style={{padding:0, position:"relative"}}>
@@ -77,6 +91,7 @@ function Hero({ lang, onNav }) {
             color:"rgba(255,248,240,0.7)"
           }}></div>
 
+<<<<<<< Updated upstream
           {/* Title */}
           <Reveal as="h1" className="hero__title" style={{
             color:"var(--cream)",
@@ -120,6 +135,22 @@ function Hero({ lang, onNav }) {
               <button className="btn" onClick={()=>onNav("contact")}>{C.primary_cta[lang]} <span className="arrow">↗</span></button>
               <button className="btn btn-ghost hero__ghost" style={{color:"var(--cream)", borderColor:"rgba(255,248,240,0.55)"}} onClick={()=>onNav("contact")}>{C.secondary_cta[lang]}</button>
             </Reveal>
+=======
+        <Reveal as="div" className="hero-v2__row" delay={0.1}>
+          <div className="hero-v2__sub-group">
+            {C.tagline?.[lang] && (
+              <p className="hero-v2__tagline">{C.tagline[lang]}</p>
+            )}
+            <p className="hero-v2__sub">{C.sub[lang]}</p>
+          </div>
+          <div className="hero-v2__ctas">
+            <button className="btn" onClick={() => onNav("contact")}>
+              {C.primary_cta[lang]} <span className="arrow">↗</span>
+            </button>
+            <button className="btn btn-ghost" onClick={() => onNav("projects")}>
+              {C.secondary_cta[lang]}
+            </button>
+>>>>>>> Stashed changes
           </div>
 
           {/* Featured project caption */}
@@ -212,6 +243,12 @@ function BeforeAfterSection({ lang }) {
             <p className="lead" style={{fontSize:"18px"}}>{C.after[lang]}</p>
           </Reveal>
         </div>
+
+        {C.statement?.[lang] && (
+          <Reveal delay={0.15}>
+            <p className="ba-v2__statement">{C.statement[lang]}</p>
+          </Reveal>
+        )}
       </div>
     </section>
   );
@@ -356,6 +393,21 @@ function ServicesSection({ lang, onNav }) {
             <ServiceCard key={s.id} svc={s} lang={lang} index={i} onNav={onNav} />
           ))}
         </div>
+<<<<<<< Updated upstream
+=======
+
+        <Reveal as="p" className="svc-v2__expertise" delay={0.18}>
+          {lang === "en"
+            ? "Our expert team delivers space optimization, organization systems, and innovative renovations — enhanced by mood visual design and advanced Color, Material, and Finish (CMF) expertise to maximize garage functionality, improve curb appeal, and add lasting value to your property."
+            : "Notre équipe experte propose optimisation de l’espace, systèmes d’organisation et rénovations innovantes — renforcées par le mood visual design et une expertise avancée en Color, Material, and Finish (CMF) afin de maximiser la fonctionnalité du garage, améliorer l’attrait extérieur et ajouter une valeur durable à votre propriété."}
+        </Reveal>
+
+        <Reveal as="p" className="svc-v2__note" delay={0.2}>
+          {lang === "en"
+            ? "Service fees are credited 100% on a signed project contract."
+            : "Les honoraires sont crédités à 100 % sur un contrat de projet signé."}
+        </Reveal>
+>>>>>>> Stashed changes
       </div>
     </section>
   );
@@ -481,6 +533,7 @@ function ServiceModal({ svc, lang, onClose, onNav }) {
   );
 }
 
+<<<<<<< Updated upstream
 // ============================ WHY ============================
 function WhySection({ lang }) {
   const C = CONTENT.why;
@@ -575,6 +628,9 @@ function ProcessSection({ lang }) {
 }
 
 // ============================ FINAL CTA ============================
+=======
+// ============================ FINAL CTA — single button, dark ============================
+>>>>>>> Stashed changes
 function FinalCTA({ lang, onNav }) {
   const C = CONTENT.final_cta;
   return (

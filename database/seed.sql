@@ -30,7 +30,15 @@ values
       'en', jsonb_build_array('Transform your garage', 'into a space that', 'works for your life.'),
       'fr', jsonb_build_array('Transformez votre garage', 'en un espace pensé', 'pour votre vie.')
     ),
+<<<<<<< Updated upstream
     'italic_word', jsonb_build_object('en', 'works', 'fr', 'pensé'),
+=======
+    'italic_word', jsonb_build_object('en', 'reimagined.', 'fr', 'réinventé.'),
+    'tagline', jsonb_build_object(
+      'en', 'Unlock the Full Potential of Your Garage',
+      'fr', 'Révélez tout le potentiel de votre garage'
+    ),
+>>>>>>> Stashed changes
     'sub', jsonb_build_object(
       'en', 'Custom garage transformations for homeowners, real-estate professionals, and developers — from a clear plan to full execution.',
       'fr', 'Transformations de garage sur-mesure pour propriétaires, agents immobiliers et promoteurs — du plan détaillé à la réalisation complète.'
@@ -41,6 +49,7 @@ values
   ('home', 'hero_caption', jsonb_build_object(
     'label', jsonb_build_object('en', 'Featured project', 'fr', 'Projet phare'),
     'image', '',
+    'video_url', '/hero-video.mp4',
     'featured_label', jsonb_build_object('en', 'FEATURED PROJECT', 'fr', 'PROJET PHARE'),
     'featured_title', jsonb_build_object('en', 'The Social Hub', 'fr', 'The Social Hub')
   ), 30, true),
@@ -63,7 +72,11 @@ values
     'eyebrow', jsonb_build_object('en', 'Section 02 · Story', 'fr', 'Section 02 · Le récit'),
     'title', jsonb_build_object('en', 'From cluttered space to designed living.', 'fr', 'D''un espace encombré à un lieu de vie pensé.'),
     'before', jsonb_build_object('en', 'Boxes, tools, wasted square footage. No clear purpose.', 'fr', 'Cartons, outils, mètres carrés perdus. Aucun usage clair.'),
-    'after', jsonb_build_object('en', 'A clean, planned, functional garage designed around your lifestyle.', 'fr', 'Un garage propre, pensé, fonctionnel — conçu autour de votre vie.')
+    'after', jsonb_build_object('en', 'A clean, planned, functional garage designed around your lifestyle.', 'fr', 'Un garage propre, pensé, fonctionnel — conçu autour de votre vie.'),
+    'statement', jsonb_build_object(
+      'en', 'Experience American practicality and precision combined with European mood-visual design and advanced Color, Material & Finish (CMF) expertise for a stunning, functional space.',
+      'fr', 'Découvrez la praticité et la précision américaines alliées au design visuel et à l''ambiance européens, ainsi qu''à une expertise avancée en Couleur, Matière & Finition (CMF), pour un espace fonctionnel et époustouflant.'
+    )
   ), 60, true),
   ('home', 'services_intro', jsonb_build_object(
     'eyebrow', jsonb_build_object('en', 'Section 03 · Services', 'fr', 'Section 03 · Services'),
@@ -108,6 +121,55 @@ values
     'title', jsonb_build_object('en', 'Ready to transform your garage?', 'fr', 'Prêt à transformer votre garage ?'),
     'sub', jsonb_build_object('en', 'Start with a free estimate and see what your garage could become.', 'fr', 'Commencez par un devis gratuit et découvrez ce que votre garage peut devenir.')
   ), 120, true),
+<<<<<<< Updated upstream
+=======
+  ('home', 'use_cases', jsonb_build_object(
+    'eyebrow', jsonb_build_object('en', 'Transformations', 'fr', 'Transformations'),
+    'title', jsonb_build_object('en', 'Pick your room.', 'fr', 'Choisissez votre pièce.'),
+    'sub', jsonb_build_object(
+      'en', 'We specialize in garage remodeling, makeovers, and custom storage solutions for homeowners, real estate agencies, developers, builders, and property managers across Orlando and the surrounding areas.',
+      'fr', 'Nous sommes spécialisés dans la rénovation de garages, les transformations et les solutions de rangement sur-mesure pour les propriétaires, les agences immobilières, les promoteurs, les constructeurs et les gestionnaires de biens à Orlando et ses environs.'
+    ),
+    'items', jsonb_build_array(
+      jsonb_build_object(
+        'image', '/usecase-gym.svg',
+        'name', jsonb_build_object('en', 'Home Gym', 'fr', 'Salle de sport'),
+        'tagline', jsonb_build_object('en', 'Train at home, every day.', 'fr', 'S''entraîner chez soi, tous les jours.'),
+        'bullets', jsonb_build_object(
+          'en', jsonb_build_array('Mirrored wall', 'Rubber flooring', 'Smart storage'),
+          'fr', jsonb_build_array('Mur miroir', 'Sol caoutchouc', 'Rangements smart')
+        )
+      ),
+      jsonb_build_object(
+        'image', '/usecase-lounge.svg',
+        'name', jsonb_build_object('en', 'Lounge & Bar', 'fr', 'Lounge & Bar'),
+        'tagline', jsonb_build_object('en', 'The room you actually use on Fridays.', 'fr', 'La pièce que vous utilisez vraiment le vendredi.'),
+        'bullets', jsonb_build_object(
+          'en', jsonb_build_array('Wet bar', 'Custom cabinetry', 'Built-in screen'),
+          'fr', jsonb_build_array('Bar avec point d''eau', 'Mobilier sur-mesure', 'Écran encastré')
+        )
+      ),
+      jsonb_build_object(
+        'image', '/usecase-office.svg',
+        'name', jsonb_build_object('en', 'Home Office', 'fr', 'Bureau'),
+        'tagline', jsonb_build_object('en', 'Quiet work, just outside the house.', 'fr', 'Travailler au calme, juste à côté.'),
+        'bullets', jsonb_build_object(
+          'en', jsonb_build_array('Soundproofing', 'Climate control', 'Built-in desk'),
+          'fr', jsonb_build_array('Isolation phonique', 'Climatisation', 'Bureau intégré')
+        )
+      ),
+      jsonb_build_object(
+        'image', '/usecase-storage.svg',
+        'name', jsonb_build_object('en', 'Smart Storage', 'fr', 'Rangement Smart'),
+        'tagline', jsonb_build_object('en', 'Everything in its place, finally.', 'fr', 'Tout à sa place, enfin.'),
+        'bullets', jsonb_build_object(
+          'en', jsonb_build_array('Floor-to-ceiling cabinetry', 'EV charging', 'Sport gear racks'),
+          'fr', jsonb_build_array('Rangements pleine hauteur', 'Recharge VE', 'Racks sport')
+        )
+      )
+    )
+  ), 123, true),
+>>>>>>> Stashed changes
   ('projects', 'projects_page', jsonb_build_object(
     'eyebrow', jsonb_build_object('en', 'Selected work', 'fr', 'Sélection'),
     'title', jsonb_build_object('en', 'Our garages, redesigned.', 'fr', 'Nos garages, repensés.'),

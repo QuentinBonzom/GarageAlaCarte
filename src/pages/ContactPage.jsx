@@ -139,6 +139,7 @@ export function ContactPage({ lang, onNav }) {
               </div>
             </Reveal>
 
+<<<<<<< Updated upstream
             {/* DIRECT LINE + Why us */}
             <Reveal delay={0.15}>
               <aside className="contact-sidebar">
@@ -226,6 +227,14 @@ export function ContactPage({ lang, onNav }) {
               );
             })}
           </div>
+=======
+              <ul className="contact-v2-trust">
+                <li>{lang === "en" ? "Reply within 48 hours" : "Réponse sous 48h"}</li>
+                <li>{lang === "en" ? "No commitment, no pressure" : "Sans engagement, sans pression"}</li>
+              </ul>
+            </aside>
+          </Reveal>
+>>>>>>> Stashed changes
         </div>
       </section>
     </div>

@@ -21,7 +21,15 @@ export const CONTENT = {
       en: ["Transform your garage", "into a space that", "works for your life."],
       fr: ["Transformez votre garage", "en un espace pensé", "pour votre vie."]
     },
+<<<<<<< Updated upstream
     italic_word: { en: "works", fr: "pensé" },
+=======
+    italic_word: { en: "reimagined.", fr: "réinventé." },
+    tagline: {
+      en: "Unlock the Full Potential of Your Garage",
+      fr: "Révélez tout le potentiel de votre garage"
+    },
+>>>>>>> Stashed changes
     sub: {
       en: "Custom garage transformations for homeowners, real-estate professionals, and developers — from a clear plan to full execution.",
       fr: "Transformations de garage sur-mesure pour propriétaires, agents immobiliers et promoteurs — du plan détaillé à la réalisation complète."
@@ -33,6 +41,7 @@ export const CONTENT = {
   hero_caption: {
     label: { en: "Featured project", fr: "Projet phare" },
     image: "",
+    video_url: "/hero-video.mp4",
     featured_label: { en: "FEATURED PROJECT", fr: "PROJET PHARE" },
     featured_title: { en: "The Social Hub", fr: "The Social Hub" }
   },
@@ -70,6 +79,10 @@ export const CONTENT = {
     after: {
       en: "A clean, planned, functional garage designed around your lifestyle.",
       fr: "Un garage propre, pensé, fonctionnel — conçu autour de votre vie."
+    },
+    statement: {
+      en: "Experience American practicality and precision combined with European mood-visual design and advanced Color, Material & Finish (CMF) expertise for a stunning, functional space.",
+      fr: "Découvrez la praticité et la précision américaines alliées au design visuel et à l'ambiance européens, ainsi qu'à une expertise avancée en Couleur, Matière & Finition (CMF), pour un espace fonctionnel et époustouflant."
     },
     before_image: "",
     after_image: ""
@@ -449,8 +462,99 @@ export const CONTENT = {
   },
 
   final_cta: {
+<<<<<<< Updated upstream
     title: { en: "Ready to transform your garage?", fr: "Prêt à transformer votre garage ?" },
     sub: { en: "Start with a free estimate and see what your garage could become.", fr: "Commencez par un devis gratuit et découvrez ce que votre garage peut devenir." }
+=======
+    title: { en: "Ready to reimagine your garage?", fr: "Prêt à réinventer votre garage ?" },
+    sub: { en: "Tell us about your space. We'll send a free estimate within 48 hours.", fr: "Parlez-nous de votre espace. Nous envoyons un devis gratuit sous 48h." }
+  },
+
+  // ===== USE CASES (Landing V2) — 4 cas d'usage visuels =====
+  use_cases: {
+    eyebrow: { en: "Transformations", fr: "Transformations" },
+    title: { en: "Pick your room.", fr: "Choisissez votre pièce." },
+    sub: {
+      en: "We specialize in garage remodeling, makeovers, and custom storage solutions for homeowners, real estate agencies, developers, builders, and property managers across Orlando and the surrounding areas.",
+      fr: "Nous sommes spécialisés dans la rénovation de garages, les transformations et les solutions de rangement sur-mesure pour les propriétaires, les agences immobilières, les promoteurs, les constructeurs et les gestionnaires de biens à Orlando et ses environs."
+    },
+    items: [
+      {
+        image: "/usecase-gym.svg",
+        name: { en: "Home Gym", fr: "Salle de sport" },
+        tagline: { en: "Train at home, every day.", fr: "S'entraîner chez soi, tous les jours." },
+        bullets: {
+          en: ["Mirrored wall", "Rubber flooring", "Smart storage"],
+          fr: ["Mur miroir", "Sol caoutchouc", "Rangements smart"]
+        }
+      },
+      {
+        image: "/usecase-lounge.svg",
+        name: { en: "Lounge & Bar", fr: "Lounge & Bar" },
+        tagline: { en: "The room you actually use on Fridays.", fr: "La pièce que vous utilisez vraiment le vendredi." },
+        bullets: {
+          en: ["Wet bar", "Custom cabinetry", "Built-in screen"],
+          fr: ["Bar avec point d'eau", "Mobilier sur-mesure", "Écran encastré"]
+        }
+      },
+      {
+        image: "/usecase-office.svg",
+        name: { en: "Home Office", fr: "Bureau" },
+        tagline: { en: "Quiet work, just outside the house.", fr: "Travailler au calme, juste à côté." },
+        bullets: {
+          en: ["Soundproofing", "Climate control", "Built-in desk"],
+          fr: ["Isolation phonique", "Climatisation", "Bureau intégré"]
+        }
+      },
+      {
+        image: "/usecase-storage.svg",
+        name: { en: "Smart Storage", fr: "Rangement Smart" },
+        tagline: { en: "Everything in its place, finally.", fr: "Tout à sa place, enfin." },
+        bullets: {
+          en: ["Floor-to-ceiling cabinetry", "EV charging", "Sport gear racks"],
+          fr: ["Rangements pleine hauteur", "Recharge VE", "Racks sport"]
+        }
+      }
+    ]
+  },
+
+  // ===== TESTIMONIALS (Landing V2) =====
+  testimonials_v2: {
+    eyebrow: { en: "Real homeowners, real stories", fr: "De vrais clients, de vraies histoires" },
+    title: {
+      en: "Where Orlando homeowners fall in love with their garage.",
+      fr: "Là où les propriétaires d'Orlando tombent amoureux de leur garage."
+    },
+    items: [
+      {
+        quote: {
+          en: "We turned an unused two-car garage into our favorite room. The 3D plan made every decision easy.",
+          fr: "Nous avons transformé un garage 2 voitures inutilisé en notre pièce préférée. Le plan 3D a rendu chaque décision simple."
+        },
+        name: "Sarah & Michael K.",
+        city: "Winter Park, FL",
+        rating: 5
+      },
+      {
+        quote: {
+          en: "Clear pricing, beautiful renders, flawless execution. Worth every penny.",
+          fr: "Prix clairs, rendus magnifiques, exécution irréprochable. Chaque dollar bien dépensé."
+        },
+        name: "James R.",
+        city: "Lake Nona, FL",
+        rating: 5
+      },
+      {
+        quote: {
+          en: "They listened first, then designed. The lounge is now where we spend every Friday night.",
+          fr: "Ils ont d'abord écouté, puis dessiné. Le lounge est devenu notre QG du vendredi soir."
+        },
+        name: "Priya S.",
+        city: "Windermere, FL",
+        rating: 5
+      }
+    ]
+>>>>>>> Stashed changes
   },
 
   // ===== RÉALISATIONS =====
