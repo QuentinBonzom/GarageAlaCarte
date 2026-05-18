@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import {
   EmailPopup,
   Footer,
@@ -17,13 +17,14 @@ import {
   TweaksPanel,
   useTweaks,
 } from "../components/tweaks";
-import { AdminPage } from "../pages/AdminPage";
 import { ConditionsPage, ContactPage } from "../pages/ContactPage";
 import { HomePage } from "../pages/HomePage";
 import { ProjectsPage } from "../pages/ProjectsPage";
 
+const AdminPage = lazy(() => import("../pages/AdminPage"));
+
 const TWEAK_DEFAULTS = {
-  accentColor: "#ff5e5b",
+  accentColor: "#c97b5a",
   density: 1,
   cardStyle: "soft",
 };
@@ -138,7 +139,11 @@ export function App() {
         {route === "projects" && <ProjectsPage lang={lang} onNav={onNav} />}
         {route === "contact" && <ContactPage lang={lang} onNav={onNav} />}
         {route === "conditions" && <ConditionsPage lang={lang} />}
-        {route === "admin" && <AdminPage lang={lang} onNav={onNav} />}
+        {route === "admin" && (
+          <Suspense fallback={<div style={{ padding: 80, textAlign: "center", color: "var(--muted)" }}>Loading admin…</div>}>
+            <AdminPage lang={lang} onNav={onNav} />
+          </Suspense>
+        )}
       </main>
 
       {route !== "admin" && <Footer onNav={onNav} lang={lang} />}
@@ -147,7 +152,7 @@ export function App() {
         <EmailPopup lang={lang} onClose={closePopup} onSubmit={submitEmail} />
       )}
 
-      {route !== "admin" && (
+      {import.meta.env.DEV && route !== "admin" && (
         <TweaksPanel title="Tweaks">
           <TweakSection label="Brand" />
           <TweakColor

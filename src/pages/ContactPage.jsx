@@ -27,205 +27,118 @@ export function ContactPage({ lang, onNav }) {
     }
   };
 
-  const team = CONTENT.team.members;
-
-  const promises = [
-    { num: "48h", label: lang === "en" ? "average reply time" : "délai de réponse moyen" },
-    { num: "100%", label: lang === "en" ? "free estimate" : "devis gratuit" },
-    { num: "0", label: lang === "en" ? "obligation, ever" : "engagement, jamais" }
-  ];
-
   return (
-    <div className="page contact-page">
-      {/* ── Hero ─────────────────────────────────── */}
-      <section id="contact_page" className="section contact-hero">
-        <div className="container">
-          <div className="contact-hero__top">
-            <div className="eyebrow">{C.eyebrow[lang]}</div>
-            <div className="text-mono text-muted">{lang === "en" ? "Reply within 48h" : "Réponse sous 48h"}</div>
-          </div>
-          <Reveal as="h1" className="display-l contact-hero__title">{C.title[lang]}</Reveal>
-          <Reveal delay={0.1}>
-            <p className="lead contact-hero__lead">{C.sub[lang]}</p>
+    <div className="page contact-v2">
+      {/* Hero — minimal premium pattern */}
+      <section className="contact-v2-head">
+        <div className="contact-v2-head__inner">
+          <Reveal as="div" className="contact-v2-head__eyebrow">
+            {text(C.eyebrow, lang, lang === "en" ? "Get in touch" : "Contact")}
           </Reveal>
-          <Reveal delay={0.18}>
-            <ul className="contact-hero__promises" aria-label="Our promises">
-              {promises.map((p) => (
-                <li key={p.label}>
-                  <span className="contact-hero__promise-num">{p.num}</span>
-                  <span className="contact-hero__promise-label">{p.label}</span>
-                </li>
-              ))}
-            </ul>
+          <Reveal as="h1" className="contact-v2-head__title">
+            {text(C.title, lang, lang === "en" ? "Let's design your garage." : "Imaginons votre garage.")}
           </Reveal>
+          {C.sub && (
+            <Reveal as="p" className="contact-v2-head__sub" delay={0.1}>
+              {text(C.sub, lang)}
+            </Reveal>
+          )}
         </div>
       </section>
 
-      {/* ── Form + Direct line ───────────────────── */}
-      <section className="section contact-main">
-        <div className="container">
-          <div className="contact-grid">
-            {/* FORM */}
-            <Reveal>
-              <div className="contact-form-card">
-                <div className="contact-form-card__head">
-                  <div className="text-mono text-muted">{lang === "en" ? "01 · Project brief" : "01 · Votre projet"}</div>
-                  <h2 className="display-s" style={{marginTop: "8px"}}>{lang === "en" ? "Tell us about your space." : "Parlez-nous de votre espace."}</h2>
-                </div>
+      {/* Form + Direct line */}
+      <section className="contact-v2-main">
+        <div className="contact-v2-grid">
+          <Reveal>
+            <div className="contact-form-card">
+              <div className="contact-form-card__head">
+                <div className="text-mono text-muted">{lang === "en" ? "Project brief" : "Votre projet"}</div>
+                <h2 className="contact-v2-form-title">{lang === "en" ? "Tell us about your space." : "Parlez-nous de votre espace."}</h2>
+              </div>
 
-                {sent ? (
-                  <div className="contact-form-card__sent">
-                    <div className="contact-form-card__check" aria-hidden>✓</div>
-                    <h3 className="display-s">{lang === "en" ? "Message received." : "Message reçu."}</h3>
-                    <p className="lead">{lang === "en" ? "We'll come back to you within 48 hours." : "Nous revenons vers vous sous 48h."}</p>
-                    <button className="btn" onClick={() => setSent(false)}>
-                      {lang === "en" ? "Send another" : "Envoyer un autre"} <span className="arrow">↗</span>
-                    </button>
-                  </div>
-                ) : (
-                  <form onSubmit={submit} className="contact-form">
-                    <div className="contact-form__row">
-                      <div className="field">
-                        <label>{C.form.name[lang]}</label>
-                        <input value={form.name} onChange={(e) => setForm({...form, name: e.target.value})} required />
-                      </div>
-                      <div className="field">
-                        <label>{C.form.email[lang]}</label>
-                        <input type="email" value={form.email} onChange={(e) => setForm({...form, email: e.target.value})} required />
-                      </div>
-                    </div>
-                    <div className="contact-form__row">
-                      <div className="field">
-                        <label>{C.form.phone[lang]}</label>
-                        <input value={form.phone} onChange={(e) => setForm({...form, phone: e.target.value})} />
-                      </div>
-                      <div className="field">
-                        <label>{C.form.service[lang]}</label>
-                        <select value={form.service} onChange={(e) => setForm({...form, service: e.target.value})}>
-                          <option value="blueprint">Design Blueprint</option>
-                          <option value="delivery">Design & Setup</option>
-                          <option value="transform">Full Transformation</option>
-                          <option value="smart">Smart Integration</option>
-                          <option value="not-sure">{lang === "en" ? "Not sure yet" : "Pas encore sûr"}</option>
-                        </select>
-                      </div>
+              {sent ? (
+                <div className="contact-form-card__sent">
+                  <div className="contact-form-card__check" aria-hidden>✓</div>
+                  <h3 className="contact-v2-form-title">{lang === "en" ? "Message received." : "Message reçu."}</h3>
+                  <p className="lead">{lang === "en" ? "We'll come back to you within 48 hours." : "Nous revenons vers vous sous 48h."}</p>
+                  <button className="btn" onClick={() => setSent(false)}>
+                    {lang === "en" ? "Send another" : "Envoyer un autre"} <span className="arrow">↗</span>
+                  </button>
+                </div>
+              ) : (
+                <form onSubmit={submit} className="contact-form">
+                  <div className="contact-form__row">
+                    <div className="field">
+                      <label>{C.form.name[lang]}</label>
+                      <input value={form.name} onChange={(e) => setForm({...form, name: e.target.value})} required />
                     </div>
                     <div className="field">
-                      <label>{C.form.message[lang]}</label>
-                      <textarea
-                        value={form.message}
-                        onChange={(e) => setForm({...form, message: e.target.value})}
-                        placeholder={lang === "en" ? "Size, goals, timeline, anything we should know…" : "Surface, objectifs, calendrier, tout ce qui peut nous aider…"}
-                        required
-                      />
+                      <label>{C.form.email[lang]}</label>
+                      <input type="email" value={form.email} onChange={(e) => setForm({...form, email: e.target.value})} required />
                     </div>
-                    <label className="checkbox">
-                      <input type="checkbox" checked={form.consent} onChange={(e) => setForm({...form, consent: e.target.checked})} required />
-                      <span>{C.form.consent[lang]}{" "}
-                        <a onClick={(e) => { e.preventDefault(); onNav("conditions"); }} style={{textDecoration: "underline", cursor: "pointer"}}>{C.form.consent_link[lang]}</a>.
-                      </span>
-                    </label>
-                    <div className="contact-form__submit">
-                      <button type="submit" className="btn" disabled={!form.consent || submitting}>
-                        {submitting ? (lang === "en" ? "Sending..." : "Envoi...") : C.form.submit[lang]} <span className="arrow">↗</span>
-                      </button>
-                      <span className="contact-form__hint text-mono text-muted">
-                        {lang === "en" ? "We reply in person, not from a bot." : "Une vraie personne vous répond."}
-                      </span>
+                  </div>
+                  <div className="contact-form__row">
+                    <div className="field">
+                      <label>{C.form.phone[lang]}</label>
+                      <input value={form.phone} onChange={(e) => setForm({...form, phone: e.target.value})} />
                     </div>
-                    {error && <div className="contact-form__error">{error}</div>}
-                  </form>
-                )}
+                    <div className="field">
+                      <label>{C.form.service[lang]}</label>
+                      <select value={form.service} onChange={(e) => setForm({...form, service: e.target.value})}>
+                        <option value="blueprint">Design Blueprint</option>
+                        <option value="delivery">Design & Setup</option>
+                        <option value="transform">Full Transformation</option>
+                        <option value="smart">Smart Integration</option>
+                        <option value="not-sure">{lang === "en" ? "Not sure yet" : "Pas encore sûr"}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="field">
+                    <label>{C.form.message[lang]}</label>
+                    <textarea
+                      value={form.message}
+                      onChange={(e) => setForm({...form, message: e.target.value})}
+                      placeholder={lang === "en" ? "Size, goals, timeline, anything we should know…" : "Surface, objectifs, calendrier, tout ce qui peut nous aider…"}
+                      required
+                    />
+                  </div>
+                  <label className="checkbox">
+                    <input type="checkbox" checked={form.consent} onChange={(e) => setForm({...form, consent: e.target.checked})} required />
+                    <span>{C.form.consent[lang]}{" "}
+                      <a onClick={(e) => { e.preventDefault(); onNav("conditions"); }} style={{textDecoration: "underline", cursor: "pointer"}}>{C.form.consent_link[lang]}</a>.
+                    </span>
+                  </label>
+                  <div className="contact-form__submit">
+                    <button type="submit" className="btn" disabled={!form.consent || submitting}>
+                      {submitting ? (lang === "en" ? "Sending..." : "Envoi...") : C.form.submit[lang]} <span className="arrow">↗</span>
+                    </button>
+                    <span className="contact-form__hint text-mono text-muted">
+                      {lang === "en" ? "A real person replies — never a bot." : "Une vraie personne vous répond."}
+                    </span>
+                  </div>
+                  {error && <div className="contact-form__error">{error}</div>}
+                </form>
+              )}
+            </div>
+          </Reveal>
+
+          <Reveal delay={0.1}>
+            <aside className="contact-v2-sidebar">
+              <div className="contact-info-card">
+                <div className="contact-info-card__eyebrow text-mono">{text(C.info_title, lang, lang === "en" ? "Direct line" : "Contact direct")}</div>
+                <a className="contact-info-card__contact" href={`mailto:${C.main_email}`}>{C.main_email}</a>
+                <a className="contact-info-card__contact contact-info-card__contact--brass" href={`tel:${C.main_phone}`}>{C.main_phone}</a>
+                <div className="contact-info-card__divider"></div>
+                <p className="contact-info-card__address">{text(C.address, lang, "Orlando, FL · USA")}</p>
               </div>
-            </Reveal>
 
-            {/* DIRECT LINE + Why us */}
-            <Reveal delay={0.15}>
-              <aside className="contact-sidebar">
-                <div className="contact-info-card">
-                  <div className="contact-info-card__eyebrow text-mono">{C.info_title[lang]}</div>
-                  <a className="contact-info-card__contact" href={`mailto:${C.main_email}`}>{C.main_email}</a>
-                  <a className="contact-info-card__contact contact-info-card__contact--brass" href={`tel:${C.main_phone}`}>{C.main_phone}</a>
-                  <div className="contact-info-card__divider"></div>
-                  <p className="contact-info-card__address">{C.address[lang]}</p>
-                </div>
-
-                <div className="contact-trust-card">
-                  <div className="text-mono text-muted">{lang === "en" ? "WHAT TO EXPECT" : "À QUOI S'ATTENDRE"}</div>
-                  <ol className="contact-trust-card__steps">
-                    <li>
-                      <span className="contact-trust-card__num">01</span>
-                      <div>
-                        <strong>{lang === "en" ? "We listen first." : "On vous écoute d'abord."}</strong>
-                        <p>{lang === "en" ? "A short call to understand your space, needs, and budget." : "Un échange rapide pour comprendre votre espace, vos besoins et votre budget."}</p>
-                      </div>
-                    </li>
-                    <li>
-                      <span className="contact-trust-card__num">02</span>
-                      <div>
-                        <strong>{lang === "en" ? "Free, tailored estimate." : "Devis gratuit et sur-mesure."}</strong>
-                        <p>{lang === "en" ? "Clear scope and pricing — no surprises, no pressure." : "Périmètre et prix clairs — pas de surprise, pas de pression."}</p>
-                      </div>
-                    </li>
-                    <li>
-                      <span className="contact-trust-card__num">03</span>
-                      <div>
-                        <strong>{lang === "en" ? "You choose what's next." : "Vous décidez de la suite."}</strong>
-                        <p>{lang === "en" ? "Design only, full transformation, or anywhere between." : "Plan seul, transformation complète, ou n'importe quoi entre les deux."}</p>
-                      </div>
-                    </li>
-                  </ol>
-                </div>
-              </aside>
-            </Reveal>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Team ─────────────────────────────────── */}
-      <section className="section contact-team-section">
-        <div className="container">
-          <div className="contact-team-section__head">
-            <div className="eyebrow">{lang === "en" ? "The team" : "L'équipe"}</div>
-            <Reveal as="h2" className="display-l contact-team-section__title">
-              {lang === "en" ? "Real people behind every project." : "De vraies personnes derrière chaque projet."}
-            </Reveal>
-          </div>
-          <div className="contact-team-grid">
-            {team.map((m, i) => {
-              const initial = (m.name || "?").trim().charAt(0).toUpperCase();
-              return (
-                <Reveal key={m.name}>
-                  <article className={`contact-team-card contact-team-card--v${(i % 4) + 1}`}>
-                    <div className="contact-team-card__top">
-                      <span className="contact-team-card__role-chip">{m.role[lang]}</span>
-                      <div className="contact-team-card__avatar" aria-hidden>{initial}</div>
-                    </div>
-                    <div className="contact-team-card__name">{m.name}</div>
-                    <div className="contact-team-card__contacts">
-                      {m.email && (
-                        <a className="contact-team-card__row" href={`mailto:${m.email}`}>
-                          <svg className="contact-team-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                            <rect x="3" y="5" width="18" height="14" rx="2"/>
-                            <path d="m3 7 9 6 9-6"/>
-                          </svg>
-                          <span>{m.email}</span>
-                        </a>
-                      )}
-                      {m.phone && (
-                        <a className="contact-team-card__row contact-team-card__row--muted" href={`tel:${m.phone.replace(/\s+/g, "")}`}>
-                          <svg className="contact-team-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92Z"/>
-                          </svg>
-                          <span>{m.phone}</span>
-                        </a>
-                      )}
-                    </div>
-                  </article>
-                </Reveal>
-              );
-            })}
-          </div>
+              <ul className="contact-v2-trust">
+                <li>{lang === "en" ? "Free 30-minute consultation" : "Consultation gratuite 30 min"}</li>
+                <li>{lang === "en" ? "Reply within 48 hours" : "Réponse sous 48h"}</li>
+                <li>{lang === "en" ? "No commitment, no pressure" : "Sans engagement, sans pression"}</li>
+              </ul>
+            </aside>
+          </Reveal>
         </div>
       </section>
     </div>
@@ -296,53 +209,56 @@ export function ConditionsPage({ lang }) {
   );
 
   return (
-    <div className="page">
-      <section className="section" style={{paddingTop:"60px", paddingBottom:"40px"}}>
-        <div className="container">
-          <div className="eyebrow">{lang==="en"?"Legal · Project conditions":"Conditions de projet"}</div>
-          <Reveal as="h1" className="display-l" style={{marginTop:"32px", maxWidth:"22ch"}}>
+    <div className="page conditions-v2">
+      <section className="conditions-v2-head">
+        <div className="conditions-v2-head__inner">
+          <Reveal as="div" className="conditions-v2-head__eyebrow">
+            {lang==="en" ? "Legal · Project conditions" : "Conditions de projet"}
+          </Reveal>
+          <Reveal as="h1" className="conditions-v2-head__title">
             {pageTitle}
           </Reveal>
-          <Reveal delay={0.15}>
-            <p className="lead" style={{marginTop:"32px", maxWidth:"60ch"}}>
-              {pageIntro}
-            </p>
+          <Reveal delay={0.1}>
+            <p className="conditions-v2-head__sub">{pageIntro}</p>
           </Reveal>
         </div>
       </section>
 
-      <section className="section" style={{paddingTop:"40px"}}>
-        <div className="container conditions-grid" style={{display:"grid", gridTemplateColumns:"260px 1fr", gap:"60px", alignItems:"start"}}>
-          <aside className="conditions-aside" style={{position:"sticky", top:"110px"}}>
-            <div className="text-mono text-muted" style={{marginBottom:"16px"}}>{lang==="en"?"INDEX":"INDEX"}</div>
-            <ul style={{listStyle:"none", padding:0, margin:0}}>
+      <section className="conditions-v2-main">
+        <div className="conditions-v2-grid">
+          <aside className="conditions-v2-aside">
+            <div className="conditions-v2-aside__label">{lang==="en"?"Index":"Index"}</div>
+            <ul className="conditions-v2-aside__list">
               {sections.map(s => (
-                <li key={s.num} style={{padding:"8px 0", borderBottom:"1px solid var(--line)"}}>
-                  <a href={`#sec-${s.num}`} style={{display:"flex", gap:"12px", fontSize:"13px", color:"var(--ink-soft)"}} onClick={(e)=>{e.preventDefault(); document.getElementById(`sec-${s.num}`)?.scrollIntoView({behavior:"smooth", block:"start"});}}>
-                    <span style={{color:"var(--accent)", fontFamily:"var(--mono)"}}>{s.num}</span>
+                <li key={s.num}>
+                  <a href={`#sec-${s.num}`} onClick={(e)=>{e.preventDefault(); document.getElementById(`sec-${s.num}`)?.scrollIntoView({behavior:"smooth", block:"start"});}}>
+                    <span className="conditions-v2-aside__num">{s.num}</span>
                     <span>{s.title}</span>
                   </a>
                 </li>
               ))}
             </ul>
           </aside>
-          <div>
+          <div className="conditions-v2-body">
             {sections.map(s => (
               <Reveal key={s.num}>
-                <div id={`sec-${s.num}`} style={{padding:"40px 0", borderBottom:"1px solid var(--line)", scrollMarginTop:"110px"}}>
-                  <div style={{display:"flex", gap:"24px", alignItems:"baseline", marginBottom:"16px"}}>
-                    <span style={{fontFamily:"var(--mono)", fontSize:"12px", color:"var(--accent)", letterSpacing:"0.1em"}}>§ {s.num}</span>
-                    <h3 style={{fontFamily:"var(--serif)", fontSize:"32px", letterSpacing:"-0.02em"}}>{s.title}</h3>
+                <article id={`sec-${s.num}`} className="conditions-v2-section">
+                  <div className="conditions-v2-section__top">
+                    <span className="conditions-v2-section__num">§ {s.num}</span>
+                    <h2 className="conditions-v2-section__title">{s.title}</h2>
                   </div>
-                  <p style={{color:"var(--ink-soft)", fontSize:"16px", lineHeight:1.7, maxWidth:"68ch"}}>{s.body}</p>
-                </div>
+                  <p className="conditions-v2-section__body">{s.body}</p>
+                </article>
               </Reveal>
             ))}
-            <div style={{marginTop:"60px", padding:"40px", background:"var(--cream-deep)", borderRadius:"16px"}}>
-              <div className="text-mono text-muted">{lang==="en"?"OUR COMMITMENT":"NOTRE ENGAGEMENT"}</div>
-              <div style={{display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(180px, 1fr))", gap:"16px", marginTop:"24px"}}>
-                {(lang==="en" ? ["Clear communication", "Thoughtful design", "Reliable coordination", "Aligned results"] : ["Communication claire", "Design réfléchi", "Coordination fiable", "Résultats alignés"]).map(c => (
-                  <div key={c} style={{fontFamily:"var(--serif)", fontSize:"22px", letterSpacing:"-0.01em"}}>{c}</div>
+            <div className="conditions-v2-commit">
+              <div className="conditions-v2-commit__label">{lang==="en"?"Our commitment":"Notre engagement"}</div>
+              <div className="conditions-v2-commit__grid">
+                {(lang==="en"
+                  ? ["Clear communication", "Thoughtful design", "Reliable coordination", "Aligned results"]
+                  : ["Communication claire", "Design réfléchi", "Coordination fiable", "Résultats alignés"]
+                ).map(c => (
+                  <div key={c} className="conditions-v2-commit__item">{c}</div>
                 ))}
               </div>
             </div>
@@ -352,3 +268,9 @@ export function ConditionsPage({ lang }) {
     </div>
   );
 };
+
+function text(value, lang, fallback = "") {
+  if (!value) return fallback;
+  if (typeof value === "string") return value;
+  return value[lang] || value.en || value.fr || fallback;
+}
