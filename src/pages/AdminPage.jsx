@@ -131,6 +131,8 @@ const SECTION_LABELS = {
   audience: "Audiences",
   process_intro: "Intro process",
   final_cta: "CTA final",
+  use_cases: "Cas d'usage (4 pièces)",
+  testimonials_v2: "Témoignages",
   projects_page: "Page réalisations",
   contact_page: "Page contact",
   popup: "Popup email",
@@ -174,6 +176,12 @@ const FIELD_LABELS = {
   homeowners_image: "Image carte 01 · Propriétaires",
   agents_image: "Image carte 02 · Agents immobiliers",
   developers_image: "Image carte 03 · Promoteurs",
+  quote: "Citation",
+  city: "Ville",
+  rating: "Note (1-5)",
+  tagline: "Accroche",
+  bullets: "Bullets (3 max)",
+  avatar_image: "Photo (avatar)",
 };
 
 const KNOWN_SECTION_DEFAULTS = {
@@ -194,8 +202,6 @@ const KNOWN_SECTION_DEFAULTS = {
     agents_image: "",
     developers_image: "",
   },
-<<<<<<< Updated upstream
-=======
   testimonials_v2: {
     eyebrow: { en: "Real homeowners, real stories", fr: "De vrais clients, de vraies histoires" },
     title: { en: "Where Orlando homeowners fall in love with their garage.", fr: "Là où les propriétaires d'Orlando tombent amoureux de leur garage." },
@@ -214,7 +220,6 @@ const KNOWN_SECTION_DEFAULTS = {
       { image: "", name: { en: "", fr: "" }, tagline: { en: "", fr: "" }, bullets: { en: [], fr: [] } },
     ],
   },
->>>>>>> Stashed changes
 };
 
 function isImageKey(key) {
@@ -836,7 +841,7 @@ function useEditorState(initial) {
    Public component
    ========================================================================== */
 
-export function AdminPage({ onNav }) {
+function AdminPage({ onNav }) {
   return (
     <ConfirmProvider>
       <ToastProvider>
@@ -4767,3 +4772,5 @@ const jsonTextareaStyle = {
   fontSize: "12px",
   lineHeight: 1.6,
 };
+
+export default AdminPage;

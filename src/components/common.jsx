@@ -100,90 +100,52 @@ export function Header({ route, onNav, lang, onLang }) {
 export function Footer({ onNav, lang }) {
   const t = CONTENT.nav[lang];
   return (
-    <footer className="footer">
-      <div className="row" style={{gap:"60px"}}>
-        <div className="col" style={{flex:"1.5"}}>
-          <div style={{fontFamily:"var(--serif)", fontSize:"40px", lineHeight:1.05, letterSpacing:"-0.03em", marginBottom:"20px"}}>
-            Garage <em style={{fontStyle:"italic", color:"var(--brass-soft)"}}>à la</em><br/>Carte
+    <footer className="footer-v2">
+      <div className="footer-v2__grid">
+        <div className="footer-v2__brand">
+          <div className="footer-v2__wordmark">
+            Garage <em>à la</em><br/>Carte
           </div>
-          <p style={{color:"rgba(244,237,226,0.6)", fontSize:"14px", maxWidth:"32ch"}}>
+          <p className="footer-v2__tagline">
             {lang==="en"
-              ? "American precision. European design. Custom garage transformations in the Orlando area."
-              : "Précision américaine. Design européen. Transformations de garage sur-mesure dans la région d'Orlando."}
+              ? "Custom garage transformations in Orlando, Florida."
+              : "Transformations de garage sur-mesure à Orlando, Floride."}
           </p>
         </div>
-        <div className="col">
+        <div className="footer-v2__col">
           <h4>{lang==="en"?"Navigate":"Navigation"}</h4>
           <a href={routeToPath("home")} onClick={(e)=>{e.preventDefault();onNav("home");}}>{t.home}</a>
           <a href={routeToPath("projects")} onClick={(e)=>{e.preventDefault();onNav("projects");}}>{t.projects}</a>
           <a href={routeToPath("contact")} onClick={(e)=>{e.preventDefault();onNav("contact");}}>{t.contact}</a>
         </div>
-        <div className="col">
+        <div className="footer-v2__col">
           <h4>{lang==="en"?"Services":"Services"}</h4>
           <a href={routeToPath("home")} onClick={(e)=>{e.preventDefault();onNav("home");}}>Design Blueprint</a>
           <a href={routeToPath("home")} onClick={(e)=>{e.preventDefault();onNav("home");}}>Design + Setup</a>
           <a href={routeToPath("home")} onClick={(e)=>{e.preventDefault();onNav("home");}}>Full Transformation</a>
           <a href={routeToPath("home")} onClick={(e)=>{e.preventDefault();onNav("home");}}>Smart Integration</a>
         </div>
-        <div className="col">
+        <div className="footer-v2__col">
           <h4>{lang==="en"?"Contact":"Contact"}</h4>
           <a href="mailto:hello@garagealacarte.com">hello@garagealacarte.com</a>
           <a href="tel:+14075550142">+1 (407) 555-0142</a>
-          <div style={{color:"rgba(244,237,226,0.6)", fontSize:"14px", marginTop:"8px"}}>Orlando, FL · USA</div>
+          <div className="footer-v2__address">Orlando, FL · USA</div>
         </div>
-        <div className="col">
+        <div className="footer-v2__col">
           <h4>{lang==="en"?"Legal":"Mentions"}</h4>
           <a href={routeToPath("conditions")} onClick={(e)=>{e.preventDefault();onNav("conditions");}}>{lang==="en"?"Project conditions":"Conditions de projet"}</a>
           <a href={routeToPath("admin")} onClick={(e)=>{e.preventDefault();onNav("admin");}}>Admin</a>
         </div>
       </div>
 
-      <div className="footer__big">
-        <div className="footer__big-inner">
-          <span>Garage à la Carte</span><span style={{color:"var(--brass)"}}> · </span>
-          <span style={{fontStyle:"italic"}}>Designed & Built</span><span style={{color:"var(--brass)"}}> · </span>
-          <span>Orlando FL</span><span style={{color:"var(--brass)"}}> · </span>
-          <span>Garage à la Carte</span><span style={{color:"var(--brass)"}}> · </span>
-          <span style={{fontStyle:"italic"}}>Designed & Built</span><span style={{color:"var(--brass)"}}> · </span>
-          <span>Orlando FL</span><span style={{color:"var(--brass)"}}> · </span>
-        </div>
-      </div>
-
-      <div style={{display:"flex", justifyContent:"space-between", fontFamily:"var(--mono)", fontSize:"11px", letterSpacing:"0.1em", color:"rgba(244,237,226,0.4)", textTransform:"uppercase"}}>
-        <span>© 2026 Garage à la Carte. All rights reserved.</span>
-        <a href="https://webcodestudio.fr" target="_blank" rel="noreferrer noopener" style={{color:"rgba(244,237,226,0.55)"}}>
+      <div className="footer-v2__bottom">
+        <span>© {new Date().getFullYear()} Garage à la Carte. All rights reserved.</span>
+        <a href="https://webcodestudio.fr" target="_blank" rel="noreferrer noopener">
           Designed by WebCode Studio
         </a>
       </div>
     </footer>
   );
-};
-
-// ---------- Animated counter ----------
-export function Counter({ to, suffix="", duration=1600 }) {
-  const [val, setVal] = useState(0);
-  const ref = useRef(null);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    let started = false;
-    const io = new IntersectionObserver((es) => es.forEach((e)=>{
-      if (e.isIntersecting && !started) {
-        started = true;
-        const start = performance.now();
-        const tick = (now) => {
-          const p = Math.min(1, (now-start)/duration);
-          const eased = 1 - Math.pow(1-p, 3);
-          setVal(Math.round(to * eased));
-          if (p < 1) requestAnimationFrame(tick);
-        };
-        requestAnimationFrame(tick);
-      }
-    }), { threshold: 0.4 });
-    io.observe(el);
-    return () => io.disconnect();
-  }, [to, duration]);
-  return <span ref={ref}>{val}{suffix}</span>;
 };
 
 // ---------- Image/media frame ----------
@@ -232,23 +194,6 @@ export function Reveal({ children, delay=0, as="div", style={}, className="" }) 
   const ref = useReveal();
   const Tag = as;
   return <Tag ref={ref} className={`reveal ${className}`} style={{transitionDelay:`${delay}s`, ...style}}>{children}</Tag>;
-};
-
-// ---------- Marquee ----------
-export function Marquee({ words }) {
-  const items = [...words, ...words, ...words];
-  return (
-    <div className="marquee">
-      <div className="marquee__inner">
-        {items.map((w, i) => (
-          <React.Fragment key={i}>
-            <span><em>{w}</em></span>
-            <span className="dot"></span>
-          </React.Fragment>
-        ))}
-      </div>
-    </div>
-  );
 };
 
 // ---------- Email capture popup ----------

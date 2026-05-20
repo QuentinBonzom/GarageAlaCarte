@@ -25,26 +25,25 @@ values
     'fr', jsonb_build_object('home', 'Accueil', 'projects', 'Réalisations', 'contact', 'Contact', 'admin', 'Admin')
   ), 10, true),
   ('home', 'hero', jsonb_build_object(
-    'eyebrow', jsonb_build_object('en', 'Orlando, FL · Est. 2024', 'fr', 'Orlando, FL · Depuis 2024'),
-    'title', jsonb_build_object(
-      'en', jsonb_build_array('Transform your garage', 'into a space that', 'works for your life.'),
-      'fr', jsonb_build_array('Transformez votre garage', 'en un espace pensé', 'pour votre vie.')
+    'eyebrow', jsonb_build_object(
+      'en', 'Orlando, FL · Custom garage transformations',
+      'fr', 'Orlando, FL · Transformations de garage sur-mesure'
     ),
-<<<<<<< Updated upstream
-    'italic_word', jsonb_build_object('en', 'works', 'fr', 'pensé'),
-=======
+    'title', jsonb_build_object(
+      'en', jsonb_build_array('Your garage,', 'reimagined.'),
+      'fr', jsonb_build_array('Votre garage,', 'réinventé.')
+    ),
     'italic_word', jsonb_build_object('en', 'reimagined.', 'fr', 'réinventé.'),
     'tagline', jsonb_build_object(
       'en', 'Unlock the Full Potential of Your Garage',
       'fr', 'Révélez tout le potentiel de votre garage'
     ),
->>>>>>> Stashed changes
     'sub', jsonb_build_object(
-      'en', 'Custom garage transformations for homeowners, real-estate professionals, and developers — from a clear plan to full execution.',
-      'fr', 'Transformations de garage sur-mesure pour propriétaires, agents immobiliers et promoteurs — du plan détaillé à la réalisation complète.'
+      'en', 'Custom garage transformations in Orlando.',
+      'fr', 'Transformations de garage sur-mesure à Orlando.'
     ),
     'primary_cta', jsonb_build_object('en', 'Get my free estimate', 'fr', 'Obtenir mon devis gratuit'),
-    'secondary_cta', jsonb_build_object('en', 'Schedule a call', 'fr', 'Planifier un appel')
+    'secondary_cta', jsonb_build_object('en', 'See our work', 'fr', 'Voir nos réalisations')
   ), 20, true),
   ('home', 'hero_caption', jsonb_build_object(
     'label', jsonb_build_object('en', 'Featured project', 'fr', 'Projet phare'),
@@ -53,23 +52,8 @@ values
     'featured_label', jsonb_build_object('en', 'FEATURED PROJECT', 'fr', 'PROJET PHARE'),
     'featured_title', jsonb_build_object('en', 'The Social Hub', 'fr', 'The Social Hub')
   ), 30, true),
-  ('home', 'marquee_words', jsonb_build_object(
-    'en', jsonb_build_array('Design', 'Prepare', 'Transform', 'à la carte'),
-    'fr', jsonb_build_array('Concevoir', 'Préparer', 'Transformer', 'à la carte')
-  ), 40, true),
-  ('home', 'visual_strip', jsonb_build_object(
-    'eyebrow', jsonb_build_object('en', 'From plan to reality', 'fr', 'Du plan à la réalité'),
-    'title', jsonb_build_object('en', 'Designed in 3D. Built to live in.', 'fr', 'Conçu en 3D. Construit pour être habité.'),
-    'sub', jsonb_build_object(
-      'en', 'Aymeric drafts every layout in precise 3D. Juliette dresses each space in materials, light, and atmosphere — so you see your future garage before we touch a wall.',
-      'fr', 'Aymeric dessine chaque plan en 3D précis. Juliette habille l''espace de matières, lumières et atmosphères — pour que vous voyiez votre futur garage avant qu''un mur ne bouge.'
-    ),
-    'plan_image', '',
-    'mood_image', '',
-    'interior_image', ''
-  ), 50, true),
   ('home', 'before_after', jsonb_build_object(
-    'eyebrow', jsonb_build_object('en', 'Section 02 · Story', 'fr', 'Section 02 · Le récit'),
+    'eyebrow', jsonb_build_object('en', 'The transformation', 'fr', 'La transformation'),
     'title', jsonb_build_object('en', 'From cluttered space to designed living.', 'fr', 'D''un espace encombré à un lieu de vie pensé.'),
     'before', jsonb_build_object('en', 'Boxes, tools, wasted square footage. No clear purpose.', 'fr', 'Cartons, outils, mètres carrés perdus. Aucun usage clair.'),
     'after', jsonb_build_object('en', 'A clean, planned, functional garage designed around your lifestyle.', 'fr', 'Un garage propre, pensé, fonctionnel — conçu autour de votre vie.'),
@@ -79,50 +63,18 @@ values
     )
   ), 60, true),
   ('home', 'services_intro', jsonb_build_object(
-    'eyebrow', jsonb_build_object('en', 'Section 03 · Services', 'fr', 'Section 03 · Services'),
+    'eyebrow', jsonb_build_object('en', 'Pricing', 'fr', 'Tarifs'),
     'title', jsonb_build_object('en', 'Choose your level of support.', 'fr', 'Choisissez votre niveau d''accompagnement.'),
-    'sub', jsonb_build_object('en', 'Avoid costly mistakes. Start with a plan — or go all the way. Upgrade anytime.', 'fr', 'Évitez les erreurs coûteuses. Commencez par un plan — ou allez jusqu''au bout. Évoluez à tout moment.')
+    'sub', jsonb_build_object('en', 'Start with a plan. Go all the way. Upgrade anytime.', 'fr', 'Commencez par un plan. Allez jusqu''au bout. Évoluez à tout moment.')
   ), 70, true),
-  ('home', 'why', jsonb_build_object(
-    'eyebrow', jsonb_build_object('en', 'Section 04 · Why us', 'fr', 'Section 04 · Pourquoi nous'),
-    'title', jsonb_build_object('en', 'Most companies offer one fixed solution. We don''t.', 'fr', 'La plupart proposent une seule solution. Pas nous.'),
-    'sub', jsonb_build_object(
-      'en', 'With Garage à la Carte, you choose how far you want to go — from design only to full transformation. Your space. Your pace. Your level of support.',
-      'fr', 'Chez Garage à la Carte, vous choisissez votre niveau d''engagement — du plan seul à la transformation complète. Votre espace. Votre rythme. Votre niveau d''accompagnement.'
-    ),
-    'stats', jsonb_build_array(
-      jsonb_build_object('num', 4, 'label', jsonb_build_object('en', 'à la carte services', 'fr', 'services à la carte')),
-      jsonb_build_object('num', 20, 'suffix', 'mi', 'label', jsonb_build_object('en', 'Orlando service area', 'fr', 'rayon Orlando')),
-      jsonb_build_object('num', 100, 'suffix', '%', 'label', jsonb_build_object('en', 'fee credited on contract', 'fr', 'honoraires crédités au contrat'))
-    )
-  ), 80, true),
-  ('home', 'team_intro', jsonb_build_object(
-    'eyebrow', jsonb_build_object('en', 'Section 05 · Who we are', 'fr', 'Section 05 · L''équipe'),
-    'title', jsonb_build_object('en', 'Built by experts. Designed around you.', 'fr', 'Construit par des experts. Pensé autour de vous.'),
-    'sub', jsonb_build_object('en', 'Garage à la Carte is a collaboration of specialists who turn ideas into real, functional spaces.', 'fr', 'Garage à la Carte est la rencontre de spécialistes qui transforment vos idées en espaces fonctionnels.')
-  ), 90, true),
-  ('home', 'audience', jsonb_build_object(
-    'eyebrow', jsonb_build_object('en', 'Section 06 · Who we help', 'fr', 'Section 06 · Qui nous aidons'),
-    'title', jsonb_build_object('en', 'Built for homes, properties, and real-estate value.', 'fr', 'Pensé pour les foyers, les biens, et la valeur immobilière.'),
-    'homeowners_image', '/audience-homeowners.svg',
-    'agents_image', '/audience-agents.svg',
-    'developers_image', '/audience-developers.svg',
-    'items', jsonb_build_array(
-      jsonb_build_object('title', jsonb_build_object('en', 'Homeowners', 'fr', 'Propriétaires'), 'text', jsonb_build_object('en', 'Create a garage that fits your lifestyle and daily needs.', 'fr', 'Créez un garage qui correspond à votre vie et à vos usages.')),
-      jsonb_build_object('title', jsonb_build_object('en', 'Real Estate Agents', 'fr', 'Agents immobiliers'), 'text', jsonb_build_object('en', 'Help buyers and sellers see the hidden potential of a garage.', 'fr', 'Aidez acheteurs et vendeurs à voir le potentiel caché d''un garage.')),
-      jsonb_build_object('title', jsonb_build_object('en', 'Developers & Property Pros', 'fr', 'Promoteurs & Pros'), 'text', jsonb_build_object('en', 'Add functional, attractive value to residential properties.', 'fr', 'Ajoutez une valeur fonctionnelle et désirable à vos biens.'))
-    )
-  ), 100, true),
   ('home', 'process_intro', jsonb_build_object(
-    'eyebrow', jsonb_build_object('en', 'Section 07 · Process', 'fr', 'Section 07 · Processus'),
-    'title', jsonb_build_object('en', 'How it works.', 'fr', 'Comment ça marche.')
+    'eyebrow', jsonb_build_object('en', 'How it works', 'fr', 'Comment ça marche'),
+    'title', jsonb_build_object('en', 'From idea to delivered space.', 'fr', 'De l''idée à l''espace livré.')
   ), 110, true),
   ('home', 'final_cta', jsonb_build_object(
-    'title', jsonb_build_object('en', 'Ready to transform your garage?', 'fr', 'Prêt à transformer votre garage ?'),
-    'sub', jsonb_build_object('en', 'Start with a free estimate and see what your garage could become.', 'fr', 'Commencez par un devis gratuit et découvrez ce que votre garage peut devenir.')
+    'title', jsonb_build_object('en', 'Ready to reimagine your garage?', 'fr', 'Prêt à réinventer votre garage ?'),
+    'sub', jsonb_build_object('en', 'Tell us about your space. We''ll send a free estimate within 48 hours.', 'fr', 'Parlez-nous de votre espace. Nous envoyons un devis gratuit sous 48h.')
   ), 120, true),
-<<<<<<< Updated upstream
-=======
   ('home', 'use_cases', jsonb_build_object(
     'eyebrow', jsonb_build_object('en', 'Transformations', 'fr', 'Transformations'),
     'title', jsonb_build_object('en', 'Pick your room.', 'fr', 'Choisissez votre pièce.'),
@@ -169,11 +121,10 @@ values
       )
     )
   ), 123, true),
->>>>>>> Stashed changes
   ('projects', 'projects_page', jsonb_build_object(
     'eyebrow', jsonb_build_object('en', 'Selected work', 'fr', 'Sélection'),
     'title', jsonb_build_object('en', 'Our garages, redesigned.', 'fr', 'Nos garages, repensés.'),
-    'sub', jsonb_build_object('en', 'Each space is a fully customised transformation. Click any project for the full story.', 'fr', 'Chaque espace est une transformation sur-mesure. Cliquez pour lire l''histoire complète.')
+    'sub', jsonb_build_object('en', 'Custom transformations. Tap any project for the full story.', 'fr', 'Transformations sur-mesure. Cliquez pour l''histoire complète.')
   ), 10, true),
   ('contact', 'contact_page', jsonb_build_object(
     'eyebrow', jsonb_build_object('en', 'Get in touch', 'fr', 'Contact'),
@@ -372,10 +323,10 @@ where step_number in (1, 2, 3, 4);
 
 insert into public.process_steps (step_number, title, description, display_order, is_active)
 values
-  (1, jsonb_build_object('en', 'Tell us your vision', 'fr', 'Dites-nous votre vision'), jsonb_build_object('en', 'We learn about your garage, needs, style, and goals.', 'fr', 'On découvre votre garage, vos besoins, votre style.'), 10, true),
-  (2, jsonb_build_object('en', 'Choose your level', 'fr', 'Choisissez votre formule'), jsonb_build_object('en', 'Design only, design + setup, full transformation, or smart integration.', 'fr', 'Plan seul, design + setup, transformation complète ou intégration smart.'), 20, true),
-  (3, jsonb_build_object('en', 'Plan before spending', 'fr', 'Planifiez avant de dépenser'), jsonb_build_object('en', 'We define layout, visuals, materials, and execution steps.', 'fr', 'On définit plan, visuels, matériaux et étapes.'), 30, true),
-  (4, jsonb_build_object('en', 'Bring it to life', 'fr', 'Donnez-lui vie'), jsonb_build_object('en', 'Build it yourself, request support, or let us manage everything.', 'fr', 'Construisez vous-même, demandez du support ou laissez-nous tout gérer.'), 40, true);
+  (1, jsonb_build_object('en', 'Tell us your vision', 'fr', 'Dites-nous votre vision'), jsonb_build_object('en', 'Free 30-minute consultation.', 'fr', 'Consultation gratuite de 30 minutes.'), 10, true),
+  (2, jsonb_build_object('en', 'Choose your level', 'fr', 'Choisissez votre formule'), jsonb_build_object('en', 'Four à la carte tiers.', 'fr', 'Quatre formules à la carte.'), 20, true),
+  (3, jsonb_build_object('en', 'Plan before spending', 'fr', 'Planifiez avant de dépenser'), jsonb_build_object('en', 'See it in 3D first.', 'fr', 'Voyez votre garage en 3D.'), 30, true),
+  (4, jsonb_build_object('en', 'Bring it to life', 'fr', 'Donnez-lui vie'), jsonb_build_object('en', 'DIY, supported, or turnkey.', 'fr', 'Vous-même, accompagné ou clé en main.'), 40, true);
 
 -- Keep only the three portfolio projects currently used on the website.
 delete from public.projects

@@ -31,6 +31,8 @@ function mergeCmsSections(nextContent, sections) {
   if (sectionMap.why) nextContent.why = sectionMap.why;
   if (sectionMap.audience) nextContent.audience = sectionMap.audience;
   if (sectionMap.final_cta) nextContent.final_cta = sectionMap.final_cta;
+  if (sectionMap.use_cases) nextContent.use_cases = sectionMap.use_cases;
+  if (sectionMap.testimonials_v2) nextContent.testimonials_v2 = sectionMap.testimonials_v2;
   if (sectionMap.projects_page) nextContent.projects_page = sectionMap.projects_page;
   if (sectionMap.popup) nextContent.popup = sectionMap.popup;
 

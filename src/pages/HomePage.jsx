@@ -1,34 +1,22 @@
 import React, { useState, useEffect, useRef } from "react";
 import { CONTENT } from "../data/content";
-import { Counter, ImagePlaceholder, Marquee, Reveal, useReveal } from "../components/common";
+import { ImagePlaceholder, Reveal, useReveal } from "../components/common";
 
 export function HomePage({ lang, onNav }) {
-  const C = CONTENT;
   return (
     <div className="page">
       <Hero lang={lang} onNav={onNav} />
-      <div id="marquee_words"><Marquee words={C.marquee_words[lang]} /></div>
-      <VisualStrip lang={lang} />
+      <UseCasesSection lang={lang} onNav={onNav} />
       <BeforeAfterSection lang={lang} />
       <ServicesSection lang={lang} onNav={onNav} />
-<<<<<<< Updated upstream
-      <WhySection lang={lang} />
-      <AudienceSection lang={lang} />
-      <ProcessSection lang={lang} />
-=======
->>>>>>> Stashed changes
       <FinalCTA lang={lang} onNav={onNav} />
     </div>
   );
 };
 
-// ============================ HERO with single immersive image ============================
+// ============================ HERO — "Your garage, reimagined." ============================
 function Hero({ lang, onNav }) {
   const C = CONTENT.hero;
-<<<<<<< Updated upstream
-  const cap = CONTENT.hero_caption;
-  const heroImage = cap.image || cap.after_image;
-=======
   const cap = CONTENT.hero_caption || {};
   const heroImage = cap.image || cap.after_image || "";
   const heroVideo = cap.video_url || cap.video || "";
@@ -37,105 +25,51 @@ function Hero({ lang, onNav }) {
     ? C.title[lang]
     : String(C.title?.[lang] || "").split("\n").filter(Boolean);
   const italicWord = C.italic_word?.[lang];
->>>>>>> Stashed changes
 
   return (
-    <section id="hero" className="section hero" style={{padding:0, position:"relative"}}>
-      <div className="hero__stage" style={{
-        position:"relative",
-        width:"100%",
-        height:"min(92vh, 880px)",
-        minHeight:"560px",
-        overflow:"hidden",
-        background:"var(--ink)"
-      }}>
-        {/* Single hero image */}
-        {heroImage ? (
-          <img
-            src={heroImage}
-            alt={cap.featured_title?.[lang] || "Garage à la carte"}
-            style={{position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover", display:"block"}}
-            draggable={false}
+    <section id="hero" className="hero-v2">
+      <div className="hero-v2__media" aria-hidden="true">
+        {heroVideo ? (
+          <video
+            src={heroVideo}
+            poster={heroImage || undefined}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
           />
+        ) : heroImage ? (
+          <img src={heroImage} alt="" loading="eager" fetchpriority="high" />
         ) : (
-          <>
-            <ImagePlaceholder
-              label={cap.featured_title?.[lang] || "The Social Hub"}
-              color="#3a2c22"
-              style={{position:"absolute", inset:0, borderRadius:0}}
-            />
-            <div style={{position:"absolute", inset:0, background:"radial-gradient(circle at 65% 40%, rgba(184,85,58,0.25), transparent 60%)"}}></div>
-          </>
+          <div className="hero-v2__placeholder" />
         )}
+      </div>
+      <div className="hero-v2__scrim" aria-hidden="true" />
 
-        {/* Readability scrim for text overlay */}
-        <div className="hero__scrim" style={{
-          position:"absolute", inset:0, pointerEvents:"none",
-          background:"linear-gradient(180deg, rgba(10,37,64,0.55) 0%, rgba(10,37,64,0.25) 35%, rgba(10,37,64,0.15) 60%, rgba(10,37,64,0.75) 100%)"
-        }}></div>
+      <div className="hero-v2__inner">
+        <Reveal as="div" className="hero-v2__locale hero-v2__locale--top">
+          <span className="hero-v2__locale-dot" aria-hidden="true" />
+          Orlando, FL
+        </Reveal>
 
-        {/* Foreground content overlay */}
-        <div className="hero__overlay" style={{
-          position:"absolute", inset:0,
-          padding:"96px clamp(20px, 4vw, 80px) 56px",
-          pointerEvents:"none"
-        }}>
-        <div className="container hero__container" style={{
-          height:"100%",
-          display:"flex", flexDirection:"column", justifyContent:"flex-end",
-          position:"relative"
-        }}>
-          {/* Meta */}
-          <div className="hero__meta text-mono" style={{
-            position:"absolute", top:"24px", left:"50%", transform:"translateX(-50%)",
-            color:"rgba(255,248,240,0.7)"
-          }}></div>
+        <Reveal as="h1" className="hero-v2__title">
+          {titleLines.map((line, i) => {
+            const words = String(line).split(" ");
+            return (
+              <span key={i} style={{ display: "block" }}>
+                {words.map((w, j) => {
+                  const isItalic = italicWord && w.toLowerCase().replace(/[.,]/g, "") === italicWord.toLowerCase().replace(/[.,]/g, "");
+                  const space = j < words.length - 1 ? " " : "";
+                  return isItalic
+                    ? <em key={j}>{w}{space}</em>
+                    : <React.Fragment key={j}>{w}{space}</React.Fragment>;
+                })}
+              </span>
+            );
+          })}
+        </Reveal>
 
-<<<<<<< Updated upstream
-          {/* Title */}
-          <Reveal as="h1" className="hero__title" style={{
-            color:"var(--cream)",
-            fontFamily:"var(--serif)",
-            fontSize:"clamp(36px, 5.2vw, 84px)",
-            letterSpacing:"-0.03em",
-            lineHeight:0.98,
-            maxWidth:"20ch",
-            textShadow:"0 2px 24px rgba(0,0,0,0.35)"
-          }}>
-            {(Array.isArray(C.title?.[lang]) ? C.title[lang] : String(C.title?.[lang] || "").split("\n")).map((line, i) => {
-              const words = String(line).split(" ");
-              return (
-                <span key={i} style={{display:"block"}}>
-                  {words.map((w, j) => {
-                    const isItalic = w === C.italic_word?.[lang];
-                    return isItalic
-                      ? <em key={j} className="italic" style={{color:"var(--accent)"}}>{w}{j < words.length-1 ? " " : ""}</em>
-                      : <React.Fragment key={j}>{w}{j < words.length-1 ? " " : ""}</React.Fragment>;
-                  })}
-                </span>
-              );
-            })}
-          </Reveal>
-
-          {/* Sub + CTAs */}
-          <div className="hero__cta-row" style={{
-            display:"grid", gridTemplateColumns:"minmax(0, 1fr) auto", gap:"40px",
-            marginTop:"32px", alignItems:"end", pointerEvents:"auto"
-          }}>
-            <Reveal delay={0.15} className="hero__sub-wrap">
-              <p className="hero__sub" style={{
-                color:"rgba(255,248,240,0.88)",
-                fontSize:"clamp(15px, 1.15vw, 18px)",
-                lineHeight:1.5,
-                maxWidth:"52ch",
-                textShadow:"0 1px 12px rgba(0,0,0,0.3)"
-              }}>{C.sub[lang]}</p>
-            </Reveal>
-            <Reveal delay={0.25} className="hero__ctas" style={{display:"flex", gap:"12px", flexWrap:"wrap", justifyContent:"flex-end"}}>
-              <button className="btn" onClick={()=>onNav("contact")}>{C.primary_cta[lang]} <span className="arrow">↗</span></button>
-              <button className="btn btn-ghost hero__ghost" style={{color:"var(--cream)", borderColor:"rgba(255,248,240,0.55)"}} onClick={()=>onNav("contact")}>{C.secondary_cta[lang]}</button>
-            </Reveal>
-=======
         <Reveal as="div" className="hero-v2__row" delay={0.1}>
           <div className="hero-v2__sub-group">
             {C.tagline?.[lang] && (
@@ -150,80 +84,89 @@ function Hero({ lang, onNav }) {
             <button className="btn btn-ghost" onClick={() => onNav("projects")}>
               {C.secondary_cta[lang]}
             </button>
->>>>>>> Stashed changes
           </div>
-
-          {/* Featured project caption */}
-          <div className="hero__featured" style={{
-            marginTop:"28px", paddingTop:"20px",
-            borderTop:"1px solid rgba(255,248,240,0.18)",
-            display:"flex", justifyContent:"space-between", alignItems:"baseline",
-            color:"var(--cream)", gap:"24px", flexWrap:"wrap"
-          }}>
-            <div style={{display:"flex", alignItems:"baseline", gap:"16px", flexWrap:"wrap"}}>
-              <div className="text-mono" style={{color:"rgba(255,248,240,0.55)"}}>{cap.featured_label?.[lang] || "FEATURED PROJECT"}</div>
-              <div style={{fontFamily:"var(--serif)", fontSize:"clamp(18px, 1.8vw, 24px)", letterSpacing:"-0.02em"}}>{cap.featured_title?.[lang] || "The Social Hub"}</div>
-            </div>
-            <div className="hero__featured-link text-mono" style={{color:"rgba(255,248,240,0.55)"}}>{cap.label?.[lang] || (lang === "en" ? "Featured project" : "Projet phare")} →</div>
-          </div>
-        </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );
 }
 
-// ============================ VISUAL STRIP (Aymeric & Juliette) ============================
-function VisualStrip({ lang }) {
-  const C = CONTENT.visual_strip;
+// ============================ USE CASES — "Pick your room" (4 transformations) ============================
+function UseCasesSection({ lang, onNav }) {
+  const C = CONTENT.use_cases;
+  if (!C || !Array.isArray(C.items) || C.items.length === 0) return null;
+
   return (
-    <section id="visual_strip" className="section" style={{paddingTop:"80px", paddingBottom:"40px"}}>
-      <div className="container">
-        <div style={{display:"grid", gridTemplateColumns:"1fr 1.3fr", gap:"60px", alignItems:"center"}}>
-          <Reveal>
-            <h2 className="display-l" style={{marginTop:"24px", maxWidth:"14ch"}}>
-              {C.title[lang].split(".").map((s, i, a) =>
-                s.trim() ? <span key={i} style={{display:"block"}}>{s.trim()}{i < a.length-1 && i < a.length-2 ? "." : "."}</span> : null
-              )}
-            </h2>
-            <p className="lead" style={{marginTop:"24px"}}>{C.sub[lang]}</p>
-            <div style={{display:"flex", gap:"40px", marginTop:"32px", paddingTop:"32px", borderTop:"1px solid var(--line)"}}>
-              <div>
-                <div className="text-mono text-muted">AYMERIC</div>
-                <div style={{fontFamily:"var(--serif)", fontSize:"22px", marginTop:"4px"}}>3D & layout</div>
-              </div>
-              <div>
-                <div className="text-mono text-muted">JULIETTE</div>
-                <div style={{fontFamily:"var(--serif)", fontSize:"22px", marginTop:"4px"}}>Atmosphere</div>
-              </div>
-            </div>
+    <section id="use_cases" className="usecases">
+      <div className="usecases__inner">
+        <div className="usecases__head">
+          <Reveal as="div" className="usecases__eyebrow">
+            {C.eyebrow?.[lang] || (lang === "en" ? "Transformations" : "Transformations")}
           </Reveal>
-          <Reveal delay={0.15}>
-            <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:"16px", height:"540px"}}>
-              <VisualStripSlot src={C.plan_image} label="3D PLAN · TOP-DOWN" color="#a89378" style={{height:"100%", borderRadius:"16px"}} />
-              <div style={{display:"grid", gridTemplateRows:"1fr 1fr", gap:"16px"}}>
-                <VisualStripSlot src={C.mood_image} label="MOOD · MATERIALS" color="#5a4334" style={{borderRadius:"16px"}} />
-                <VisualStripSlot src={C.interior_image} label="3D · INTERIOR VIEW" color="#3a2c22" style={{borderRadius:"16px"}} />
-              </div>
-            </div>
+          <Reveal as="h2" className="usecases__title">
+            {C.title?.[lang] || (lang === "en" ? "Pick your room." : "Choisissez votre pièce.")}
           </Reveal>
+          {C.sub?.[lang] && (
+            <Reveal as="p" className="usecases__sub" delay={0.1}>{C.sub[lang]}</Reveal>
+          )}
+        </div>
+
+        <div className="usecases__grid">
+          {C.items.map((item, i) => (
+            <UseCaseCard key={i} item={item} index={i} lang={lang} onNav={onNav} />
+          ))}
         </div>
       </div>
     </section>
   );
 }
 
-// ============================ BEFORE / AFTER STORY (drag slider) ============================
+function UseCaseCard({ item, index, lang, onNav }) {
+  const ref = useReveal();
+  const name = item.name?.[lang] || "";
+  const tagline = item.tagline?.[lang] || "";
+  const image = item.image || "";
+
+  return (
+    <article
+      ref={ref}
+      className="reveal usecase-card"
+      style={{ transitionDelay: `${index * 0.08}s` }}
+      onClick={() => onNav?.("contact")}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => { if (e.key === "Enter") onNav?.("contact"); }}
+    >
+      <div className="usecase-card__media">
+        {image ? (
+          <img src={image} alt={name} loading="lazy" />
+        ) : (
+          <ImagePlaceholder label={name || "Transformation"} color="#a89378" style={{ position: "absolute", inset: 0, borderRadius: 0 }} />
+        )}
+        <span className="usecase-card__index">0{index + 1}</span>
+      </div>
+      <div className="usecase-card__body">
+        <h3 className="usecase-card__name">{name}</h3>
+        {tagline && <p className="usecase-card__tagline">{tagline}</p>}
+      </div>
+    </article>
+  );
+}
+
+// ============================ BEFORE / AFTER (immersive dark section) ============================
 function BeforeAfterSection({ lang }) {
   const C = CONTENT.before_after;
   return (
-    <section id="before_after" className="section">
-      <div className="container">
-        <div style={{display:"flex", justifyContent:"flex-end", alignItems:"baseline", marginBottom:"60px"}}>
+    <section id="before_after" className="ba-v2">
+      <div className="ba-v2__inner">
+        <div className="ba-v2__head">
+          <Reveal as="div" className="ba-v2__eyebrow">
+            {lang === "en" ? "The transformation" : "La transformation"}
+          </Reveal>
+          <Reveal as="h2" className="ba-v2__title">
+            {C.title[lang]}
+          </Reveal>
         </div>
-        <Reveal as="h2" className="display-l" style={{maxWidth:"20ch", marginBottom:"56px"}}>
-          {C.title[lang]}
-        </Reveal>
 
         <Reveal>
           <BeforeAfterSlider
@@ -231,16 +174,22 @@ function BeforeAfterSection({ lang }) {
             afterSrc={C.after_image}
             beforeLabel={lang === "en" ? "Before" : "Avant"}
             afterLabel={lang === "en" ? "After" : "Après"}
-            height="min(70vh, 680px)"
+            height="clamp(360px, 56vh, 720px)"
           />
         </Reveal>
 
-        <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:"40px", marginTop:"40px"}}>
+        <div className="ba-v2__captions">
           <Reveal>
-            <p className="lead" style={{fontSize:"18px"}}>{C.before[lang]}</p>
+            <div className="ba-v2__caption">
+              <span className="ba-v2__caption-label">{lang === "en" ? "Before" : "Avant"}</span>
+              <p>{C.before[lang]}</p>
+            </div>
           </Reveal>
-          <Reveal delay={0.15}>
-            <p className="lead" style={{fontSize:"18px"}}>{C.after[lang]}</p>
+          <Reveal delay={0.1}>
+            <div className="ba-v2__caption ba-v2__caption--after">
+              <span className="ba-v2__caption-label">{lang === "en" ? "After" : "Après"}</span>
+              <p>{C.after[lang]}</p>
+            </div>
           </Reveal>
         </div>
 
@@ -335,66 +284,50 @@ function BeforeAfterSlider({ beforeSrc, afterSrc, beforeLabel = "Before", afterL
       {/* Slider handle */}
       <div style={{
         position:"absolute", top:0, bottom:0, left:`${pos}%`,
-        width:"2px", background:"var(--cream)",
-        boxShadow:"0 0 24px rgba(0,0,0,0.4)",
+        width:"2px", background:"#fff",
+        boxShadow:"0 0 24px rgba(0,0,0,0.45)",
         pointerEvents:"none"
       }}>
         <div style={{
           position:"absolute", top:"50%", left:"50%", transform:"translate(-50%, -50%)",
-          width:"56px", height:"56px", borderRadius:"50%",
-          background:"var(--cream)", border:"1px solid rgba(0,0,0,0.1)",
+          width:"60px", height:"60px", borderRadius:"50%",
+          background:"#fff", border:"2px solid var(--terra)",
           display:"flex", alignItems:"center", justifyContent:"center",
-          color:"var(--ink)", fontFamily:"var(--mono)", fontSize:"18px",
-          boxShadow:"0 8px 32px rgba(0,0,0,0.3)"
+          color:"var(--ink)", fontFamily:"var(--mono)", fontSize:"18px", fontWeight:500,
+          boxShadow:"0 12px 36px rgba(0,0,0,0.35)"
         }}>⇄</div>
       </div>
 
       {/* Labels */}
-      <div style={{position:"absolute", top:"24px", left:"24px", pointerEvents:"none"}}>
-        <span className="tag" style={{background:"rgba(255,248,240,0.95)"}}>{beforeLabel}</span>
+      <div style={{position:"absolute", top:"20px", left:"20px", pointerEvents:"none"}}>
+        <span className="tag" style={{background:"rgba(247,244,238,0.95)", color:"var(--ink)"}}>{beforeLabel}</span>
       </div>
-      <div style={{position:"absolute", top:"24px", right:"24px", pointerEvents:"none"}}>
-        <span className="tag" style={{background:"var(--accent)", color:"var(--cream)"}}>{afterLabel}</span>
+      <div style={{position:"absolute", top:"20px", right:"20px", pointerEvents:"none"}}>
+        <span className="tag" style={{background:"var(--terra)", color:"#fff"}}>{afterLabel}</span>
       </div>
     </div>
   );
-}
-
-function VisualStripSlot({ src, label, color, style }) {
-  if (src) {
-    return (
-      <img
-        src={src}
-        alt={label}
-        style={{ ...style, width: "100%", objectFit: "cover", display: "block" }}
-      />
-    );
-  }
-  return <ImagePlaceholder label={label} color={color} style={style} />;
 }
 
 // ============================ SERVICES ============================
 function ServicesSection({ lang, onNav }) {
   const C = CONTENT.services;
   return (
-    <section id="services_intro" className="section" style={{background:"var(--paper)"}}>
-      <div className="container">
-        <div style={{display:"grid", gridTemplateColumns:"1fr 1.2fr", gap:"60px", marginBottom:"80px"}}>
-          <Reveal>
-            <h2 className="display-l" style={{marginTop:"24px"}}>{C.title[lang]}</h2>
+    <section id="services_intro" className="svc-v2">
+      <div className="svc-v2__inner">
+        <div className="svc-v2__head">
+          <Reveal as="div" className="svc-v2__eyebrow">
+            {lang === "en" ? "Pricing" : "Tarifs"}
           </Reveal>
-          <Reveal delay={0.15}>
-            <p className="lead" style={{marginTop:"40px"}}>{C.sub[lang]}</p>
-          </Reveal>
+          <Reveal as="h2" className="svc-v2__title">{C.title[lang]}</Reveal>
+          <Reveal as="p" className="svc-v2__sub" delay={0.1}>{C.sub[lang]}</Reveal>
         </div>
 
-        <div style={{display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(300px, 1fr))", gap:"24px"}}>
+        <div className="svc-v2__grid">
           {C.items.map((s, i) => (
             <ServiceCard key={s.id} svc={s} lang={lang} index={i} onNav={onNav} />
           ))}
         </div>
-<<<<<<< Updated upstream
-=======
 
         <Reveal as="p" className="svc-v2__expertise" delay={0.18}>
           {lang === "en"
@@ -407,7 +340,6 @@ function ServicesSection({ lang, onNav }) {
             ? "Service fees are credited 100% on a signed project contract."
             : "Les honoraires sont crédités à 100 % sur un contrat de projet signé."}
         </Reveal>
->>>>>>> Stashed changes
       </div>
     </section>
   );
@@ -416,30 +348,27 @@ function ServicesSection({ lang, onNav }) {
 function ServiceCard({ svc, lang, index, onNav }) {
   const [open, setOpen] = useState(false);
   const ref = useReveal();
+  const isFeatured = Boolean(svc.badge);
   return (
     <>
-      <div
+      <article
         ref={ref}
-        className="reveal card hoverable service-card"
+        className={`reveal svc-card${isFeatured ? " svc-card--featured" : ""}`}
         style={{ transitionDelay: `${index * 0.08}s` }}
-        onClick={() => setOpen(true)}
       >
-        <div className="service-card__head">
-          <div className="service-card__num">{svc.num}</div>
-          {svc.badge && <span className="tag">{svc.badge[lang]}</span>}
-          {svc.tag && !svc.badge && <span className="tag">{svc.tag[lang]}</span>}
+        <div className="svc-card__top">
+          <span className="svc-card__num">{svc.num}</span>
+          {svc.badge && <span className="svc-card__badge">{svc.badge[lang]}</span>}
+          {svc.tag && !svc.badge && <span className="svc-card__tag">{svc.tag[lang]}</span>}
         </div>
-        <h3 className="service-card__title">{svc.title[lang]}</h3>
-        <p className="service-card__sub">{svc.sub[lang]}</p>
-        <p className="service-card__desc">{svc.description[lang]}</p>
-        <div className="service-card__foot">
-          <div>
-            <div className="text-mono text-muted service-card__fee-label">{lang === "en" ? "Service fee" : "Honoraires"}</div>
-            <div className="service-card__price">{svc.price[lang]}</div>
-          </div>
-          <div className="service-card__cta text-mono">{lang === "en" ? "View details" : "Détails"} →</div>
+        <h3 className="svc-card__title">{svc.title[lang]}</h3>
+        <div className="svc-card__price-row">
+          <span className="svc-card__price">{svc.price[lang]}</span>
         </div>
-      </div>
+        <button className="svc-card__cta" onClick={() => setOpen(true)}>
+          {lang === "en" ? "View details" : "Voir les détails"} <span aria-hidden="true">→</span>
+        </button>
+      </article>
       {open && <ServiceModal svc={svc} lang={lang} onClose={()=>setOpen(false)} onNav={onNav} />}
     </>
   );
@@ -533,116 +462,22 @@ function ServiceModal({ svc, lang, onClose, onNav }) {
   );
 }
 
-<<<<<<< Updated upstream
-// ============================ WHY ============================
-function WhySection({ lang }) {
-  const C = CONTENT.why;
-  return (
-    <section id="why" className="section">
-      <div className="container">
-        <Reveal as="h2" className="display-l" style={{marginTop:"32px", maxWidth:"22ch"}}>{C.title[lang]}</Reveal>
-        <Reveal delay={0.15}>
-          <p className="lead" style={{marginTop:"32px", maxWidth:"60ch"}}>{C.sub[lang]}</p>
-        </Reveal>
-        <div style={{display:"grid", gridTemplateColumns:"repeat(3, 1fr)", gap:"24px", marginTop:"80px", borderTop:"1px solid var(--line)", paddingTop:"60px"}}>
-          {C.stats.map((s, i) => (
-            <Reveal key={i} delay={i * 0.1}>
-              <div style={{fontFamily:"var(--serif)", fontSize:"clamp(72px, 9vw, 144px)", letterSpacing:"-0.04em", lineHeight:0.9, color:"var(--ink)"}}>
-                <Counter to={s.num} suffix={s.suffix||""} />
-              </div>
-              <div className="text-mono" style={{marginTop:"16px", color:"var(--muted)"}}>{s.label[lang]}</div>
-            </Reveal>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ============================ AUDIENCE ============================
-function AudienceSection({ lang }) {
-  const C = CONTENT.audience;
-  const slotImages = [C.homeowners_image, C.agents_image, C.developers_image];
-  const slotMeta = [
-    { color: "#c4a575", label: lang === "en" ? "LIFESTYLE GARAGE" : "GARAGE À VIVRE" },
-    { color: "#5a4334", label: lang === "en" ? "BUYER POTENTIAL" : "POTENTIEL ACHETEUR" },
-    { color: "#a89378", label: lang === "en" ? "PROPERTY VALUE" : "VALEUR DU BIEN" }
-  ];
-
-  return (
-    <section id="audience" className="section">
-      <div className="container">
-        <Reveal as="h2" className="display-l" style={{marginTop:"24px", maxWidth:"22ch"}}>{C.title[lang]}</Reveal>
-        <div className="audience-grid">
-          {C.items.map((it, i) => {
-            const src = slotImages[i] || "";
-            const meta = slotMeta[i] || slotMeta[0];
-            return (
-              <Reveal key={i} delay={i * 0.1}>
-                <div className="card audience-card">
-                  <ImagePlaceholder
-                    src={src}
-                    alt={it.title[lang]}
-                    color={meta.color}
-                    label={!src ? meta.label : undefined}
-                    style={{height:"100%", borderRadius:"14px"}}
-                  />
-                  <div className="audience-card__body">
-                    <div className="audience-card__meta">
-                      <span className="text-mono text-muted">0{i+1}</span>
-                    </div>
-                    <h3 className="display-s">{it.title[lang]}</h3>
-                    <p style={{color:"var(--muted)", marginTop:"16px", fontSize:"15px", lineHeight:1.6}}>{it.text[lang]}</p>
-                  </div>
-                </div>
-              </Reveal>
-            );
-          })}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ============================ PROCESS ============================
-function ProcessSection({ lang }) {
-  const C = CONTENT.process;
-  return (
-    <section id="process_intro" className="section" style={{background:"var(--paper)"}}>
-      <div className="container">
-        <Reveal as="h2" className="display-l" style={{marginTop:"24px"}}>{C.title[lang]}</Reveal>
-        <div style={{marginTop:"80px"}}>
-          {C.steps.map((s, i) => (
-            <Reveal key={i} delay={i * 0.08}>
-              <div style={{display:"grid", gridTemplateColumns:"100px 1fr 2fr", gap:"40px", padding:"40px 0", borderTop:"1px solid var(--line)", alignItems:"baseline"}}>
-                <div style={{fontFamily:"var(--mono)", fontSize:"14px", color:"var(--accent)", letterSpacing:"0.1em"}}>{s.num}</div>
-                <h3 style={{fontFamily:"var(--serif)", fontSize:"clamp(28px, 3vw, 44px)", letterSpacing:"-0.02em"}}>{s.title[lang]}</h3>
-                <p style={{color:"var(--muted)", fontSize:"17px", lineHeight:1.5}}>{s.text[lang]}</p>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ============================ FINAL CTA ============================
-=======
 // ============================ FINAL CTA — single button, dark ============================
->>>>>>> Stashed changes
 function FinalCTA({ lang, onNav }) {
   const C = CONTENT.final_cta;
   return (
-    <section id="final_cta" className="section" style={{paddingTop:"160px", paddingBottom:"160px"}}>
-      <div className="container" style={{textAlign:"center"}}>
-        <Reveal as="h2" className="display-l" style={{maxWidth:"22ch", margin:"0 auto"}}>{C.title[lang]}</Reveal>
-        <Reveal delay={0.15}>
-          <p className="lead" style={{margin:"32px auto 0", textAlign:"center"}}>{C.sub[lang]}</p>
+    <section id="final_cta" className="fcta-v2">
+      <div className="fcta-v2__inner">
+        <Reveal as="h2" className="fcta-v2__title">{C.title[lang]}</Reveal>
+        <Reveal delay={0.15} className="fcta-v2__cta">
+          <button className="btn" onClick={() => onNav("contact")}>
+            {lang === "en" ? "Get my free estimate" : "Devis gratuit"} <span className="arrow">↗</span>
+          </button>
         </Reveal>
-        <Reveal delay={0.25} style={{marginTop:"48px", display:"flex", justifyContent:"center", gap:"16px", flexWrap:"wrap"}}>
-          <button className="btn" onClick={()=>onNav("contact")}>{lang==="en"?"Get my free estimate":"Devis gratuit"} <span className="arrow">↗</span></button>
-          <button className="btn btn-ghost" onClick={()=>onNav("projects")}>{lang==="en"?"See projects":"Voir les réalisations"}</button>
+        <Reveal as="p" className="fcta-v2__fineprint" delay={0.25}>
+          {lang === "en"
+            ? "Free 30-min consultation · No commitment · Reply within 48h"
+            : "Consultation 30 min · Sans engagement · Réponse sous 48h"}
         </Reveal>
       </div>
     </section>

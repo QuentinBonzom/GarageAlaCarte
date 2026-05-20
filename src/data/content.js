@@ -16,26 +16,25 @@ export const CONTENT = {
   },
 
   hero: {
-    eyebrow: { en: "Orlando, FL · Est. 2024", fr: "Orlando, FL · Depuis 2024" },
-    title: {
-      en: ["Transform your garage", "into a space that", "works for your life."],
-      fr: ["Transformez votre garage", "en un espace pensé", "pour votre vie."]
+    eyebrow: {
+      en: "Orlando, FL · Custom garage transformations",
+      fr: "Orlando, FL · Transformations de garage sur-mesure"
     },
-<<<<<<< Updated upstream
-    italic_word: { en: "works", fr: "pensé" },
-=======
+    title: {
+      en: ["Your garage,", "reimagined."],
+      fr: ["Votre garage,", "réinventé."]
+    },
     italic_word: { en: "reimagined.", fr: "réinventé." },
     tagline: {
       en: "Unlock the Full Potential of Your Garage",
       fr: "Révélez tout le potentiel de votre garage"
     },
->>>>>>> Stashed changes
     sub: {
-      en: "Custom garage transformations for homeowners, real-estate professionals, and developers — from a clear plan to full execution.",
-      fr: "Transformations de garage sur-mesure pour propriétaires, agents immobiliers et promoteurs — du plan détaillé à la réalisation complète."
+      en: "Custom garage transformations in Orlando.",
+      fr: "Transformations de garage sur-mesure à Orlando."
     },
     primary_cta: { en: "Get my free estimate", fr: "Obtenir mon devis gratuit" },
-    secondary_cta: { en: "Schedule a call", fr: "Planifier un appel" }
+    secondary_cta: { en: "See our work", fr: "Voir nos réalisations" }
   },
 
   hero_caption: {
@@ -454,18 +453,14 @@ export const CONTENT = {
     eyebrow: { en: "Section 07 · Process", fr: "Section 07 · Processus" },
     title: { en: "How it works.", fr: "Comment ça marche." },
     steps: [
-      { num: "01", title: { en: "Tell us your vision", fr: "Dites-nous votre vision" }, text: { en: "We learn about your garage, needs, style, and goals.", fr: "On découvre votre garage, vos besoins, votre style." } },
-      { num: "02", title: { en: "Choose your level", fr: "Choisissez votre formule" }, text: { en: "Design only, design + setup, full transformation, or smart integration.", fr: "Plan seul, design + setup, transformation complète ou intégration smart." } },
-      { num: "03", title: { en: "Plan before spending", fr: "Planifiez avant de dépenser" }, text: { en: "We define layout, visuals, materials, and execution steps.", fr: "On définit plan, visuels, matériaux et étapes." } },
-      { num: "04", title: { en: "Bring it to life", fr: "Donnez-lui vie" }, text: { en: "Build it yourself, request support, or let us manage everything.", fr: "Construisez vous-même, demandez du support ou laissez-nous tout gérer." } }
+      { num: "01", title: { en: "Tell us your vision", fr: "Dites-nous votre vision" }, text: { en: "Free 30-minute consultation.", fr: "Consultation gratuite de 30 minutes." } },
+      { num: "02", title: { en: "Choose your level", fr: "Choisissez votre formule" }, text: { en: "Four à la carte tiers.", fr: "Quatre formules à la carte." } },
+      { num: "03", title: { en: "Plan before spending", fr: "Planifiez avant de dépenser" }, text: { en: "See it in 3D first.", fr: "Voyez votre garage en 3D." } },
+      { num: "04", title: { en: "Bring it to life", fr: "Donnez-lui vie" }, text: { en: "DIY, supported, or turnkey.", fr: "Vous-même, accompagné ou clé en main." } }
     ]
   },
 
   final_cta: {
-<<<<<<< Updated upstream
-    title: { en: "Ready to transform your garage?", fr: "Prêt à transformer votre garage ?" },
-    sub: { en: "Start with a free estimate and see what your garage could become.", fr: "Commencez par un devis gratuit et découvrez ce que votre garage peut devenir." }
-=======
     title: { en: "Ready to reimagine your garage?", fr: "Prêt à réinventer votre garage ?" },
     sub: { en: "Tell us about your space. We'll send a free estimate within 48 hours.", fr: "Parlez-nous de votre espace. Nous envoyons un devis gratuit sous 48h." }
   },
@@ -554,7 +549,6 @@ export const CONTENT = {
         rating: 5
       }
     ]
->>>>>>> Stashed changes
   },
 
   // ===== RÉALISATIONS =====
@@ -562,8 +556,8 @@ export const CONTENT = {
     eyebrow: { en: "Selected work", fr: "Sélection" },
     title: { en: "Our garages, redesigned.", fr: "Nos garages, repensés." },
     sub: {
-      en: "Each space is a fully customised transformation. Click any project for the full story.",
-      fr: "Chaque espace est une transformation sur-mesure. Cliquez pour lire l'histoire complète."
+      en: "Custom transformations. Tap any project for the full story.",
+      fr: "Transformations sur-mesure. Cliquez pour l'histoire complète."
     }
   },
   projects: [
