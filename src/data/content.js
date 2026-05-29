@@ -25,6 +25,11 @@ export const CONTENT = {
       fr: ["Votre garage,", "réinventé."]
     },
     italic_word: { en: "reimagined.", fr: "réinventé." },
+    tagline: {
+      en: "Unlock the Full Potential of Your Garage",
+      fr: "Révélez tout le potentiel de votre garage"
+    },
+
     sub: {
       en: "Custom garage transformations in Orlando.",
       fr: "Transformations de garage sur-mesure à Orlando."
@@ -36,35 +41,16 @@ export const CONTENT = {
   hero_caption: {
     label: { en: "Featured project", fr: "Projet phare" },
     image: "",
+    video_url: "/hero-video.mp4",
     featured_label: { en: "FEATURED PROJECT", fr: "PROJET PHARE" },
     featured_title: { en: "The Social Hub", fr: "The Social Hub" }
-  },
-
-  marquee_words: {
-    en: ["Design", "Prepare", "Transform", "à la carte"],
-    fr: ["Concevoir", "Préparer", "Transformer", "à la carte"]
-  },
-
-  visual_strip: {
-    eyebrow: { en: "From plan to reality", fr: "Du plan à la réalité" },
-    title: {
-      en: "Designed in 3D. Built to live in.",
-      fr: "Conçu en 3D. Construit pour être habité."
-    },
-    sub: {
-      en: "Aymeric drafts every layout in precise 3D. Juliette dresses each space in materials, light, and atmosphere — so you see your future garage before we touch a wall.",
-      fr: "Aymeric dessine chaque plan en 3D précis. Juliette habille l'espace de matières, lumières et atmosphères — pour que vous voyiez votre futur garage avant qu'un mur ne bouge."
-    },
-    plan_image: "",
-    mood_image: "",
-    interior_image: ""
   },
 
   before_after: {
     eyebrow: { en: "Section 02 · Story", fr: "Section 02 · Le récit" },
     title: {
-      en: "From cluttered space to designed living.",
-      fr: "D'un espace encombré à un lieu de vie pensé."
+      en: "From cluttered garage to dream garage. See the transformation!",
+      fr: "D'un garage encombré au garage de rêve. Découvrez la transformation !"
     },
     before: {
       en: "Boxes, tools, wasted square footage. No clear purpose.",
@@ -74,6 +60,10 @@ export const CONTENT = {
       en: "A clean, planned, functional garage designed around your lifestyle.",
       fr: "Un garage propre, pensé, fonctionnel — conçu autour de votre vie."
     },
+    statement: {
+      en: "Experience American practicality and precision combined with European mood-visual design and advanced Color, Material & Finish (CMF) expertise for a stunning, functional space.",
+      fr: "Découvrez la praticité et la précision américaines alliées au design visuel et à l'ambiance européens, ainsi qu'à une expertise avancée en Couleur, Matière & Finition (CMF), pour un espace fonctionnel et époustouflant."
+    },
     before_image: "",
     after_image: ""
   },
@@ -81,8 +71,8 @@ export const CONTENT = {
   services: {
     eyebrow: { en: "Section 03 · Services", fr: "Section 03 · Services" },
     title: {
-      en: "Choose your level of support.",
-      fr: "Choisissez votre niveau d'accompagnement."
+      en: "Explore Our Four Signature Services",
+      fr: "Découvrez nos quatre services signature"
     },
     sub: {
       en: "Avoid costly mistakes. Start with a plan — or go all the way. Upgrade anytime.",
@@ -353,23 +343,6 @@ export const CONTENT = {
     ]
   },
 
-  why: {
-    eyebrow: { en: "Section 04 · Why us", fr: "Section 04 · Pourquoi nous" },
-    title: {
-      en: "Most companies offer one fixed solution. We don't.",
-      fr: "La plupart proposent une seule solution. Pas nous."
-    },
-    sub: {
-      en: "With Garage à la Carte, you choose how far you want to go — from design only to full transformation. Your space. Your pace. Your level of support.",
-      fr: "Chez Garage à la Carte, vous choisissez votre niveau d'engagement — du plan seul à la transformation complète. Votre espace. Votre rythme. Votre niveau d'accompagnement."
-    },
-    stats: [
-      { num: 4, label: { en: "à la carte services", fr: "services à la carte" } },
-      { num: 20, suffix: "mi", label: { en: "Orlando service area", fr: "rayon Orlando" } },
-      { num: 100, suffix: "%", label: { en: "fee credited on contract", fr: "honoraires crédités au contrat" } }
-    ]
-  },
-
   team: {
     eyebrow: { en: "Section 05 · Who we are", fr: "Section 05 · L'équipe" },
     title: { en: "Built by experts. Designed around you.", fr: "Construit par des experts. Pensé autour de vous." },
@@ -380,7 +353,8 @@ export const CONTENT = {
     members: [
       {
         name: "Guillaume",
-        role: { en: "Field & Execution Lead", fr: "Lead Terrain & Exécution" },
+        role: { en: "Garage Transformation & Build Lead", fr: "Lead Transformation & Construction de Garage" },
+        website: "https://www.ecuafranceelectric.com/",
         bio: {
           en: "Based in Orlando, Guillaume brings real-world construction experience and ensures every project is grounded, feasible, and built right.",
           fr: "Basé à Orlando, Guillaume apporte une expérience terrain solide et garantit que chaque projet est faisable, ancré, et bien exécuté."
@@ -388,7 +362,7 @@ export const CONTENT = {
       },
       {
         name: "Aymeric",
-        role: { en: "Technical Design & Planning", fr: "Design Technique & Plans" },
+        role: { en: "3D Space Planning & Technical Design Lead", fr: "Lead Plans 3D & Design Technique" },
         email: "aymeric.vanelle@gmail.com",
         phone: "+33 6 72 54 54 51",
         bio: {
@@ -398,44 +372,26 @@ export const CONTENT = {
       },
       {
         name: "Juliette",
-        role: { en: "Visual Design & Atmosphere", fr: "Design Visuel & Atmosphère" },
+        role: { en: "Mood-Visual & Advanced Color, Material & Finish (CMF) Design Lead", fr: "Lead Design Mood-Visual & Couleur, Matière & Finition (CMF) avancée" },
         email: "juliette.bergougnoux@icloud.com",
         phone: "+33 7 44 81 52 22",
         bio: {
           en: "Combines American precision with European creativity and space-saving design — turning ideas into immersive visuals so you see your future space before it's built.",
           fr: "Allie précision américaine et créativité européenne. Juliette crée des visuels immersifs pour que vous voyiez votre espace avant même qu'il existe."
+        },
+        long_bio: {
+          en: "I am Juliette Bergougnoux, an American-French designer born in New York City, with a creative background shaped by both American innovation and European design culture.\n\nI hold a Master's degree in Interior Transportation Design with a specialization in Color, Material & Finish (CMF), completed in Paris, France.\n\nMy experience includes collaborations with major automotive brands such as Citroën and Dacia, where I developed CMF concepts for transportation interiors, focusing on material selection, color integration, visual identity, and user experience.\n\nMy design approach combines functionality, atmosphere, and refined material storytelling to create spaces that feel both distinctive and purposeful.\n\nToday, I bring this expertise to Garage à la Carte alongside Aymeric and Guillaume, helping to design personalized garage environments that reflect each client's lifestyle through thoughtful space planning, materials, colors, and functionality.",
+          fr: "Je suis Juliette Bergougnoux, designer américano-française née à New York, avec un parcours créatif façonné par l'innovation américaine et la culture du design européen.\n\nJe suis titulaire d'un Master en Interior Transportation Design avec une spécialisation en Couleur, Matière & Finition (CMF), obtenu à Paris.\n\nMon expérience inclut des collaborations avec de grandes marques automobiles comme Citroën et Dacia, où j'ai développé des concepts CMF pour les intérieurs de véhicules, en travaillant sur le choix des matériaux, l'intégration des couleurs, l'identité visuelle et l'expérience utilisateur.\n\nMon approche du design allie fonctionnalité, atmosphère et narration matérielle raffinée pour créer des espaces à la fois distinctifs et porteurs de sens.\n\nAujourd'hui, j'apporte cette expertise à Garage à la Carte aux côtés d'Aymeric et de Guillaume, pour concevoir des garages personnalisés qui reflètent le style de vie de chaque client à travers une pensée fine de l'espace, des matériaux, des couleurs et des fonctionnalités."
         }
       },
       {
         name: "Nelly",
-        role: { en: "Coordinator", fr: "Coordinatrice" },
+        role: { en: "Project Coordination Lead", fr: "Lead Coordination de Projet" },
         email: "loucie@icloud.com",
         bio: {
           en: "Nelly keeps every project on track — coordinating schedules, suppliers, and your peace of mind from kickoff to handover.",
           fr: "Nelly garde chaque projet sur les rails — coordonne plannings, fournisseurs et votre tranquillité d'esprit, du lancement à la livraison."
         }
-      }
-    ]
-  },
-
-  audience: {
-    eyebrow: { en: "Section 06 · Who we help", fr: "Section 06 · Qui nous aidons" },
-    title: { en: "Built for homes, properties, and real-estate value.", fr: "Pensé pour les foyers, les biens, et la valeur immobilière." },
-    homeowners_image: "/audience-homeowners.svg",
-    agents_image: "/audience-agents.svg",
-    developers_image: "/audience-developers.svg",
-    items: [
-      {
-        title: { en: "Homeowners", fr: "Propriétaires" },
-        text: { en: "Create a garage that fits your lifestyle and daily needs.", fr: "Créez un garage qui correspond à votre vie et à vos usages." }
-      },
-      {
-        title: { en: "Real Estate Agents", fr: "Agents immobiliers" },
-        text: { en: "Help buyers and sellers see the hidden potential of a garage.", fr: "Aidez acheteurs et vendeurs à voir le potentiel caché d'un garage." }
-      },
-      {
-        title: { en: "Developers & Property Pros", fr: "Promoteurs & Pros" },
-        text: { en: "Add functional, attractive value to residential properties.", fr: "Ajoutez une valeur fonctionnelle et désirable à vos biens." }
       }
     ]
   },
@@ -459,84 +415,50 @@ export const CONTENT = {
   // ===== USE CASES (Landing V2) — 4 cas d'usage visuels =====
   use_cases: {
     eyebrow: { en: "Transformations", fr: "Transformations" },
-    title: { en: "Pick your room.", fr: "Choisissez votre pièce." },
-    sub: { en: "Four ways homeowners reclaim their garage.", fr: "Quatre façons de récupérer son garage." },
-    items: [
-      {
-        image: "/usecase-gym.svg",
-        name: { en: "Home Gym", fr: "Salle de sport" },
-        tagline: { en: "Train at home, every day.", fr: "S'entraîner chez soi, tous les jours." },
-        bullets: {
-          en: ["Mirrored wall", "Rubber flooring", "Smart storage"],
-          fr: ["Mur miroir", "Sol caoutchouc", "Rangements smart"]
-        }
-      },
-      {
-        image: "/usecase-lounge.svg",
-        name: { en: "Lounge & Bar", fr: "Lounge & Bar" },
-        tagline: { en: "The room you actually use on Fridays.", fr: "La pièce que vous utilisez vraiment le vendredi." },
-        bullets: {
-          en: ["Wet bar", "Custom cabinetry", "Built-in screen"],
-          fr: ["Bar avec point d'eau", "Mobilier sur-mesure", "Écran encastré"]
-        }
-      },
-      {
-        image: "/usecase-office.svg",
-        name: { en: "Home Office", fr: "Bureau" },
-        tagline: { en: "Quiet work, just outside the house.", fr: "Travailler au calme, juste à côté." },
-        bullets: {
-          en: ["Soundproofing", "Climate control", "Built-in desk"],
-          fr: ["Isolation phonique", "Climatisation", "Bureau intégré"]
-        }
-      },
-      {
-        image: "/usecase-storage.svg",
-        name: { en: "Smart Storage", fr: "Rangement Smart" },
-        tagline: { en: "Everything in its place, finally.", fr: "Tout à sa place, enfin." },
-        bullets: {
-          en: ["Floor-to-ceiling cabinetry", "EV charging", "Sport gear racks"],
-          fr: ["Rangements pleine hauteur", "Recharge VE", "Racks sport"]
-        }
-      }
-    ]
-  },
-
-  // ===== TESTIMONIALS (Landing V2) =====
-  testimonials_v2: {
-    eyebrow: { en: "Real homeowners, real stories", fr: "De vrais clients, de vraies histoires" },
     title: {
-      en: "Where Orlando homeowners fall in love with their garage.",
-      fr: "Là où les propriétaires d'Orlando tombent amoureux de leur garage."
+      en: "Discover Your Dream Garage. Explore, Imagine, and Get Inspired!",
+      fr: "Découvrez le garage de vos rêves. Explorez, imaginez et inspirez-vous !"
+    },
+    sub: {
+      en: "We specialize in garage remodeling, makeovers, and custom storage solutions for homeowners, real estate agencies, developers, builders, and property managers across Orlando and the surrounding areas.",
+      fr: "Nous sommes spécialisés dans la rénovation de garages, les transformations et les solutions de rangement sur-mesure pour les propriétaires, les agences immobilières, les promoteurs, les constructeurs et les gestionnaires de biens à Orlando et ses environs."
     },
     items: [
       {
-        quote: {
-          en: "We turned an unused two-car garage into our favorite room. The 3D plan made every decision easy.",
-          fr: "Nous avons transformé un garage 2 voitures inutilisé en notre pièce préférée. Le plan 3D a rendu chaque décision simple."
-        },
-        name: "Sarah & Michael K.",
-        city: "Winter Park, FL",
-        rating: 5
+        image: "",
+        project_slug: "daily-living-garage",
+        name: { en: "Daily Living Garage", fr: "Garage du Quotidien" },
+        tagline: { en: "Multi-functional / Lifestyle", fr: "Multifonctionnel / Art de vivre" }
       },
       {
-        quote: {
-          en: "Clear pricing, beautiful renders, flawless execution. Worth every penny.",
-          fr: "Prix clairs, rendus magnifiques, exécution irréprochable. Chaque dollar bien dépensé."
-        },
-        name: "James R.",
-        city: "Lake Nona, FL",
-        rating: 5
+        image: "",
+        project_slug: "the-social-hub",
+        name: { en: "The Social Hub — Smart Living Garage", fr: "Le Social Hub — Smart Living Garage" },
+        tagline: {
+          en: "A Garage Designed for Entertainment and Lifestyle",
+          fr: "Un garage conçu pour le divertissement et l'art de vivre"
+        }
       },
       {
-        quote: {
-          en: "They listened first, then designed. The lounge is now where we spend every Friday night.",
-          fr: "Ils ont d'abord écouté, puis dessiné. Le lounge est devenu notre QG du vendredi soir."
-        },
-        name: "Priya S.",
-        city: "Windermere, FL",
-        rating: 5
+        image: "",
+        project_slug: "the-daily-living-garage",
+        name: { en: "The Daily Living Garage", fr: "Le Garage du Quotidien" },
+        tagline: {
+          en: "A Multi-Functional Garage for Work, Fitness, and Relaxation",
+          fr: "Un garage multifonctionnel pour le travail, le fitness et la détente"
+        }
+      },
+      {
+        image: "",
+        project_slug: "modern-automotive-lounge",
+        name: { en: "Modern Automotive Lounge", fr: "Lounge Automobile Moderne" },
+        tagline: {
+          en: "A High-End Garage for Cars, Work, Entertainment, and Lifestyle",
+          fr: "Un garage haut de gamme pour voitures, travail, divertissement et art de vivre"
+        }
       }
     ]
+
   },
 
   // ===== RÉALISATIONS =====
@@ -619,29 +541,59 @@ export const CONTENT = {
       id: "smart-living",
       slug: "smart-living-garage",
       name: { en: "Smart Living Garage", fr: "Smart Living Garage" },
-      tagline: { en: "Utility, comfort, and style — designed for daily life.", fr: "Utilité, confort, style — pensé pour le quotidien." },
-      type: { en: "Daily living / Utility", fr: "Vie quotidienne / Utilitaire" },
+      tagline: { en: "Where game day meets everyday.", fr: "L'esprit jour de match, au quotidien." },
+      type: { en: "Sports bar / Lifestyle", fr: "Bar sportif / Lifestyle" },
       size: { en: "2 car garage", fr: "Garage 2 voitures" },
       duration: { en: "5 weeks", fr: "5 semaines" },
       service: { en: "Full Transformation", fr: "Transformation Complète" },
       year: "2025",
       featured: true,
       description: {
-        en: "A complete transformation that turns your garage into a functional, comfortable extension of your home — combining utility, comfort, and style.",
-        fr: "Une transformation complète qui fait du garage une extension fonctionnelle et confortable de la maison — entre utilité, confort et style."
+        en: "A full transformation that turns a standard two-car garage into an industrial-chic sports bar and lounge — without sacrificing everyday utility. A butcher-block bar faces a big-screen media wall framed by open shelving, glassware, and team memorabilia, while exposed brick, track lighting, and custom neon set a warm game-day mood. Deep leather seating and a bean bag shape the lounge, and a fully integrated laundry and wet-bar corner keeps the space genuinely practical for daily life.",
+        fr: "Une transformation complète qui métamorphose un garage 2 voitures standard en bar sportif et lounge au style industriel — sans renoncer à l'utilité du quotidien. Un bar en bois massif fait face à un mur média grand écran encadré d'étagères ouvertes, de verrerie et de souvenirs sportifs, tandis que la brique apparente, l'éclairage sur rail et les néons sur-mesure installent une ambiance chaleureuse « jour de match ». Des assises en cuir et un pouf composent le lounge, et un coin buanderie et point d'eau entièrement intégré garde l'espace réellement pratique au quotidien."
       },
       includes: {
-        en: ["Integrated laundry and utility area", "Comfortable lounge space with TV, relaxation, and daily use", "Smart storage solutions to keep everything organized", "Clean, functional environment ready for everyday living"],
-        fr: ["Zone buanderie et utilitaire intégrée", "Lounge confortable avec TV, détente et usage quotidien", "Rangements smart pour garder l'espace organisé", "Environnement propre, fonctionnel et prêt à vivre"]
+        en: ["Custom butcher-block bar with stool seating", "Big-screen media wall with open shelving and glassware", "Exposed brick feature wall and industrial track lighting", "Custom neon signage and framed racing-poster gallery", "Leather lounge seating with coffee table", "Fully integrated laundry and wet-bar utility corner"],
+        fr: ["Bar sur-mesure en bois massif avec assises hautes", "Mur média grand écran avec étagères ouvertes et verrerie", "Mur en brique apparente et éclairage sur rail industriel", "Néons sur-mesure et galerie d'affiches de course encadrées", "Lounge en cuir avec table basse", "Coin buanderie et point d'eau entièrement intégré"]
       },
       why: {
-        en: ["Free up space in the rest of your home", "Simplify your daily routines and reduce clutter", "Improve comfort while increasing your property value"],
-        fr: ["Libérer de l'espace dans le reste de la maison", "Simplifier les routines quotidiennes et réduire le désordre", "Améliorer le confort tout en valorisant le bien"]
+        en: ["A dedicated space to host game days and unwind", "Entertaining and everyday utility combined in one room", "Frees up space inside the rest of your home", "A high-impact upgrade that adds lasting property value"],
+        fr: ["Un espace dédié pour recevoir les soirs de match et se détendre", "Réception et utilité quotidienne réunies dans une seule pièce", "Libère de l'espace dans le reste de la maison", "Une transformation forte qui valorise durablement le bien"]
       },
       images: [
-        { label: "Hero · open view", color: "#a89378" },
-        { label: "Laundry corner", color: "#4a3d33" },
-        { label: "Lounge detail", color: "#d4bfa3" }
+        { label: "Bar & media wall", color: "#3a2c22" },
+        { label: "Lounge & laundry corner", color: "#4a3d33" },
+        { label: "Lounge & racing wall", color: "#5a4334" }
+      ]
+    },
+    {
+      id: "modern-automotive-lounge",
+      slug: "modern-automotive-lounge",
+      name: { en: "Modern Automotive Lounge", fr: "Lounge Automobile Moderne" },
+      tagline: { en: "A high-end garage for cars, work, entertainment, and lifestyle.", fr: "Un garage haut de gamme pour la voiture, le travail, le divertissement et l'art de vivre." },
+      type: { en: "Automotive lounge / Multi-use", fr: "Lounge automobile / Multi-usage" },
+      size: { en: "2 car garage", fr: "Garage 2 voitures" },
+      duration: { en: "7 weeks", fr: "7 semaines" },
+      service: { en: "Full Transformation", fr: "Transformation Complète" },
+      year: "2025",
+      featured: true,
+      description: {
+        en: "A high-end transformation that lets you keep the car and gain a true lifestyle space around it. One bay still holds the vehicle on a sleek dark floor, while the rest of the garage becomes a multi-use retreat: a dedicated home-office and gaming workstation with a custom PC, a cinematic big-screen lounge with a deep velvet sofa and fur rug, and a retro-styled coffee and beverage bar set against a graphic feature wall. Track lighting, warm accents, and curated décor tie work, play, and automotive passion together in one refined room.",
+        fr: "Une transformation haut de gamme qui vous permet de garder la voiture tout en gagnant un véritable espace de vie autour d'elle. Une place accueille toujours le véhicule sur un sol sombre épuré, tandis que le reste du garage devient un lieu multi-usage : un poste home-office et gaming avec PC sur-mesure, un lounge home-cinéma avec canapé en velours et tapis en fourrure, et un coin café et bar au style rétro adossé à un mur graphique. Éclairage sur rail, touches chaleureuses et déco soignée réunissent travail, détente et passion automobile dans une seule pièce raffinée."
+      },
+      includes: {
+        en: ["Dedicated car display bay with finished flooring", "Home-office and gaming workstation with custom PC", "Cinematic big-screen lounge with velvet sofa and fur rug", "Retro coffee and beverage bar with mini-fridge", "Graphic feature wall and curated styling", "Track lighting and warm ambient accents"],
+        fr: ["Place dédiée à la voiture avec sol fini", "Poste home-office et gaming avec PC sur-mesure", "Lounge home-cinéma avec canapé velours et tapis fourrure", "Coin café et bar rétro avec mini-frigo", "Mur graphique et décoration soignée", "Éclairage sur rail et touches d'ambiance chaleureuses"]
+      },
+      why: {
+        en: ["Keep your car and still gain a living space", "Work, game, and relax without leaving home", "A premium, multi-use upgrade for car lovers", "Adds standout character and value to your property"],
+        fr: ["Gardez votre voiture tout en gagnant un espace de vie", "Travailler, jouer et se détendre sans quitter la maison", "Une transformation premium multi-usage pour passionnés", "Ajoute du caractère et de la valeur au bien"]
+      },
+      images: [
+        { label: "Lounge & workspace · overview", color: "#2c2722" },
+        { label: "Car bay & lounge", color: "#7a6450" },
+        { label: "Retro coffee bar", color: "#b5703a" },
+        { label: "Media lounge & sofa", color: "#3d322a" }
       ]
     }
   ],

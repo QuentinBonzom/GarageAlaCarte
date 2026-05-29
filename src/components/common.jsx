@@ -106,11 +106,34 @@ export function Footer({ onNav, lang }) {
           <div className="footer-v2__wordmark">
             Garage <em>à la</em><br/>Carte
           </div>
-          <p className="footer-v2__tagline">
-            {lang==="en"
-              ? "Custom garage transformations in Orlando, Florida."
-              : "Transformations de garage sur-mesure à Orlando, Floride."}
-          </p>
+          <div className="footer-v2__tagline">
+            {lang === "en" ? (
+              <>
+                <strong>Custom Garage Transformations</strong>
+                <span>Orlando &amp; Surrounding Areas, Florida.</span>
+                <span>
+                  Experience American practicality and precision combined with
+                  European-inspired design and advanced Color, Material &amp; Finish
+                  (CMF) expertise — creating stunning, functional spaces designed
+                  around your lifestyle.
+                </span>
+                <em>Inclusive &amp; Welcoming.</em>
+              </>
+            ) : (
+              <>
+                <strong>Transformations de garage sur-mesure</strong>
+                <span>Orlando et ses environs, Floride.</span>
+                <span>
+                  Découvrez la praticité et la précision américaines associées à un
+                  design d'inspiration européenne et à une expertise avancée
+                  Couleur, Matière &amp; Finition (CMF) — pour créer des espaces
+                  fonctionnels et époustouflants conçus autour de votre style de vie.
+                </span>
+                <em>Inclusif et accueillant.</em>
+              </>
+            )}
+          </div>
+
         </div>
         <div className="footer-v2__col">
           <h4>{lang==="en"?"Navigate":"Navigation"}</h4>
@@ -139,7 +162,8 @@ export function Footer({ onNav, lang }) {
       </div>
 
       <div className="footer-v2__bottom">
-        <span>© {new Date().getFullYear()} Garage à la Carte. All rights reserved.</span>
+        <span>© 2025 Garage à la Carte. All rights reserved.</span>
+
         <a href="https://webcodestudio.fr" target="_blank" rel="noreferrer noopener">
           Designed by WebCode Studio
         </a>
@@ -190,10 +214,11 @@ export function shade(hex, percent) {
 }
 
 // ---------- Reveal wrapper ----------
-export function Reveal({ children, delay=0, as="div", style={}, className="" }) {
+export function Reveal({ children, delay=0, as="div", style={}, className="", ...rest }) {
   const ref = useReveal();
   const Tag = as;
-  return <Tag ref={ref} className={`reveal ${className}`} style={{transitionDelay:`${delay}s`, ...style}}>{children}</Tag>;
+  return <Tag ref={ref} className={`reveal ${className}`} style={{transitionDelay:`${delay}s`, ...style}} {...rest}>{children}</Tag>;
+
 };
 
 // ---------- Email capture popup ----------

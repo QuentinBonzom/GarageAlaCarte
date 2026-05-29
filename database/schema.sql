@@ -60,6 +60,7 @@ create table if not exists public.team_members (
   bio jsonb not null,
   email text,
   phone text,
+  website text,
   avatar_url text,
   display_order integer not null default 0,
   is_active boolean not null default true,

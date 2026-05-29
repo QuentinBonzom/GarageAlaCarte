@@ -8,6 +8,9 @@ import {
   createEmailLead,
   hydrateContentFromSupabase,
 } from "../data/contentRepository";
+import { CONTENT } from "../data/content";
+import { applyThemeColors, expandThemeColors } from "../data/theme";
+import { isCmsEditMode, enableCmsInlineEdit } from "../lib/cmsEdit";
 import { applyPageSeo, routeFromLocation, routeToPath } from "../lib/seo";
 import {
   TweakColor,
@@ -24,7 +27,8 @@ import { ProjectsPage } from "../pages/ProjectsPage";
 const AdminPage = lazy(() => import("../pages/AdminPage"));
 
 const TWEAK_DEFAULTS = {
-  accentColor: "#c97b5a",
+  accentColor: "#F1B395",
+
   density: 1,
   cardStyle: "soft",
 };
@@ -63,6 +67,27 @@ export function App() {
     document.body.dataset.card = tweaks.cardStyle;
   }, [tweaks]);
 
+  // Couleurs personnalisées depuis l'admin (site_settings › theme.colors).
+  // Appliquées après l'hydratation Supabase, elles écrasent les valeurs par
+  // défaut de :root et l'accent du panneau Tweaks (dev only).
+  useEffect(() => {
+    applyThemeColors(expandThemeColors(CONTENT.theme?.colors));
+  }, [contentVersion]);
+
+  // Édition in-context : uniquement dans l'aperçu de l'admin (iframe + ?cms=edit).
+  useEffect(() => {
+    if (!isCmsEditMode()) return undefined;
+    enableCmsInlineEdit();
+    const onChanged = () => setContentVersion((version) => version + 1);
+    window.addEventListener("cms:changed", onChanged);
+    return () => window.removeEventListener("cms:changed", onChanged);
+  }, []);
+
+  // Le runtime d'édition a besoin de connaître la langue courante au moment du commit.
+  useEffect(() => {
+    document.body.dataset.cmsLang = lang;
+  }, [lang]);
+
   useEffect(() => {
     localStorage.setItem("galc_lang", lang);
   }, [lang]);
@@ -84,9 +109,17 @@ export function App() {
 
   useEffect(() => {
     const handleAdminMessage = (event) => {
-      if (event.data?.type !== "admin_scroll_to") return;
-      const el = document.getElementById(event.data.sectionKey);
-      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      const type = event.data?.type;
+      if (type === "admin_scroll_to") {
+        const el = document.getElementById(event.data.sectionKey);
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else if (type === "cms_reload") {
+        // Après une édition d'enregistrement (service, projet…) persistée par
+        // l'admin : on recharge le contenu depuis Supabase pour refléter la valeur.
+        hydrateContentFromSupabase()
+          .then(() => setContentVersion((version) => version + 1))
+          .catch(() => {});
+      }
     };
     window.addEventListener("message", handleAdminMessage);
     return () => window.removeEventListener("message", handleAdminMessage);
@@ -95,20 +128,12 @@ export function App() {
   useEffect(() => {
     if (popupShown || localStorage.getItem("galc_popup_seen")) return undefined;
 
-    const openPopup = () => {
+    const timer = window.setTimeout(() => {
       setShowPopup(true);
       setPopupShown(true);
-    };
-    const onLeave = (event) => {
-      if (event.clientY <= 0) openPopup();
-    };
-    const fallback = window.setTimeout(openPopup, 30000);
+    }, 2500);
 
-    document.addEventListener("mouseout", onLeave);
-    return () => {
-      document.removeEventListener("mouseout", onLeave);
-      window.clearTimeout(fallback);
-    };
+    return () => window.clearTimeout(timer);
   }, [popupShown]);
 
   const onNav = (nextRoute) => {

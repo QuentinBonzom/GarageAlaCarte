@@ -69,6 +69,9 @@ export async function loadAdminData() {
     legalSections,
     siteSettings,
     projectImages,
+    crmContacts,
+    crmActivities,
+    crmDeals,
   ] = await Promise.all([
     supabase.from("email_leads").select("*").order("captured_at", { ascending: false }),
     supabase.from("contact_submissions").select("*").order("submitted_at", { ascending: false }),
@@ -82,6 +85,9 @@ export async function loadAdminData() {
     supabase.from("legal_sections").select("*").order("display_order"),
     supabase.from("site_settings").select("*").order("key"),
     supabase.from("project_images").select("*").order("display_order"),
+    supabase.from("crm_contacts").select("*").order("last_activity_at", { ascending: false }),
+    supabase.from("crm_activities").select("*").order("created_at", { ascending: false }),
+    supabase.from("crm_deals").select("*").order("created_at", { ascending: false }),
   ]);
 
   const projectRows = unwrap("projects", projects);
@@ -103,7 +109,54 @@ export async function loadAdminData() {
       ...image,
       image_url: getProjectImagePublicUrl(image.image_url, projectSlugsById[image.project_id]) || image.image_url,
     })),
+    crmContacts: unwrap("crm_contacts", crmContacts),
+    crmActivities: unwrap("crm_activities", crmActivities),
+    crmDeals: unwrap("crm_deals", crmDeals),
   };
+}
+
+export async function createCrmDeal(payload) {
+  requireSupabase();
+  const { data, error } = await supabase.from("crm_deals").insert(payload).select().single();
+  if (error) throw error;
+  return data;
+}
+
+export async function updateCrmDeal(id, payload) {
+  requireSupabase();
+  const { error } = await supabase.from("crm_deals").update(payload).eq("id", id);
+  if (error) throw error;
+}
+
+export async function deleteCrmDeal(id) {
+  requireSupabase();
+  const { error } = await supabase.from("crm_deals").delete().eq("id", id);
+  if (error) throw error;
+}
+
+export async function updateCrmContact(id, payload) {
+  requireSupabase();
+  const { error } = await supabase.from("crm_contacts").update(payload).eq("id", id);
+  if (error) throw error;
+}
+
+export async function addCrmActivity(contactId, { type, body, author }) {
+  requireSupabase();
+  const { error } = await supabase
+    .from("crm_activities")
+    .insert({ contact_id: contactId, type, body, author });
+  if (error) throw error;
+  // Bump the contact's last activity so it floats to the top of the list.
+  await supabase
+    .from("crm_contacts")
+    .update({ last_activity_at: new Date().toISOString() })
+    .eq("id", contactId);
+}
+
+export async function deleteCrmActivity(id) {
+  requireSupabase();
+  const { error } = await supabase.from("crm_activities").delete().eq("id", id);
+  if (error) throw error;
 }
 
 export async function updateContactSubmissionStatus(id, status) {
