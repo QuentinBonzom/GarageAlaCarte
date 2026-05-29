@@ -7,7 +7,16 @@ import {
   useRef,
   useState,
 } from "react";
+import { createPortal } from "react-dom";
 import { hydrateContentFromSupabase } from "../data/contentRepository";
+import {
+  THEME_COLOR_GROUPS,
+  DEFAULT_THEME_COLORS,
+  isHexColor,
+  applyThemeColors,
+  expandThemeColors,
+} from "../data/theme";
+import { setLocalizedAtPath } from "../lib/cmsEdit";
 import {
   createProject,
   createProjectImage,
@@ -22,9 +31,14 @@ import {
   updateContactChannel,
   updateContactSubmissionStatus,
   updateEmailLeadStatus,
+  updateCrmContact,
+  addCrmActivity,
+  deleteCrmActivity,
+  createCrmDeal,
+  updateCrmDeal,
+  deleteCrmDeal,
   updateLegalDocument,
   updateLegalSection,
-  updateProcessStep,
   updateProject,
   updateProjectImage,
   updateService,
@@ -51,21 +65,26 @@ import {
   Inbox,
   Info,
   LayoutDashboard,
-  ListOrdered,
+  LayoutGrid,
   Loader2,
   LogOut,
   Mail,
   Menu,
   MessageSquare,
   Pencil,
+  Phone,
   Plus,
   RefreshCw,
   Scale,
+  Search,
   Settings,
+  StickyNote,
   Trash2,
   Undo2,
   Upload,
   Users,
+  CalendarClock,
+  Contact as ContactIcon,
   Wrench,
   X,
   ZoomIn,
@@ -75,6 +94,8 @@ import {
   KeyboardSensor,
   PointerSensor,
   closestCenter,
+  useDraggable,
+  useDroppable,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
@@ -105,6 +126,9 @@ const EMPTY_ADMIN_DATA = {
   legalSections: [],
   siteSettings: [],
   projectImages: [],
+  crmContacts: [],
+  crmActivities: [],
+  crmDeals: [],
 };
 
 const STATUS_OPTIONS = ["new", "in_review", "replied", "archived", "spam"];
@@ -119,24 +143,46 @@ const PAGE_LABELS = {
 };
 
 const SECTION_LABELS = {
-  nav: "Navigation",
-  hero: "Hero",
-  hero_caption: "Légendes avant/après",
-  marquee_words: "Bandeau mots",
-  visual_strip: "Section 3D",
-  before_after: "Avant / Après",
-  services_intro: "Intro services",
-  why: "Pourquoi nous",
-  team_intro: "Intro équipe",
-  audience: "Audiences",
-  process_intro: "Intro process",
-  final_cta: "CTA final",
-  use_cases: "Cas d'usage (4 pièces)",
-  testimonials_v2: "Témoignages",
-  projects_page: "Page réalisations",
-  contact_page: "Page contact",
-  popup: "Popup email",
+  // Global
+  nav: "Menu de navigation",
+
+  // ===== Accueil — sections affichées (dans l'ordre de la page) =====
+  hero: "Accueil · Bannière (titre + boutons)",
+  hero_caption: "Accueil · Visuel projet phare (photo/vidéo du hero)",
+  use_cases: "Accueil · Cartes inspiration « Dream Garage » (4 cartes)",
+  before_after: "Accueil · Avant / Après (slider photo)",
+  services_intro: "Accueil · Services & tarifs (titre + intro)",
+  final_cta: "Accueil · Bandeau final (appel à l'action)",
+
+  // Autres pages
+  projects_page: "Page Réalisations · En-tête",
+  contact_page: "Page Contact · En-tête + formulaire",
+  popup: "Popup email (sortie de page)",
 };
+
+// Sections réellement rendues par le site, dans l'ordre d'apparition sur la page.
+// Toute section absente de cette table est un reste d'une ancienne version :
+// elle est masquée dans le CMS (et supprimée par database/cleanup_cms_sections.sql).
+const LIVE_SECTION_ORDER = {
+  nav: 0,
+  popup: 1,
+  hero: 10,
+  hero_caption: 11,
+  use_cases: 12,
+  before_after: 13,
+  services_intro: 14,
+  final_cta: 15,
+  projects_page: 20,
+  contact_page: 21,
+};
+
+function isLiveSection(sectionKey) {
+  return sectionKey in LIVE_SECTION_ORDER;
+}
+
+function sortBySectionOrder(a, b) {
+  return (LIVE_SECTION_ORDER[a.section_key] ?? 999) - (LIVE_SECTION_ORDER[b.section_key] ?? 999);
+}
 
 const FIELD_LABELS = {
   title: "Titre",
@@ -162,7 +208,6 @@ const FIELD_LABELS = {
   body: "Texte",
   intro: "Introduction",
   form: "Formulaire",
-  stats: "Statistiques",
   items: "Éléments",
   before_image: "Image avant",
   after_image: "Image après",
@@ -170,19 +215,61 @@ const FIELD_LABELS = {
   video_url: "URL vidéo",
   featured_label: "Eyebrow projet phare",
   featured_title: "Titre projet phare",
-  plan_image: "Image plan 3D (gauche)",
-  mood_image: "Image ambiance / matières (haut droite)",
-  interior_image: "Image vue intérieure 3D (bas droite)",
-  homeowners_image: "Image carte 01 · Propriétaires",
-  agents_image: "Image carte 02 · Agents immobiliers",
-  developers_image: "Image carte 03 · Promoteurs",
-  quote: "Citation",
-  city: "Ville",
-  rating: "Note (1-5)",
-  tagline: "Accroche",
-  bullets: "Bullets (3 max)",
-  avatar_image: "Photo (avatar)",
 };
+
+// Ordre d'affichage des champs dans l'éditeur, de haut en bas, calqué sur la
+// lecture de la page : le petit label (eyebrow) puis le titre, puis les textes
+// secondaires, les boutons, les médias et enfin les listes. Sans cette table,
+// les champs s'affichent dans l'ordre arbitraire des clés JSON — d'où des cas
+// peu logiques comme le « texte secondaire » placé avant le « titre ».
+// Les clés absentes de cette liste sont rejetées à la fin, dans leur ordre d'origine.
+const FIELD_ORDER = [
+  // Label / kicker au-dessus du titre
+  "eyebrow",
+  "featured_label",
+  // Titres (« name » sert de titre dans les cartes, projets et membres d'équipe)
+  "title",
+  "featured_title",
+  "name",
+  // Sous-titres / accroches
+  "subtitle",
+  "tagline",
+  // Textes de contenu
+  "intro",
+  "sub",
+  "description",
+  "body",
+  "text",
+  "role",
+  "bio",
+  "why",
+  // Détails structurés
+  "value_points",
+  "includes",
+  "label",
+  "project_type",
+  "size_label",
+  "duration_label",
+  // Boutons / actions
+  "primary_cta",
+  "secondary_cta",
+  "cta",
+  "form",
+  // Médias
+  "image",
+  "before_image",
+  "after_image",
+  "video_url",
+  // Listes en dernier
+  "items",
+];
+
+const FIELD_ORDER_INDEX = new Map(FIELD_ORDER.map((key, index) => [key, index]));
+
+function orderedEntries(value) {
+  const rank = (key) => (FIELD_ORDER_INDEX.has(key) ? FIELD_ORDER_INDEX.get(key) : Number.MAX_SAFE_INTEGER);
+  return Object.entries(value).sort(([a], [b]) => rank(a) - rank(b));
+}
 
 const KNOWN_SECTION_DEFAULTS = {
   before_after: { before_image: "", after_image: "" },
@@ -192,32 +279,18 @@ const KNOWN_SECTION_DEFAULTS = {
     featured_label: { en: "FEATURED PROJECT", fr: "PROJET PHARE" },
     featured_title: { en: "The Social Hub", fr: "The Social Hub" },
   },
-  visual_strip: {
-    plan_image: "",
-    mood_image: "",
-    interior_image: "",
-  },
-  audience: {
-    homeowners_image: "",
-    agents_image: "",
-    developers_image: "",
-  },
-  testimonials_v2: {
-    eyebrow: { en: "Real homeowners, real stories", fr: "De vrais clients, de vraies histoires" },
-    title: { en: "Where Orlando homeowners fall in love with their garage.", fr: "Là où les propriétaires d'Orlando tombent amoureux de leur garage." },
-    items: [
-      { quote: { en: "", fr: "" }, name: "", city: "", rating: 5, avatar_image: "" },
-    ],
-  },
   use_cases: {
     eyebrow: { en: "Transformations", fr: "Transformations" },
-    title: { en: "Pick your room.", fr: "Choisissez votre pièce." },
+    title: {
+      en: "Discover Your Dream Garage. Explore, Imagine, and Get Inspired!",
+      fr: "Découvrez le garage de vos rêves. Explorez, imaginez et inspirez-vous !"
+    },
     sub: {
       en: "We specialize in garage remodeling, makeovers, and custom storage solutions for homeowners, real estate agencies, developers, builders, and property managers across Orlando and the surrounding areas.",
       fr: "Nous sommes spécialisés dans la rénovation de garages, les transformations et les solutions de rangement sur-mesure pour les propriétaires, les agences immobilières, les promoteurs, les constructeurs et les gestionnaires de biens à Orlando et ses environs."
     },
     items: [
-      { image: "", name: { en: "", fr: "" }, tagline: { en: "", fr: "" }, bullets: { en: [], fr: [] } },
+      { image: "", name: { en: "", fr: "" }, tagline: { en: "", fr: "" } },
     ],
   },
 };
@@ -285,11 +358,28 @@ function buildNewServicePayload(existing = []) {
     slug,
     service_number: nextNumber,
     title: { en: "New service", fr: "Nouveau service" },
-    subtitle: { en: "", fr: "" },
-    description: { en: "", fr: "" },
-    price_label: { en: "", fr: "" },
-    includes: { en: [], fr: [] },
-    detail_sections: [],
+    subtitle: { en: "Short tagline that catches the eye", fr: "Accroche courte qui attire l'œil" },
+    description: { en: "Describe in a sentence or two what this service delivers and who it is for.", fr: "Décrivez en une ou deux phrases ce que ce service apporte et à qui il s'adresse." },
+    price_label: { en: "$0", fr: "0 $" },
+    deposit_schedule: { en: "50% to start, 50% on completion", fr: "50 % pour commencer, 50 % à la livraison" },
+    badge_label: { en: "", fr: "" },
+    tag_label: { en: "", fr: "" },
+    includes: {
+      en: ["First deliverable", "Second deliverable", "Third deliverable"],
+      fr: ["Premier livrable", "Deuxième livrable", "Troisième livrable"],
+    },
+    not_included: { en: "", fr: "" },
+    onsite_label: { en: "", fr: "" },
+    detail_sections: [
+      {
+        title: { en: "WHAT YOU GET", fr: "CE QUE VOUS RECEVEZ" },
+        body: { en: "Optional short paragraph that gives more context.", fr: "Paragraphe court optionnel qui donne plus de contexte." },
+        items: {
+          en: ["Detail 1", "Detail 2"],
+          fr: ["Détail 1", "Détail 2"],
+        },
+      },
+    ],
     display_order: maxOrder + 10,
     is_active: true,
   };
@@ -319,15 +409,8 @@ const TEAM_FIELDS = [
   { key: "bio", label: "Bio" },
   { key: "email", label: "Email" },
   { key: "phone", label: "Téléphone" },
+  { key: "website", label: "Site web" },
   { key: "avatar_url", label: "Photo URL" },
-  { key: "display_order", label: "Ordre", type: "number" },
-  { key: "is_active", label: "Visible", type: "checkbox" },
-];
-
-const PROCESS_FIELDS = [
-  { key: "step_number", label: "Numéro", type: "number" },
-  { key: "title", label: "Titre" },
-  { key: "description", label: "Description" },
   { key: "display_order", label: "Ordre", type: "number" },
   { key: "is_active", label: "Visible", type: "checkbox" },
 ];
@@ -358,8 +441,38 @@ const CONTACT_CHANNEL_FIELDS = [
 
 const SITE_SETTING_FIELDS = [
   { key: "value", label: "Valeur" },
-  { key: "description", label: "Description" },
+  { key: "description", label: "Note interne (technique)" },
 ];
+
+// Noms clairs + aide « où ça apparaît » pour chaque réglage global (remplace les clés techniques).
+const SITE_SETTING_META = {
+  brand: {
+    label: "Identité de marque",
+    hint: "Nom et accroche affichés dans l'en-tête, le pied de page et le titre de l'onglet du navigateur.",
+  },
+  default_locale: {
+    label: "Langue par défaut",
+    hint: "Langue affichée à l'arrivée d'un visiteur (« fr » pour français, « en » pour anglais).",
+  },
+  service_area: {
+    label: "Zone d'intervention",
+    hint: "Ville, région et rayon d'action — utilisés sur la page Contact et pour le référencement.",
+  },
+  theme: {
+    label: "Apparence du site",
+    hint: "Couleur d'accent et style visuel par défaut de l'interface.",
+  },
+};
+
+// Noms clairs par type de canal de contact, en repli si le libellé est vide.
+const CHANNEL_TYPE_LABELS = {
+  email: "Adresse email",
+  phone: "Téléphone",
+  address: "Adresse",
+  social: "Réseau social",
+  service_area: "Zone d'intervention",
+  other: "Autre",
+};
 
 const PAGE_ROUTE = { home: "home", projects: "projects", contact: "contact", global: "home" };
 
@@ -750,6 +863,10 @@ function useEditorState(initial) {
   const guard = useNavGuard();
 
   useEffect(() => {
+    // Skip noop resets: a parent re-render can produce a new `initial` reference
+    // (e.g. `.filter()` returns a fresh array) without any real data change.
+    // Resetting the draft in that case would wipe in-progress edits like a drag-reorder.
+    if (deepEqual(initial, initialRef.current)) return;
     initialRef.current = clone(initial);
     setDraft(clone(initial));
     setHistory([]);
@@ -871,6 +988,24 @@ function GlobalStyles() {
       .admin-icon-btn:disabled { opacity: 0.35; cursor: default; }
       .admin-input { width: 100%; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; background: var(--paper); color: var(--ink); font-family: var(--sans); font-size: 14px; box-sizing: border-box; }
       .admin-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(255, 94, 91, 0.16); }
+      .svc-inline { width: 100%; border: 0; border-bottom: 1px dashed transparent; background: transparent; color: inherit; font: inherit; padding: 2px 4px; margin: -2px -4px; box-sizing: border-box; outline: none; resize: none; border-radius: 4px; transition: background 120ms ease, border-color 120ms ease; }
+      .svc-inline:hover { background: rgba(244, 237, 226, 0.6); border-bottom-color: var(--line); }
+      .svc-inline:focus { background: rgba(255, 255, 255, 0.9); border-bottom-color: var(--accent); box-shadow: 0 0 0 3px rgba(255, 94, 91, 0.12); }
+      .svc-inline::placeholder { color: var(--muted); font-style: italic; opacity: 0.7; }
+      .svc-inline--dark { color: var(--cream); }
+      .svc-inline--dark:hover { background: rgba(244, 237, 226, 0.08); border-bottom-color: rgba(244, 237, 226, 0.25); }
+      .svc-inline--dark:focus { background: rgba(244, 237, 226, 0.12); border-bottom-color: var(--brass-soft); box-shadow: 0 0 0 3px rgba(201, 160, 92, 0.18); }
+      .svc-inline--dark::placeholder { color: rgba(244, 237, 226, 0.45); }
+      .svc-edit-row { display: flex; gap: 10px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--line); }
+      .svc-edit-row:last-child { border-bottom: 0; }
+      .svc-edit-row__num { color: var(--accent); font-family: var(--mono); font-size: 12px; padding-top: 4px; min-width: 22px; }
+      .svc-edit-row__remove { opacity: 0; transition: opacity 140ms ease; }
+      .svc-edit-row:hover .svc-edit-row__remove { opacity: 1; }
+      .svc-edit-add { display: inline-flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); background: transparent; border: 1px dashed var(--line); border-radius: 8px; padding: 6px 10px; cursor: pointer; margin-top: 10px; }
+      .svc-edit-add:hover { color: var(--ink); border-color: var(--line-strong); }
+      .svc-edit-section { padding: 18px 0; border-top: 1px solid var(--line); position: relative; }
+      .svc-edit-section__tools { position: absolute; top: 12px; right: 0; display: flex; gap: 4px; opacity: 0; transition: opacity 140ms ease; }
+      .svc-edit-section:hover .svc-edit-section__tools { opacity: 1; }
       .admin-image-card .admin-image-overlay { opacity: 0; transition: opacity 160ms ease; }
       .admin-image-card:hover .admin-image-overlay { opacity: 1; }
       .admin-toggle-track { transition: background 160ms ease; }
@@ -955,6 +1090,10 @@ function AdminPageInner({ onNav }) {
   if (!session) return <AdminLogin onSignedIn={setSession} />;
 
   const newMessageCount = data.contactSubmissions.filter((item) => item.status === "new").length;
+  const todayIso = new Date().toISOString().slice(0, 10);
+  const followUpCount = data.crmContacts.filter(
+    (c) => c.follow_up_on && c.follow_up_on <= todayIso && c.status !== "archived",
+  ).length;
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--paper)", display: "flex" }}>
@@ -968,7 +1107,7 @@ function AdminPageInner({ onNav }) {
         onNavHome={() => onNav("home")}
         onRefresh={refresh}
         loadingData={loadingData}
-        badges={{ messages: newMessageCount }}
+        badges={{ messages: newMessageCount, followups: followUpCount }}
       />
       <main
         style={{
@@ -999,6 +1138,7 @@ function AdminPageInner({ onNav }) {
             onDelete={(id) => deleteService(id)}
             createLabel="Ajouter un service"
             deleteConfirm="Supprimer ce service ? Cette action est définitive."
+            renderEditor={({ key, ...rest }) => <ServiceEditor key={key} {...rest} />}
           />
         )}
         {tab === "team" && (
@@ -1013,18 +1153,8 @@ function AdminPageInner({ onNav }) {
             onRefresh={refresh}
           />
         )}
-        {tab === "process" && (
-          <RecordCollectionAdmin
-            title="Process"
-            sub="Modifier les étapes affichées sur l'accueil"
-            records={data.processSteps}
-            fields={PROCESS_FIELDS}
-            getLabel={(step) => text(step.title)}
-            getMeta={(step) => `Step ${step.step_number}`}
-            onSave={(id, payload) => updateProcessStep(id, payload)}
-            onRefresh={refresh}
-          />
-        )}
+        {tab === "contacts" && <ContactsAdmin data={data} onRefresh={refresh} />}
+        {tab === "pipeline" && <PipelineAdmin data={data} onRefresh={refresh} />}
         {tab === "messages" && <MessagesAdmin data={data} onRefresh={refresh} />}
         {tab === "emails" && <EmailsAdmin data={data} onRefresh={refresh} />}
         {tab === "legal" && <LegalAdmin data={data} onRefresh={refresh} />}
@@ -1050,15 +1180,21 @@ const NAV_GROUPS = [
       { id: "projects", label: "Projets", icon: FolderKanban },
       { id: "services", label: "Services", icon: Wrench },
       { id: "team", label: "Équipe", icon: Users },
-      { id: "process", label: "Process", icon: ListOrdered },
       { id: "legal", label: "Mentions légales", icon: Scale },
+    ],
+  },
+  {
+    title: "CRM",
+    items: [
+      { id: "contacts", label: "Contacts", icon: ContactIcon, badgeKey: "followups" },
+      { id: "pipeline", label: "Pipeline", icon: LayoutGrid },
+      { id: "messages", label: "Messages", icon: MessageSquare, badgeKey: "messages" },
+      { id: "emails", label: "Email leads", icon: Mail },
     ],
   },
   {
     title: "Données",
     items: [
-      { id: "messages", label: "Messages", icon: MessageSquare, badgeKey: "messages" },
-      { id: "emails", label: "Email leads", icon: Mail },
       { id: "settings", label: "Réglages", icon: Settings },
     ],
   },
@@ -1699,6 +1835,665 @@ function SkeletonList({ rows = 3 }) {
    Messages tab
    ========================================================================== */
 
+/* ==========================================================================
+   CRM — Contacts (unified person record + activity timeline)
+   ========================================================================== */
+
+const CRM_STATUS_OPTIONS = ["new", "active", "customer", "lost", "archived"];
+const CRM_STATUS_LABELS = {
+  new: "Nouveau",
+  active: "En cours",
+  customer: "Client",
+  lost: "Perdu",
+  archived: "Archivé",
+};
+const CRM_ACTIVITY_TYPES = [
+  { id: "note", label: "Note" },
+  { id: "call", label: "Appel" },
+  { id: "email", label: "Email" },
+  { id: "meeting", label: "RDV" },
+];
+const CRM_ACTIVITY_ICON = {
+  note: StickyNote,
+  call: Phone,
+  email: Mail,
+  meeting: CalendarClock,
+  form: MessageSquare,
+  lead: Mail,
+  status: Check,
+  system: Info,
+};
+
+function ContactsAdmin({ data, onRefresh }) {
+  const contacts = data.crmContacts || [];
+  const activities = data.crmActivities || [];
+  const deals = data.crmDeals || [];
+  const team = data.teamMembers || [];
+  const { push: pushToast } = useToast();
+
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState("all");
+  const [activeId, setActiveId] = useState(null);
+  const [draftType, setDraftType] = useState("note");
+  const [draftBody, setDraftBody] = useState("");
+  const [logging, setLogging] = useState(false);
+  const [editingDeal, setEditingDeal] = useState(null);
+
+  const todayIso = new Date().toISOString().slice(0, 10);
+  const teamName = (id) => team.find((m) => m.id === id)?.name || "—";
+
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return contacts.filter((c) => {
+      if (q && !(`${c.name || ""} ${c.email || ""}`.toLowerCase().includes(q))) return false;
+      if (filter === "followup") return c.follow_up_on && c.follow_up_on <= todayIso && c.status !== "archived";
+      if (filter === "unassigned") return !c.assigned_to && c.status !== "archived";
+      if (filter !== "all") return c.status === filter;
+      return true;
+    });
+  }, [contacts, search, filter, todayIso]);
+
+  const active = useMemo(() => contacts.find((c) => c.id === activeId) || null, [contacts, activeId]);
+  const timeline = useMemo(
+    () => (active ? activities.filter((a) => a.contact_id === active.id) : []),
+    [activities, active],
+  );
+
+  const filters = [
+    { id: "all", label: "Tous", count: contacts.length },
+    { id: "followup", label: "À relancer", count: contacts.filter((c) => c.follow_up_on && c.follow_up_on <= todayIso && c.status !== "archived").length },
+    { id: "unassigned", label: "Non assignés", count: contacts.filter((c) => !c.assigned_to && c.status !== "archived").length },
+    { id: "customer", label: "Clients", count: contacts.filter((c) => c.status === "customer").length },
+    { id: "archived", label: "Archivés", count: contacts.filter((c) => c.status === "archived").length },
+  ];
+
+  const patchContact = async (patch) => {
+    if (!active) return;
+    try {
+      await updateCrmContact(active.id, patch);
+      await onRefresh();
+    } catch (err) {
+      pushToast({ type: "error", title: "Échec de la mise à jour", message: err.message });
+    }
+  };
+
+  const logActivity = async () => {
+    if (!active || !draftBody.trim() || logging) return;
+    setLogging(true);
+    try {
+      await addCrmActivity(active.id, { type: draftType, body: draftBody.trim(), author: "admin" });
+      setDraftBody("");
+      await onRefresh();
+      pushToast({ type: "success", title: "Activité ajoutée" });
+    } catch (err) {
+      pushToast({ type: "error", title: "Échec", message: err.message });
+    } finally {
+      setLogging(false);
+    }
+  };
+
+  const removeActivity = async (id) => {
+    try {
+      await deleteCrmActivity(id);
+      await onRefresh();
+    } catch (err) {
+      pushToast({ type: "error", title: "Échec de la suppression", message: err.message });
+    }
+  };
+
+  return (
+    <div>
+      <PageHead title="Contacts" sub={`${contacts.length} contact(s) · ${filters[1].count} à relancer`} />
+
+      <div style={{ display: "flex", gap: "10px", marginTop: "24px", flexWrap: "wrap", alignItems: "center" }}>
+        <div style={{ position: "relative", flex: "1 1 220px", minWidth: "200px" }}>
+          <Search size={14} style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: "var(--muted)" }} />
+          <input
+            className="admin-input"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Rechercher un nom ou email…"
+            style={{ paddingLeft: "34px", width: "100%" }}
+          />
+        </div>
+        <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
+          {filters.map((f) => {
+            const isActive = filter === f.id;
+            return (
+              <button
+                key={f.id}
+                onClick={() => setFilter(f.id)}
+                style={{
+                  background: isActive ? "var(--ink)" : "transparent",
+                  color: isActive ? "var(--cream)" : "var(--ink)",
+                  border: "1px solid var(--line)",
+                  borderRadius: "100px",
+                  padding: "7px 13px",
+                  fontSize: "11px",
+                  fontFamily: "var(--mono)",
+                  letterSpacing: "0.06em",
+                  textTransform: "uppercase",
+                  cursor: "pointer",
+                  display: "inline-flex",
+                  gap: "7px",
+                  alignItems: "center",
+                }}
+              >
+                {f.label}
+                <span style={{ opacity: 0.7 }}>{f.count}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 340px) 1fr", gap: "16px", marginTop: "16px", alignItems: "start" }}>
+        <Panel style={{ maxHeight: "calc(100vh - 280px)", overflowY: "auto" }}>
+          {filtered.length ? (
+            filtered.map((c) => {
+              const due = c.follow_up_on && c.follow_up_on <= todayIso && c.status !== "archived";
+              return (
+                <button
+                  key={c.id}
+                  onClick={() => setActiveId(c.id)}
+                  style={{
+                    ...listButtonStyle,
+                    background: active?.id === c.id ? "var(--cream-deep)" : "transparent",
+                  }}
+                >
+                  <span style={{ display: "flex", justifyContent: "space-between", gap: "10px", alignItems: "center" }}>
+                    <strong style={{ fontSize: "13px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      {c.name || c.email}
+                    </strong>
+                    <CrmStatusTag status={c.status} />
+                  </span>
+                  <span className="text-mono text-muted" style={{ fontSize: "10px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    {c.email}
+                  </span>
+                  <span style={{ display: "flex", gap: "8px", alignItems: "center", fontSize: "10px" }} className="text-mono text-muted">
+                    {c.assigned_to && <span>👤 {teamName(c.assigned_to)}</span>}
+                    {due && <span style={{ color: "var(--accent)" }}>⏰ relance {c.follow_up_on}</span>}
+                  </span>
+                </button>
+              );
+            })
+          ) : (
+            <EmptyState text="Aucun contact." />
+          )}
+        </Panel>
+
+        <Panel>
+          {active ? (
+            <div>
+              <div style={{ display: "flex", justifyContent: "space-between", gap: "16px", alignItems: "flex-start" }}>
+                <div style={{ minWidth: 0 }}>
+                  <h2 style={smallTitleStyle}>{active.name || active.email}</h2>
+                  <div className="text-mono text-muted" style={{ marginTop: "6px", fontSize: "11px" }}>
+                    {active.first_source || "—"} · créé {formatDate(active.created_at)}
+                  </div>
+                </div>
+                <CrmStatusTag status={active.status} />
+              </div>
+
+              {/* Coordonnées + actions rapides */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", margin: "20px 0", padding: "18px 0", borderTop: "1px solid var(--line)", borderBottom: "1px solid var(--line)" }}>
+                <Meta label="Email" value={<a href={`mailto:${active.email}`}>{active.email}</a>} />
+                <Meta label="Téléphone" value={active.phone ? <a href={`tel:${active.phone.replace(/\s+/g, "")}`}>{active.phone}</a> : "—"} />
+              </div>
+
+              {/* Pilotage CRM */}
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "12px", marginBottom: "20px" }}>
+                <label style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                  <FieldLabel label="Statut" />
+                  <select value={active.status} onChange={(e) => patchContact({ status: e.target.value })} style={selectStyle}>
+                    {CRM_STATUS_OPTIONS.map((s) => <option key={s} value={s}>{CRM_STATUS_LABELS[s]}</option>)}
+                  </select>
+                </label>
+                <label style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                  <FieldLabel label="Assigné à" />
+                  <select value={active.assigned_to || ""} onChange={(e) => patchContact({ assigned_to: e.target.value || null })} style={selectStyle}>
+                    <option value="">— Personne —</option>
+                    {team.map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}
+                  </select>
+                </label>
+                <label style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                  <FieldLabel label="Relance le" />
+                  <input
+                    type="date"
+                    value={active.follow_up_on || ""}
+                    onChange={(e) => patchContact({ follow_up_on: e.target.value || null })}
+                    style={selectStyle}
+                  />
+                </label>
+              </div>
+
+              <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginBottom: "24px" }}>
+                <a className="btn" href={`mailto:${active.email}`}>Répondre par email</a>
+                {active.status !== "archived" && (
+                  <button className="btn btn-ghost" onClick={() => patchContact({ status: "archived" })}>Archiver</button>
+                )}
+              </div>
+
+              {/* Composer une activité */}
+              <div style={{ background: "var(--cream)", border: "1px solid var(--line)", borderRadius: "12px", padding: "14px", marginBottom: "20px" }}>
+                <div style={{ display: "flex", gap: "8px", marginBottom: "10px", flexWrap: "wrap" }}>
+                  {CRM_ACTIVITY_TYPES.map((t) => (
+                    <button
+                      key={t.id}
+                      onClick={() => setDraftType(t.id)}
+                      style={{
+                        background: draftType === t.id ? "var(--ink)" : "transparent",
+                        color: draftType === t.id ? "var(--cream)" : "var(--ink)",
+                        border: "1px solid var(--line)",
+                        borderRadius: "100px",
+                        padding: "5px 12px",
+                        fontSize: "11px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      {t.label}
+                    </button>
+                  ))}
+                </div>
+                <textarea
+                  className="admin-input"
+                  value={draftBody}
+                  onChange={(e) => setDraftBody(e.target.value)}
+                  placeholder="Noter un appel, un email envoyé, un RDV…"
+                  rows={3}
+                  style={{ width: "100%", resize: "vertical" }}
+                />
+                <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "10px" }}>
+                  <button className="btn" onClick={logActivity} disabled={!draftBody.trim() || logging}>
+                    {logging ? "Ajout…" : "Ajouter à la timeline"}
+                  </button>
+                </div>
+              </div>
+
+              {/* Timeline */}
+              <FieldLabel label={`Historique (${timeline.length})`} large />
+              <div style={{ display: "flex", flexDirection: "column", gap: "2px", marginTop: "12px" }}>
+                {timeline.length ? (
+                  timeline.map((a) => {
+                    const Icon = CRM_ACTIVITY_ICON[a.type] || Info;
+                    return (
+                      <div key={a.id} style={{ display: "flex", gap: "12px", padding: "12px 0", borderTop: "1px solid var(--line)" }}>
+                        <div style={{ flexShrink: 0, width: "28px", height: "28px", borderRadius: "50%", background: "var(--cream-deep)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--muted)" }}>
+                          <Icon size={14} />
+                        </div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div className="text-mono text-muted" style={{ fontSize: "10px", display: "flex", gap: "8px" }}>
+                            <span>{formatDate(a.created_at)}</span>
+                            {a.author && <span>· {a.author}</span>}
+                          </div>
+                          <div style={{ fontSize: "13px", color: "var(--ink)", lineHeight: 1.5, marginTop: "3px", whiteSpace: "pre-wrap" }}>{a.body}</div>
+                        </div>
+                        <button className="admin-icon-btn" onClick={() => removeActivity(a.id)} title="Supprimer" style={{ flexShrink: 0 }}>
+                          <Trash2 size={13} />
+                        </button>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <EmptyState text="Aucune activité." />
+                )}
+              </div>
+            </div>
+          ) : (
+            <EmptyState text="Sélectionnez un contact." />
+          )}
+        </Panel>
+      </div>
+    </div>
+  );
+}
+
+function CrmStatusTag({ status }) {
+  const colors = {
+    new: { bg: "var(--accent)", color: "var(--cream)" },
+    active: { bg: "var(--sunset)", color: "var(--ink)" },
+    customer: { bg: "var(--palm)", color: "var(--cream)" },
+    lost: { bg: "var(--ink-soft)", color: "var(--cream)" },
+    archived: { bg: "var(--cream-deep)", color: "var(--muted)" },
+  };
+  const palette = colors[status] || { bg: "var(--cream-deep)", color: "var(--muted)" };
+  return (
+    <span
+      style={{
+        background: palette.bg,
+        color: palette.color,
+        borderRadius: "100px",
+        padding: "2px 10px",
+        fontSize: "10px",
+        fontFamily: "var(--mono)",
+        letterSpacing: "0.06em",
+        textTransform: "uppercase",
+        whiteSpace: "nowrap",
+        flexShrink: 0,
+      }}
+    >
+      {CRM_STATUS_LABELS[status] || status}
+    </span>
+  );
+}
+
+/* ==========================================================================
+   CRM — Pipeline (Kanban of deals)
+   ========================================================================== */
+
+const DEAL_STAGES = [
+  { id: "lead", label: "Lead", color: "var(--accent)" },
+  { id: "qualified", label: "Qualifié", color: "var(--sunset)" },
+  { id: "estimate", label: "Devis envoyé", color: "var(--terra)" },
+  { id: "won", label: "Gagné", color: "var(--palm)" },
+  { id: "lost", label: "Perdu", color: "var(--ink-soft)" },
+];
+
+function formatMoney(value) {
+  return `$${Number(value || 0).toLocaleString("en-US", { maximumFractionDigits: 0 })}`;
+}
+
+function PipelineAdmin({ data, onRefresh }) {
+  const deals = data.crmDeals || [];
+  const contacts = data.crmContacts || [];
+  const team = data.teamMembers || [];
+  const { push: pushToast } = useToast();
+  const [editing, setEditing] = useState(null); // deal object, {contact_id} preset, or null
+
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
+
+  const contactName = (id) => {
+    const c = contacts.find((x) => x.id === id);
+    return c ? c.name || c.email : "—";
+  };
+  const teamName = (id) => team.find((m) => m.id === id)?.name || null;
+
+  const openValue = deals
+    .filter((d) => d.stage !== "won" && d.stage !== "lost")
+    .reduce((sum, d) => sum + Number(d.amount || 0), 0);
+  const wonValue = deals.filter((d) => d.stage === "won").reduce((sum, d) => sum + Number(d.amount || 0), 0);
+
+  const onDragEnd = async (event) => {
+    const { active, over } = event;
+    if (!over) return;
+    const dealId = active.id;
+    const newStage = over.id;
+    const deal = deals.find((d) => d.id === dealId);
+    if (!deal || deal.stage === newStage) return;
+    const patch = { stage: newStage };
+    patch.closed_at = newStage === "won" || newStage === "lost" ? new Date().toISOString() : null;
+    try {
+      await updateCrmDeal(dealId, patch);
+      await onRefresh();
+    } catch (err) {
+      pushToast({ type: "error", title: "Déplacement échoué", message: err.message });
+    }
+  };
+
+  return (
+    <div>
+      <PageHead
+        title="Pipeline"
+        sub={`${deals.length} deal(s) · ${formatMoney(openValue)} en cours · ${formatMoney(wonValue)} gagné`}
+        cta="Nouveau deal"
+        onCta={() => setEditing({})}
+      />
+
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+        <div style={{ display: "flex", gap: "14px", marginTop: "24px", overflowX: "auto", paddingBottom: "12px", alignItems: "flex-start" }}>
+          {DEAL_STAGES.map((stage) => (
+            <PipelineColumn
+              key={stage.id}
+              stage={stage}
+              deals={deals.filter((d) => d.stage === stage.id)}
+              contactName={contactName}
+              teamName={teamName}
+              onEdit={setEditing}
+            />
+          ))}
+        </div>
+      </DndContext>
+
+      {editing && (
+        <DealModal
+          deal={editing}
+          data={data}
+          onClose={() => setEditing(null)}
+          onSaved={async () => {
+            setEditing(null);
+            await onRefresh();
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
+function PipelineColumn({ stage, deals, contactName, teamName, onEdit }) {
+  const { setNodeRef, isOver } = useDroppable({ id: stage.id });
+  const total = deals.reduce((sum, d) => sum + Number(d.amount || 0), 0);
+  return (
+    <div style={{ flex: "0 0 264px", width: "264px" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "10px", padding: "0 4px" }}>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: "8px", fontFamily: "var(--mono)", fontSize: "11px", letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--ink)" }}>
+          <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: stage.color }} />
+          {stage.label}
+          <span style={{ color: "var(--muted)" }}>{deals.length}</span>
+        </span>
+        <span className="text-mono text-muted" style={{ fontSize: "10px" }}>{formatMoney(total)}</span>
+      </div>
+      <div
+        ref={setNodeRef}
+        style={{
+          background: isOver ? "var(--cream-deep)" : "var(--cream)",
+          border: "1px solid var(--line)",
+          borderRadius: "12px",
+          padding: "8px",
+          minHeight: "120px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+          transition: "background 0.15s",
+        }}
+      >
+        {deals.map((deal) => (
+          <DealCard key={deal.id} deal={deal} contactName={contactName} teamName={teamName} onEdit={onEdit} />
+        ))}
+        {!deals.length && (
+          <div style={{ padding: "16px 8px", textAlign: "center", color: "var(--muted)", fontSize: "11px" }}>—</div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function DealCard({ deal, contactName, teamName, onEdit }) {
+  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id: deal.id });
+  const owner = teamName(deal.assigned_to);
+  return (
+    <div
+      ref={setNodeRef}
+      style={{
+        transform: CSS.Translate.toString(transform),
+        opacity: isDragging ? 0.5 : 1,
+        background: "var(--paper)",
+        border: "1px solid var(--line)",
+        borderRadius: "10px",
+        padding: "12px",
+        cursor: "grab",
+        boxShadow: isDragging ? "0 12px 24px -12px rgba(10,37,64,0.3)" : "none",
+      }}
+      {...attributes}
+      {...listeners}
+    >
+      <div style={{ display: "flex", justifyContent: "space-between", gap: "8px", alignItems: "flex-start" }}>
+        <strong style={{ fontSize: "13px", lineHeight: 1.3 }}>{deal.title}</strong>
+        <button
+          className="admin-icon-btn"
+          onClick={(e) => { e.stopPropagation(); onEdit(deal); }}
+          onPointerDown={(e) => e.stopPropagation()}
+          title="Modifier"
+          style={{ flexShrink: 0 }}
+        >
+          <Pencil size={12} />
+        </button>
+      </div>
+      <div className="text-mono text-muted" style={{ fontSize: "10px", marginTop: "6px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+        {contactName(deal.contact_id)}
+      </div>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "8px" }}>
+        <span style={{ fontFamily: "var(--serif)", fontSize: "16px", color: "var(--ink)" }}>{formatMoney(deal.amount)}</span>
+        {owner && (
+          <span title={owner} style={{ width: "22px", height: "22px", borderRadius: "50%", background: "linear-gradient(135deg, var(--terra), var(--terra-deep))", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "10px", fontFamily: "var(--mono)" }}>
+            {owner.charAt(0)}
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function DealModal({ deal, data, onClose, onSaved }) {
+  const isNew = !deal?.id;
+  const contacts = data.crmContacts || [];
+  const team = data.teamMembers || [];
+  const services = data.services || [];
+  const { push: pushToast } = useToast();
+  const [form, setForm] = useState({
+    contact_id: deal?.contact_id || "",
+    title: deal?.title || "",
+    stage: deal?.stage || "lead",
+    amount: deal?.amount != null ? String(deal.amount) : "",
+    assigned_to: deal?.assigned_to || "",
+    service_slug: deal?.service_slug || "",
+    expected_close_on: deal?.expected_close_on || "",
+    notes: deal?.notes || "",
+  });
+  const [saving, setSaving] = useState(false);
+  const set = (key, value) => setForm((f) => ({ ...f, [key]: value }));
+
+  const save = async () => {
+    if (saving) return;
+    setSaving(true);
+    try {
+      const payload = {
+        contact_id: form.contact_id || null,
+        title: form.title.trim() || "Nouveau projet",
+        stage: form.stage,
+        amount: Number(form.amount || 0),
+        assigned_to: form.assigned_to || null,
+        service_slug: form.service_slug || null,
+        expected_close_on: form.expected_close_on || null,
+        notes: form.notes || null,
+        closed_at: form.stage === "won" || form.stage === "lost" ? new Date().toISOString() : null,
+      };
+      if (isNew) {
+        await createCrmDeal(payload);
+        if (payload.contact_id) {
+          await addCrmActivity(payload.contact_id, {
+            type: "note",
+            body: `Deal créé : ${payload.title} (${formatMoney(payload.amount)})`,
+            author: "admin",
+          });
+        }
+      } else {
+        await updateCrmDeal(deal.id, payload);
+      }
+      pushToast({ type: "success", title: isNew ? "Deal créé" : "Deal enregistré" });
+      await onSaved();
+    } catch (err) {
+      pushToast({ type: "error", title: "Échec", message: err.message });
+      setSaving(false);
+    }
+  };
+
+  const remove = async () => {
+    try {
+      await deleteCrmDeal(deal.id);
+      pushToast({ type: "success", title: "Deal supprimé" });
+      await onSaved();
+    } catch (err) {
+      pushToast({ type: "error", title: "Échec de la suppression", message: err.message });
+    }
+  };
+
+  return createPortal(
+    <div className="modal-backdrop" onClick={onClose}>
+      <div
+        className="admin-card"
+        onClick={(e) => e.stopPropagation()}
+        style={{ background: "var(--paper)", borderRadius: "16px", width: "100%", maxWidth: "520px", maxHeight: "90vh", overflowY: "auto", padding: "28px" }}
+      >
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+          <h2 style={smallTitleStyle}>{isNew ? "Nouveau deal" : "Modifier le deal"}</h2>
+          <button className="admin-icon-btn" onClick={onClose} title="Fermer"><X size={16} /></button>
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+          <label style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+            <FieldLabel label="Contact" />
+            <select value={form.contact_id} onChange={(e) => set("contact_id", e.target.value)} style={selectStyle}>
+              <option value="">— Aucun —</option>
+              {contacts.map((c) => <option key={c.id} value={c.id}>{c.name || c.email}</option>)}
+            </select>
+          </label>
+          <label style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+            <FieldLabel label="Titre" />
+            <input className="admin-input" value={form.title} onChange={(e) => set("title", e.target.value)} placeholder="Ex. Transformation garage — Smith" />
+          </label>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
+            <label style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+              <FieldLabel label="Montant ($)" />
+              <input className="admin-input" type="number" min="0" step="50" value={form.amount} onChange={(e) => set("amount", e.target.value)} placeholder="0" />
+            </label>
+            <label style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+              <FieldLabel label="Étape" />
+              <select value={form.stage} onChange={(e) => set("stage", e.target.value)} style={selectStyle}>
+                {DEAL_STAGES.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
+              </select>
+            </label>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
+            <label style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+              <FieldLabel label="Assigné à" />
+              <select value={form.assigned_to} onChange={(e) => set("assigned_to", e.target.value)} style={selectStyle}>
+                <option value="">— Personne —</option>
+                {team.map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}
+              </select>
+            </label>
+            <label style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+              <FieldLabel label="Clôture prévue" />
+              <input type="date" value={form.expected_close_on} onChange={(e) => set("expected_close_on", e.target.value)} style={selectStyle} />
+            </label>
+          </div>
+          <label style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+            <FieldLabel label="Service" />
+            <select value={form.service_slug} onChange={(e) => set("service_slug", e.target.value)} style={selectStyle}>
+              <option value="">— Aucun —</option>
+              {services.map((s) => <option key={s.id} value={s.slug}>{text(s.title)}</option>)}
+            </select>
+          </label>
+          <label style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+            <FieldLabel label="Notes" />
+            <textarea className="admin-input" value={form.notes} onChange={(e) => set("notes", e.target.value)} rows={3} style={{ resize: "vertical" }} />
+          </label>
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "space-between", gap: "10px", marginTop: "24px" }}>
+          {!isNew ? (
+            <button className="btn btn-ghost" onClick={remove} style={{ color: "var(--accent)" }}>Supprimer</button>
+          ) : <span />}
+          <div style={{ display: "flex", gap: "10px" }}>
+            <button className="btn btn-ghost" onClick={onClose}>Annuler</button>
+            <button className="btn" onClick={save} disabled={saving}>{saving ? "Enregistrement…" : "Enregistrer"}</button>
+          </div>
+        </div>
+      </div>
+    </div>,
+    document.body,
+  );
+}
+
 function MessagesAdmin({ data, onRefresh }) {
   const messages = data.contactSubmissions;
   const [filter, setFilter] = useState("all");
@@ -2063,16 +2858,23 @@ function EmailsAdmin({ data, onRefresh }) {
    ========================================================================== */
 
 function PagesAdmin({ data, onRefresh }) {
+  const { push: pushToast } = useToast();
+  const [advanced, setAdvanced] = useState(false);
   const grouped = useMemo(() => {
-    return data.cmsSections.reduce((acc, section) => {
-      acc[section.page_key] ??= [];
-      acc[section.page_key].push(section);
-      return acc;
-    }, {});
+    return data.cmsSections
+      .filter((section) => isLiveSection(section.section_key))
+      .reduce((acc, section) => {
+        acc[section.page_key] ??= [];
+        acc[section.page_key].push(section);
+        return acc;
+      }, {});
   }, [data.cmsSections]);
   const pageKeys = Object.keys(grouped).sort((a, b) => pageSort(a) - pageSort(b));
   const [pageKey, setPageKey] = useState(pageKeys[0] || "home");
-  const pageSections = grouped[pageKey] || [];
+  const pageSections = useMemo(
+    () => (grouped[pageKey] || []).slice().sort(sortBySectionOrder),
+    [grouped, pageKey],
+  );
   const [activeId, setActiveId] = useState(pageSections[0]?.id || "");
   const active = pageSections.find((section) => section.id === activeId) || pageSections[0];
   const iframeRef = useRef(null);
@@ -2099,6 +2901,67 @@ function PagesAdmin({ data, onRefresh }) {
     const timer = setTimeout(send, 400);
     return () => clearTimeout(timer);
   }, [active?.section_key]);
+
+  // Édition in-context : l'aperçu (iframe) envoie un message quand on clique /
+  // modifie un texte. On sélectionne la section côté admin et on persiste en base.
+  useEffect(() => {
+    const handler = async (event) => {
+      if (event.origin !== window.location.origin) return;
+      const msg = event.data;
+      if (!msg || typeof msg !== "object") return;
+
+      if (msg.type === "cms_inline_focus" || msg.type === "cms_inline_edit") {
+        const section = data.cmsSections.find((s) => s.section_key === msg.sectionKey);
+        if (!section) return;
+
+        if (msg.type === "cms_inline_focus") {
+          setPageKey(section.page_key);
+          setActiveId(section.id);
+          return;
+        }
+
+        if (!msg.field) return;
+        const nextContent = setLocalizedAtPath(
+          section.content || {},
+          msg.field,
+          msg.lang,
+          msg.value,
+          msg.fieldType,
+        );
+        try {
+          await updateCmsSection(section.id, nextContent);
+          await onRefresh();
+          pushToast({ type: "success", title: "Texte mis à jour" });
+        } catch (err) {
+          pushToast({ type: "error", title: "Échec de la sauvegarde", message: err.message });
+        }
+        return;
+      }
+
+      // Édition d'un enregistrement (table dédiée). Pour l'instant : services.
+      if (msg.type === "cms_record_edit" && msg.recordType === "service" && msg.field) {
+        const service = data.services.find((s) => s.slug === msg.id);
+        if (!service) return;
+        const existing = service[msg.field];
+        const base =
+          existing && typeof existing === "object" && !Array.isArray(existing) ? existing : {};
+        const payload = { [msg.field]: { ...base, [msg.lang]: msg.value } };
+        try {
+          await updateService(service.id, payload);
+          await onRefresh();
+          iframeRef.current?.contentWindow?.postMessage(
+            { type: "cms_reload" },
+            window.location.origin,
+          );
+          pushToast({ type: "success", title: "Service mis à jour" });
+        } catch (err) {
+          pushToast({ type: "error", title: "Échec de la sauvegarde", message: err.message });
+        }
+      }
+    };
+    window.addEventListener("message", handler);
+    return () => window.removeEventListener("message", handler);
+  }, [data.cmsSections, data.services, onRefresh, pushToast]);
 
   return (
     <div>
@@ -2152,7 +3015,7 @@ function PagesAdmin({ data, onRefresh }) {
       <div style={{ display: "flex", gap: "16px", height: "calc(100vh - 220px)", minHeight: "560px" }}>
         <div
           style={{
-            width: "420px",
+            width: advanced ? "420px" : "300px",
             flexShrink: 0,
             overflowY: "auto",
             display: "flex",
@@ -2160,20 +3023,59 @@ function PagesAdmin({ data, onRefresh }) {
             gap: "12px",
           }}
         >
-          <SectionsList sections={pageSections} activeId={active?.id} onSelect={setActiveId} />
-          <Panel>
-            {active ? (
-              <CmsVisualEditor key={active.id} section={active} onRefresh={onRefresh} />
-            ) : (
-              <EmptyState text="Sélectionnez une section." />
-            )}
-          </Panel>
-          {pageKey === "projects" && (
-            <ProjectImagesPagePanel
-              projects={data.projects}
-              projectImages={data.projectImages}
-              onRefresh={onRefresh}
-            />
+          <button
+            type="button"
+            onClick={() => setAdvanced((v) => !v)}
+            style={{
+              alignSelf: "flex-start",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
+              padding: "8px 14px",
+              borderRadius: "100px",
+              border: "1px solid var(--line-strong)",
+              background: advanced ? "var(--ink)" : "transparent",
+              color: advanced ? "var(--cream)" : "var(--ink)",
+              cursor: "pointer",
+              fontFamily: "var(--mono)",
+              fontSize: "11px",
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+            }}
+          >
+            <Settings size={13} /> Édition avancée
+          </button>
+
+          {advanced ? (
+            <>
+              <SectionsList sections={pageSections} activeId={active?.id} onSelect={setActiveId} />
+              <Panel>
+                {active ? (
+                  <CmsVisualEditor key={active.id} section={active} onRefresh={onRefresh} />
+                ) : (
+                  <EmptyState text="Sélectionnez une section." />
+                )}
+              </Panel>
+              {pageKey === "projects" && (
+                <ProjectImagesPagePanel
+                  projects={data.projects}
+                  projectImages={data.projectImages}
+                  onRefresh={onRefresh}
+                />
+              )}
+            </>
+          ) : (
+            <Panel title="Édition au clic">
+              <p style={{ color: "var(--muted)", fontSize: "13px", margin: "0 0 10px", lineHeight: 1.5 }}>
+                Cliquez directement sur un texte dans l'aperçu à droite pour le modifier, puis
+                appuyez sur <strong>Entrée</strong> (ou cliquez ailleurs) pour enregistrer.
+                <strong> Échap</strong> annule.
+              </p>
+              <p style={{ color: "var(--muted)", fontSize: "13px", margin: 0, lineHeight: 1.5 }}>
+                Pour les <strong>images</strong>, l'<strong>ordre</strong>, la <strong>visibilité</strong>{" "}
+                des sections ou les <strong>listes</strong>, ouvrez l'<strong>Édition avancée</strong>.
+              </p>
+            </Panel>
           )}
         </div>
 
@@ -2223,7 +3125,7 @@ function PagesAdmin({ data, onRefresh }) {
             <iframe
               ref={iframeRef}
               key={iframeRoute}
-              src={`/#${iframeRoute}`}
+              src={`/?cms=edit#${iframeRoute}`}
               title={`Aperçu ${iframeRoute}`}
               style={{ width: "100%", height: "100%", border: 0 }}
             />
@@ -2302,6 +3204,28 @@ function CmsVisualEditor({ section, onRefresh }) {
   const [jsonError, setJsonError] = useState("");
   const { push: pushToast } = useToast();
 
+  // Auto-save for image fields. `onChange` (the recursive editor) has already
+  // applied the change to `editor.draft` — including images nested inside array
+  // items — so we persist the *whole* draft rather than patching a single root
+  // key (which used to corrupt nested images such as use_cases cards).
+  const pendingImageCommit = useRef(false);
+  useEffect(() => {
+    if (!pendingImageCommit.current) return;
+    pendingImageCommit.current = false;
+    let cancelled = false;
+    (async () => {
+      try {
+        await updateCmsSection(section.id, editor.draft);
+        if (!cancelled) await onRefresh();
+      } catch (err) {
+        pushToast({ type: "error", title: "Sauvegarde de l'image échouée", message: err.message });
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [editor.draft, section.id, onRefresh, pushToast]);
+
   useEffect(() => {
     setJsonValue(JSON.stringify(section.content, null, 2));
     setJsonError("");
@@ -2341,10 +3265,11 @@ function CmsVisualEditor({ section, onRefresh }) {
         <CmsSectionContext.Provider
           value={{
             sectionKey: section.section_key,
-            commitImage: async (fieldKey, value) => {
-              const next = { ...editor.draft, [fieldKey]: value };
-              await updateCmsSection(section.id, next);
-              await onRefresh();
+            // The recursive `onChange` already wrote the new value (at whatever
+            // depth) into the draft; just flag a full-draft save to run once the
+            // draft state has flushed. See the effect above.
+            commitImage: async () => {
+              pendingImageCommit.current = true;
             },
           }}
         >
@@ -2456,6 +3381,29 @@ function ProjectImagesPagePanel({ projects, projectImages, onRefresh }) {
   );
 }
 
+// Two-phase persistence to dodge the unique(project_id, display_order) constraint
+// when images swap positions: first park every row at a negative display_order
+// (free from the positive range), then write the final values.
+async function persistProjectImageOrder(draftImages) {
+  await Promise.all(
+    draftImages.map((image, index) =>
+      updateProjectImage(image.id, { display_order: -(index + 1) }),
+    ),
+  );
+  await Promise.all(
+    draftImages.map((image) =>
+      updateProjectImage(image.id, {
+        image_url: image.image_url || null,
+        alt_text: image.alt_text || null,
+        label: image.label || null,
+        placeholder_color: image.placeholder_color || null,
+        kind: image.kind || "gallery",
+        display_order: Number(image.display_order || 0),
+      }),
+    ),
+  );
+}
+
 function ProjectImagesOnlyEditor({ project, images, onRefresh }) {
   const initial = useMemo(
     () => ({
@@ -2490,18 +3438,7 @@ function ProjectImagesOnlyEditor({ project, images, onRefresh }) {
 
   const save = async () => {
     const ok = await editor.wrapSave(async () => {
-      await Promise.all(
-        editor.draft.images.map((image) =>
-          updateProjectImage(image.id, {
-            image_url: image.image_url || null,
-            alt_text: image.alt_text || null,
-            label: image.label || null,
-            placeholder_color: image.placeholder_color || null,
-            kind: image.kind || "gallery",
-            display_order: Number(image.display_order || 0),
-          }),
-        ),
-      );
+      await persistProjectImageOrder(editor.draft.images);
       await onRefresh();
     });
     if (ok) pushToast({ type: "success", title: "Photos enregistrées" });
@@ -2632,7 +3569,7 @@ function ObjectField({ label, value, onChange, root, depth }) {
     <div>
       {!root && label && <FieldLabel label={label} large />}
       <div style={{ display: "grid", gap: "16px" }}>
-        {Object.entries(value).map(([key, nextValue]) => {
+        {orderedEntries(value).map(([key, nextValue]) => {
           const label = FIELD_LABELS[key] || humanize(key);
           const setKey = (updated) => onChange({ ...value, [key]: updated });
           if (isVideoKey(key) && (typeof nextValue === "string" || nextValue == null)) {
@@ -3597,18 +4534,7 @@ function ProjectEditor({ project, services, images, onRefresh }) {
         service_id: editor.draft.data.service_id || null,
         display_order: Number(editor.draft.data.display_order || 0),
       });
-      await Promise.all(
-        editor.draft.images.map((image) =>
-          updateProjectImage(image.id, {
-            image_url: image.image_url || null,
-            alt_text: image.alt_text || null,
-            label: image.label || null,
-            placeholder_color: image.placeholder_color || null,
-            kind: image.kind || "gallery",
-            display_order: Number(image.display_order || 0),
-          }),
-        ),
-      );
+      await persistProjectImageOrder(editor.draft.images);
       await onRefresh();
     });
     if (ok) pushToast({ type: "success", title: "Projet enregistré" });
@@ -4297,6 +5223,479 @@ function loadImage(src) {
 }
 
 /* ==========================================================================
+   Service editor — WYSIWYG editor that mirrors the public popup layout
+   ========================================================================== */
+
+function safeLocalizedArray(value) {
+  const en = Array.isArray(value?.en) ? value.en : [];
+  const fr = Array.isArray(value?.fr) ? value.fr : [];
+  return { en, fr };
+}
+
+function mapDraftToServiceDisplay(draft) {
+  return {
+    num: draft.service_number || "??",
+    title: draft.title || { en: "", fr: "" },
+    sub: draft.subtitle || { en: "", fr: "" },
+    description: draft.description || { en: "", fr: "" },
+    price: draft.price_label || { en: "", fr: "" },
+    badge: isEmptyLocalized(draft.badge_label) ? null : draft.badge_label,
+    tag: isEmptyLocalized(draft.tag_label) ? null : draft.tag_label,
+    includes: safeLocalizedArray(draft.includes),
+    not_included: isEmptyLocalized(draft.not_included) ? null : draft.not_included,
+    deposit: isEmptyLocalized(draft.deposit_schedule) ? null : draft.deposit_schedule,
+    on_site: isEmptyLocalized(draft.onsite_label) ? null : draft.onsite_label,
+    details: Array.isArray(draft.detail_sections) ? draft.detail_sections : [],
+  };
+}
+
+function InlineGrowTextarea({ value, onChange, placeholder, className = "svc-inline", style, minRows = 1 }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    if (!ref.current) return;
+    ref.current.style.height = "auto";
+    ref.current.style.height = ref.current.scrollHeight + "px";
+  }, [value]);
+  return (
+    <textarea
+      ref={ref}
+      value={value || ""}
+      onChange={(e) => onChange(e.target.value)}
+      placeholder={placeholder}
+      className={className}
+      rows={minRows}
+      style={style}
+    />
+  );
+}
+
+function setLocalized(value, lang, next) {
+  return { ...(value || { en: "", fr: "" }), [lang]: next };
+}
+
+function ServiceEditor({ record, title, meta, fields, onSave, onRefresh, onDelete, deleting }) {
+  const initial = useMemo(() => pickFields(record, fields), [record, fields]);
+  const editor = useEditorState(initial);
+  const { push: pushToast } = useToast();
+  const [lang, setLang] = useState("fr");
+  const [advancedOpen, setAdvancedOpen] = useState(false);
+
+  const setField = (key, value) => {
+    editor.setDraft((current) => ({ ...current, [key]: value }));
+  };
+  const setLocalizedField = (key, next) => {
+    editor.setDraft((current) => ({ ...current, [key]: setLocalized(current[key], lang, next) }));
+  };
+
+  const save = async () => {
+    const ok = await editor.wrapSave(async () => {
+      await onSave(getRecordId(record), normalizeNumericFields(editor.draft, fields));
+      await onRefresh();
+    });
+    if (ok) pushToast({ type: "success", title: "Service enregistré" });
+    else pushToast({ type: "error", title: "Échec", message: editor.saveState.error });
+  };
+
+  const draft = editor.draft;
+  const includes = safeLocalizedArray(draft.includes);
+  const detailSections = Array.isArray(draft.detail_sections) ? draft.detail_sections : [];
+
+  // ---------- helpers for includes ----------
+  const includesRows = Math.max(includes.en.length, includes.fr.length);
+  const setIncludesRow = (index, value) => {
+    const nextEn = [...includes.en];
+    const nextFr = [...includes.fr];
+    while (nextEn.length < includesRows) nextEn.push("");
+    while (nextFr.length < includesRows) nextFr.push("");
+    if (lang === "en") nextEn[index] = value;
+    else nextFr[index] = value;
+    setField("includes", { en: nextEn, fr: nextFr });
+  };
+  const addIncludeRow = () => {
+    setField("includes", { en: [...includes.en, ""], fr: [...includes.fr, ""] });
+  };
+  const removeIncludeRow = (index) => {
+    setField("includes", {
+      en: includes.en.filter((_, i) => i !== index),
+      fr: includes.fr.filter((_, i) => i !== index),
+    });
+  };
+
+  // ---------- helpers for detail_sections ----------
+  const updateSection = (index, updater) => {
+    setField("detail_sections", detailSections.map((s, i) => (i === index ? updater(s) : s)));
+  };
+  const addSection = () => {
+    setField("detail_sections", [...detailSections, clone(EMPTY_DETAIL_SECTION)]);
+  };
+  const removeSection = (index) => {
+    setField("detail_sections", detailSections.filter((_, i) => i !== index));
+  };
+  const moveSection = (index, dir) => {
+    const target = index + dir;
+    if (target < 0 || target >= detailSections.length) return;
+    const next = [...detailSections];
+    const [item] = next.splice(index, 1);
+    next.splice(target, 0, item);
+    setField("detail_sections", next);
+  };
+
+  const cardDisplay = mapDraftToServiceDisplay(draft);
+
+  return (
+    <div>
+      <EditorHeader title={title} meta={meta} editor={editor} onSave={save} />
+      {editor.isDirty && <DirtyBanner />}
+
+      {/* Top bar: card thumbnail + lang toggle */}
+      <div style={{ display: "grid", gridTemplateColumns: "260px 1fr", gap: "16px", alignItems: "center", padding: "12px 16px", background: "var(--cream-deep)", borderRadius: "12px", marginBottom: "20px" }}>
+        <div>
+          <div className="text-mono text-muted" style={{ fontSize: "10px", marginBottom: "8px" }}>APERÇU CARTE</div>
+          <ServiceCardPreview svc={cardDisplay} lang={lang} />
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: "10px", alignItems: "flex-end" }}>
+          <div className="text-mono text-muted" style={{ fontSize: "10px" }}>LANGUE ÉDITÉE</div>
+          <div style={{ display: "inline-flex", border: "1px solid var(--line)", borderRadius: "999px", overflow: "hidden" }}>
+            {["fr", "en"].map((code) => (
+              <button
+                key={code}
+                type="button"
+                onClick={() => setLang(code)}
+                style={{
+                  padding: "6px 16px",
+                  fontSize: "11px",
+                  fontFamily: "var(--mono)",
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  border: 0,
+                  background: lang === code ? "var(--ink)" : "transparent",
+                  color: lang === code ? "var(--cream)" : "var(--muted)",
+                  cursor: "pointer",
+                }}
+              >
+                {code === "fr" ? "Français" : "English"}
+              </button>
+            ))}
+          </div>
+          <div className="text-mono text-muted" style={{ fontSize: "10px", textAlign: "right", maxWidth: "240px" }}>
+            Basculez entre FR et EN pour saisir l'autre langue. Tout est sauvegardé en même temps.
+          </div>
+        </div>
+      </div>
+
+      {/* WYSIWYG popup-like editor */}
+      <div
+        style={{
+          background: "var(--cream)",
+          border: "1px solid var(--line)",
+          borderRadius: "16px",
+          padding: "40px",
+          display: "grid",
+          gridTemplateColumns: "1.2fr 1fr",
+          gap: "40px",
+        }}
+      >
+        {/* LEFT column */}
+        <div style={{ minWidth: 0 }}>
+          <div className="text-mono text-muted" style={{ fontSize: "11px", letterSpacing: "0.12em" }}>
+            SERVICE&nbsp;
+            <input
+              className="svc-inline"
+              value={draft.service_number || ""}
+              onChange={(e) => setField("service_number", e.target.value)}
+              placeholder="02"
+              style={{ display: "inline-block", width: "60px", fontFamily: "var(--mono)", letterSpacing: "0.12em" }}
+            />
+          </div>
+
+          <InlineGrowTextarea
+            value={draft.title?.[lang]}
+            onChange={(v) => setLocalizedField("title", v)}
+            placeholder={lang === "en" ? "Service title" : "Titre du service"}
+            style={{ marginTop: "14px", fontFamily: "var(--serif)", fontSize: "40px", lineHeight: 1.1, letterSpacing: "-0.02em", fontWeight: 600 }}
+          />
+
+          <InlineGrowTextarea
+            value={draft.subtitle?.[lang]}
+            onChange={(v) => setLocalizedField("subtitle", v)}
+            placeholder={lang === "en" ? "Short tagline that catches the eye" : "Accroche courte qui attire l'œil"}
+            style={{ marginTop: "10px", fontStyle: "italic", color: "var(--accent)", fontSize: "18px" }}
+          />
+
+          <InlineGrowTextarea
+            value={draft.description?.[lang]}
+            onChange={(v) => setLocalizedField("description", v)}
+            placeholder={lang === "en" ? "Describe what this service delivers and who it is for." : "Décrivez ce que ce service apporte et à qui il s'adresse."}
+            style={{ marginTop: "20px", fontSize: "15px", lineHeight: 1.65, color: "var(--ink)" }}
+            minRows={2}
+          />
+
+          {/* WHAT YOU GET */}
+          <div style={{ marginTop: "32px" }}>
+            <div className="text-mono text-muted" style={{ fontSize: "11px", letterSpacing: "0.12em", marginBottom: "8px" }}>
+              {lang === "en" ? "WHAT YOU GET" : "CE QUE VOUS RECEVEZ"}
+            </div>
+            <div>
+              {Array.from({ length: includesRows }).map((_, i) => {
+                const value = lang === "en" ? (includes.en[i] || "") : (includes.fr[i] || "");
+                return (
+                  <div key={i} className="svc-edit-row">
+                    <span className="svc-edit-row__num">0{i + 1}</span>
+                    <InlineGrowTextarea
+                      value={value}
+                      onChange={(v) => setIncludesRow(i, v)}
+                      placeholder={lang === "en" ? "What the client gets" : "Ce que le client reçoit"}
+                      style={{ flex: 1, fontSize: "14px", lineHeight: 1.5 }}
+                    />
+                    <button type="button" className="admin-icon-btn svc-edit-row__remove" onClick={() => removeIncludeRow(i)} title="Retirer">
+                      <Trash2 size={13} />
+                    </button>
+                  </div>
+                );
+              })}
+              {includesRows === 0 && (
+                <div className="text-mono text-muted" style={{ fontSize: "11px", padding: "10px 0" }}>
+                  Aucun item — cliquez sur Ajouter pour en créer un.
+                </div>
+              )}
+              <button type="button" className="svc-edit-add" onClick={addIncludeRow}>
+                <Plus size={12} /> Ajouter un item
+              </button>
+            </div>
+          </div>
+
+          {/* Not included callout */}
+          <div style={{ marginTop: "20px", padding: "14px 16px", background: "var(--cream-deep)", borderRadius: "8px", fontSize: "13px", color: "var(--muted)" }}>
+            <strong style={{ color: "var(--ink)" }}>{lang === "en" ? "Not included: " : "Non inclus : "}</strong>
+            <InlineGrowTextarea
+              value={draft.not_included?.[lang]}
+              onChange={(v) => setLocalizedField("not_included", v)}
+              placeholder={lang === "en" ? "Optional — what's excluded from this service" : "Optionnel — ce qui n'est pas couvert par ce service"}
+              style={{ display: "inline", color: "var(--muted)", fontSize: "13px" }}
+            />
+          </div>
+
+          {/* Detail sections */}
+          {detailSections.map((section, index) => (
+            <div key={index} className="svc-edit-section">
+              <div className="svc-edit-section__tools">
+                <button type="button" className="admin-icon-btn" onClick={() => moveSection(index, -1)} disabled={index === 0} title="Monter">
+                  <ChevronDown size={13} style={{ transform: "rotate(180deg)" }} />
+                </button>
+                <button type="button" className="admin-icon-btn" onClick={() => moveSection(index, 1)} disabled={index === detailSections.length - 1} title="Descendre">
+                  <ChevronDown size={13} />
+                </button>
+                <button type="button" className="admin-icon-btn" onClick={() => removeSection(index)} title="Supprimer la section">
+                  <Trash2 size={13} />
+                </button>
+              </div>
+              <DetailSectionInline
+                section={section}
+                lang={lang}
+                onChange={(updater) => updateSection(index, updater)}
+              />
+            </div>
+          ))}
+
+          <button type="button" className="svc-edit-add" onClick={addSection} style={{ marginTop: "20px" }}>
+            <Plus size={12} /> Ajouter une section
+          </button>
+        </div>
+
+        {/* RIGHT column */}
+        <div style={{ minWidth: 0, display: "flex", flexDirection: "column", gap: "20px" }}>
+          {/* Service fee card */}
+          <div style={{ background: "var(--ink)", color: "var(--cream)", padding: "32px", borderRadius: "16px" }}>
+            <div className="text-mono" style={{ fontSize: "11px", letterSpacing: "0.15em", color: "var(--brass-soft)" }}>
+              {lang === "en" ? "SERVICE FEE" : "HONORAIRES"}
+            </div>
+            <InlineGrowTextarea
+              value={draft.price_label?.[lang]}
+              onChange={(v) => setLocalizedField("price_label", v)}
+              placeholder={lang === "en" ? "Service Fee starting at $1,500" : "Honoraires à partir de 1 500 $"}
+              className="svc-inline svc-inline--dark"
+              style={{ marginTop: "16px", fontFamily: "var(--serif)", fontSize: "42px", lineHeight: 1.05, letterSpacing: "-0.03em", color: "var(--cream)" }}
+            />
+            <div style={{ marginTop: "24px", paddingTop: "20px", borderTop: "1px solid rgba(244,237,226,0.15)" }}>
+              <div className="text-mono" style={{ fontSize: "11px", color: "var(--brass-soft)", marginBottom: "6px" }}>DEPOSIT</div>
+              <InlineGrowTextarea
+                value={draft.deposit_schedule?.[lang]}
+                onChange={(v) => setLocalizedField("deposit_schedule", v)}
+                placeholder={lang === "en" ? "50% to secure · 50% on completion" : "50 % pour commencer · 50 % à la livraison"}
+                className="svc-inline svc-inline--dark"
+                style={{ fontSize: "13px", color: "var(--cream)" }}
+              />
+            </div>
+            <div className="btn" style={{ marginTop: "24px", width: "100%", justifyContent: "center", background: "var(--accent)", color: "var(--ink)", padding: "12px 16px", fontSize: "13px", pointerEvents: "none", cursor: "default" }}>
+              {lang === "en" ? "Start this project" : "Démarrer ce projet"} <span className="arrow">↗</span>
+            </div>
+          </div>
+
+          {/* LED BY card (read-only) */}
+          <div style={{ padding: "20px", border: "1px solid var(--line)", borderRadius: "16px" }}>
+            <div className="text-mono text-muted" style={{ fontSize: "11px", marginBottom: "8px" }}>{lang === "en" ? "LED BY" : "PAR"}</div>
+            <div style={{ color: "var(--muted)", fontSize: "13px", fontStyle: "italic" }}>
+              {lang === "en" ? "Assigned via the Team tab — link team members to this service there." : "À assigner depuis l'onglet Team — liez les membres à ce service là-bas."}
+            </div>
+          </div>
+
+          {/* On site label */}
+          <div>
+            <div className="text-mono text-muted" style={{ fontSize: "11px", marginBottom: "4px" }}>{lang === "en" ? "ON-SITE NOTE (OPTIONAL)" : "OPTION SUR SITE (OPTIONNEL)"}</div>
+            <InlineGrowTextarea
+              value={draft.onsite_label?.[lang]}
+              onChange={(v) => setLocalizedField("onsite_label", v)}
+              placeholder={lang === "en" ? "+ On-site visits available within 30 mi" : "+ Déplacements possibles dans un rayon de 30 km"}
+              style={{ fontSize: "13px", color: "var(--muted)" }}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Advanced settings (collapsible) */}
+      <div style={{ marginTop: "20px", border: "1px solid var(--line)", borderRadius: "12px", overflow: "hidden" }}>
+        <button
+          type="button"
+          onClick={() => setAdvancedOpen((v) => !v)}
+          style={{
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+            padding: "12px 16px",
+            background: advancedOpen ? "var(--cream-deep)" : "transparent",
+            border: 0,
+            cursor: "pointer",
+            fontFamily: "var(--mono)",
+            fontSize: "11px",
+            letterSpacing: "0.12em",
+            textTransform: "uppercase",
+            color: "var(--ink)",
+            textAlign: "left",
+          }}
+        >
+          {advancedOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+          Réglages techniques (slug, badge, ordre, visibilité)
+        </button>
+        {advancedOpen && (
+          <div style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "16px", borderTop: "1px solid var(--line)" }}>
+            <LabeledInput label="Slug" value={draft.slug || ""} onChange={(v) => setField("slug", v)} />
+            <LocalizedField label="Badge (mis en avant)" value={draft.badge_label || { en: "", fr: "" }} onChange={(v) => setField("badge_label", v)} />
+            <LocalizedField label="Tag (alternative au badge)" value={draft.tag_label || { en: "", fr: "" }} onChange={(v) => setField("tag_label", v)} />
+            <NumberField label="Ordre d'affichage" value={Number(draft.display_order) || 0} onChange={(v) => setField("display_order", v)} />
+            <ToggleField label="Visible publiquement" value={Boolean(draft.is_active)} onChange={(v) => setField("is_active", v)} />
+          </div>
+        )}
+      </div>
+
+      {onDelete && (
+        <div style={{ marginTop: "20px", paddingTop: "20px", borderTop: "1px solid var(--line)", display: "flex", justifyContent: "flex-end" }}>
+          <button
+            type="button"
+            className="btn btn-ghost"
+            onClick={onDelete}
+            disabled={deleting}
+            style={{ padding: "10px 16px", display: "inline-flex", gap: "8px", color: "var(--danger, #b3261e)", borderColor: "var(--danger, #b3261e)" }}
+          >
+            {deleting ? <Loader2 size={13} className="admin-spin" /> : <Trash2 size={13} />}
+            {deleting ? "Suppression..." : "Supprimer ce service"}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function DetailSectionInline({ section, lang, onChange }) {
+  const items = safeLocalizedArray(section.items);
+  const rows = Math.max(items.en.length, items.fr.length);
+
+  const setItemRow = (index, value) => {
+    const nextEn = [...items.en];
+    const nextFr = [...items.fr];
+    while (nextEn.length < rows) nextEn.push("");
+    while (nextFr.length < rows) nextFr.push("");
+    if (lang === "en") nextEn[index] = value;
+    else nextFr[index] = value;
+    onChange((s) => ({ ...s, items: { en: nextEn, fr: nextFr } }));
+  };
+  const addItemRow = () => {
+    onChange((s) => ({ ...s, items: { en: [...items.en, ""], fr: [...items.fr, ""] } }));
+  };
+  const removeItemRow = (index) => {
+    onChange((s) => ({
+      ...s,
+      items: {
+        en: items.en.filter((_, i) => i !== index),
+        fr: items.fr.filter((_, i) => i !== index),
+      },
+    }));
+  };
+
+  return (
+    <div>
+      <InlineGrowTextarea
+        value={section.title?.[lang]}
+        onChange={(v) => onChange((s) => ({ ...s, title: setLocalized(s.title, lang, v) }))}
+        placeholder={lang === "en" ? "SECTION TITLE (e.g. HOW IT WORKS)" : "TITRE DE SECTION (ex. COMMENT ÇA MARCHE)"}
+        className="svc-inline"
+        style={{ fontFamily: "var(--mono)", fontSize: "11px", letterSpacing: "0.12em", color: "var(--muted)", textTransform: "uppercase" }}
+      />
+      <InlineGrowTextarea
+        value={section.body?.[lang]}
+        onChange={(v) => onChange((s) => ({ ...s, body: setLocalized(s.body, lang, v) }))}
+        placeholder={lang === "en" ? "Optional descriptive paragraph" : "Paragraphe descriptif optionnel"}
+        style={{ marginTop: "10px", fontSize: "14px", lineHeight: 1.65, color: "var(--ink-soft)" }}
+      />
+      {rows > 0 && (
+        <ul style={{ listStyle: "none", padding: 0, margin: "10px 0 0", display: "grid", gap: "6px" }}>
+          {Array.from({ length: rows }).map((_, i) => {
+            const value = lang === "en" ? (items.en[i] || "") : (items.fr[i] || "");
+            return (
+              <li key={i} style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
+                <span style={{ color: "var(--accent)", paddingTop: "4px" }}>•</span>
+                <InlineGrowTextarea
+                  value={value}
+                  onChange={(v) => setItemRow(i, v)}
+                  placeholder={lang === "en" ? "Bullet item" : "Élément de liste"}
+                  style={{ flex: 1, fontSize: "14px", lineHeight: 1.55, color: "var(--ink-soft)" }}
+                />
+                <button type="button" className="admin-icon-btn" onClick={() => removeItemRow(i)} title="Retirer">
+                  <Trash2 size={12} />
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+      <button type="button" className="svc-edit-add" onClick={addItemRow} style={{ marginTop: "8px" }}>
+        <Plus size={12} /> Ajouter un item
+      </button>
+    </div>
+  );
+}
+
+function ServiceCardPreview({ svc, lang }) {
+  const isFeatured = Boolean(svc.badge);
+  return (
+    <article className={`svc-card${isFeatured ? " svc-card--featured" : ""}`} style={{ pointerEvents: "none", transform: "none" }}>
+      <div className="svc-card__top">
+        <span className="svc-card__num">{svc.num}</span>
+        {svc.badge && <span className="svc-card__badge">{svc.badge[lang] || svc.badge.en}</span>}
+        {svc.tag && !svc.badge && <span className="svc-card__tag">{svc.tag[lang] || svc.tag.en}</span>}
+      </div>
+      <h3 className="svc-card__title">{svc.title[lang] || svc.title.en || "Titre du service"}</h3>
+      <div className="svc-card__price-row">
+        <span className="svc-card__price">{svc.price[lang] || svc.price.en || "—"}</span>
+      </div>
+      <button type="button" className="svc-card__cta" tabIndex={-1}>
+        {lang === "en" ? "View details" : "Voir les détails"} <span aria-hidden="true">→</span>
+      </button>
+    </article>
+  );
+}
+
+/* ==========================================================================
    RecordCollection (services / team / process / legal / settings)
    ========================================================================== */
 
@@ -4314,6 +5713,7 @@ function RecordCollectionAdmin({
   createLabel = "Ajouter",
   deleteConfirm = "Supprimer cet enregistrement ?",
   embedded = false,
+  renderEditor,
 }) {
   const [activeId, setActiveId] = useState(records[0] ? getRecordId(records[0]) : "");
   const active = records.find((record) => getRecordId(record) === activeId) || records[0];
@@ -4370,6 +5770,19 @@ function RecordCollectionAdmin({
         }}
       >
         <Panel title={title}>
+          {embedded && sub && (
+            <p
+              style={{
+                color: "var(--muted)",
+                fontSize: "12px",
+                lineHeight: 1.5,
+                marginTop: "-4px",
+                marginBottom: "14px",
+              }}
+            >
+              {sub}
+            </p>
+          )}
           {onCreate && (
             <button
               type="button"
@@ -4412,17 +5825,31 @@ function RecordCollectionAdmin({
         </Panel>
         <Panel>
           {active ? (
-            <RecordEditor
-              key={getRecordId(active)}
-              record={active}
-              title={getLabel(active)}
-              meta={getMeta(active)}
-              fields={fields}
-              onSave={onSave}
-              onRefresh={onRefresh}
-              onDelete={onDelete ? handleDelete : null}
-              deleting={deleting}
-            />
+            renderEditor ? (
+              renderEditor({
+                key: getRecordId(active),
+                record: active,
+                title: getLabel(active),
+                meta: getMeta(active),
+                fields,
+                onSave,
+                onRefresh,
+                onDelete: onDelete ? handleDelete : null,
+                deleting,
+              })
+            ) : (
+              <RecordEditor
+                key={getRecordId(active)}
+                record={active}
+                title={getLabel(active)}
+                meta={getMeta(active)}
+                fields={fields}
+                onSave={onSave}
+                onRefresh={onRefresh}
+                onDelete={onDelete ? handleDelete : null}
+                deleting={deleting}
+              />
+            )
           ) : (
             <EmptyState text="Sélectionnez un enregistrement." />
           )}
@@ -4506,7 +5933,258 @@ function RecordField({ field, value, onChange }) {
   if (field.type === "number") {
     return <NumberField label={field.label} value={value || 0} onChange={onChange} />;
   }
+  if (field.key === "detail_sections") {
+    return <DetailSectionsField label={field.label} value={Array.isArray(value) ? value : []} onChange={onChange} />;
+  }
   return <InlineFieldEditor label={field.label} value={value ?? field.fallback} onChange={onChange} />;
+}
+
+const EMPTY_DETAIL_SECTION = {
+  title: { en: "", fr: "" },
+  body: { en: "", fr: "" },
+  items: { en: [], fr: [] },
+};
+
+function DetailSectionsField({ label, value, onChange }) {
+  const [openIndex, setOpenIndex] = useState(value.length === 0 ? null : 0);
+
+  const addSection = () => {
+    const next = [...value, clone(EMPTY_DETAIL_SECTION)];
+    onChange(next);
+    setOpenIndex(next.length - 1);
+  };
+  const updateSection = (index, updater) => {
+    onChange(value.map((section, i) => (i === index ? updater(section) : section)));
+  };
+  const removeSection = (index) => {
+    onChange(value.filter((_, i) => i !== index));
+    setOpenIndex((current) => (current === index ? null : current));
+  };
+  const moveSection = (from, to) => {
+    if (to < 0 || to >= value.length) return;
+    const next = [...value];
+    const [item] = next.splice(from, 1);
+    next.splice(to, 0, item);
+    onChange(next);
+    setOpenIndex(to);
+  };
+
+  return (
+    <div>
+      <FieldLabel label={label} large />
+      <div className="text-mono text-muted" style={{ fontSize: "10px", marginTop: "-6px", marginBottom: "10px" }}>
+        Sections affichées dans la popup quand l'utilisateur clique sur la carte service. Chaque section a un titre, un texte et une liste à puces — chacun bilingue FR / EN.
+      </div>
+
+      {value.length === 0 && (
+        <div
+          style={{
+            border: "1px dashed var(--line-strong)",
+            borderRadius: "10px",
+            padding: "20px",
+            color: "var(--muted)",
+            textAlign: "center",
+            fontSize: "13px",
+            marginBottom: "10px",
+          }}
+        >
+          Aucune section. Ajoutez-en une pour enrichir la popup du service.
+        </div>
+      )}
+
+      <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+        {value.map((section, index) => {
+          const open = openIndex === index;
+          const summary = text(section.title, "fr") || text(section.title, "en") || `Section ${index + 1}`;
+          return (
+            <div
+              key={index}
+              style={{
+                border: "1px solid var(--line)",
+                borderRadius: "12px",
+                background: "var(--paper)",
+                overflow: "hidden",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  padding: "10px 12px",
+                  background: open ? "var(--cream-deep)" : "transparent",
+                  borderBottom: open ? "1px solid var(--line)" : 0,
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={() => setOpenIndex(open ? null : index)}
+                  style={{
+                    background: "transparent",
+                    border: 0,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    color: "var(--ink)",
+                    cursor: "pointer",
+                    padding: 0,
+                    flex: 1,
+                    textAlign: "left",
+                    minWidth: 0,
+                  }}
+                >
+                  {open ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                  <span className="text-mono" style={{ fontSize: "10px", color: "var(--muted)" }}>
+                    SECTION {index + 1}
+                  </span>
+                  <span style={{ fontSize: "13px", fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    {summary}
+                  </span>
+                </button>
+                <button className="admin-icon-btn" onClick={() => moveSection(index, index - 1)} disabled={index === 0} title="Monter">
+                  <ChevronDown size={14} style={{ transform: "rotate(180deg)" }} />
+                </button>
+                <button className="admin-icon-btn" onClick={() => moveSection(index, index + 1)} disabled={index === value.length - 1} title="Descendre">
+                  <ChevronDown size={14} />
+                </button>
+                <button className="admin-icon-btn" onClick={() => removeSection(index)} title="Supprimer">
+                  <Trash2 size={14} />
+                </button>
+              </div>
+
+              {open && (
+                <div style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "16px" }}>
+                  <LocalizedField
+                    label="Titre de section"
+                    value={section.title || { en: "", fr: "" }}
+                    onChange={(next) => updateSection(index, (s) => ({ ...s, title: next }))}
+                  />
+                  <LocalizedField
+                    label="Texte d'introduction (optionnel)"
+                    value={section.body || { en: "", fr: "" }}
+                    onChange={(next) => updateSection(index, (s) => ({ ...s, body: next }))}
+                  />
+                  <DetailItemsList
+                    items={section.items || { en: [], fr: [] }}
+                    onChange={(next) => updateSection(index, (s) => ({ ...s, items: next }))}
+                  />
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      <button
+        type="button"
+        onClick={addSection}
+        style={{
+          marginTop: "12px",
+          border: "1px dashed var(--line-strong)",
+          borderRadius: "10px",
+          padding: "12px 16px",
+          background: "transparent",
+          color: "var(--muted)",
+          fontSize: "12px",
+          fontFamily: "var(--mono)",
+          letterSpacing: "0.08em",
+          textTransform: "uppercase",
+          display: "inline-flex",
+          gap: "8px",
+          alignItems: "center",
+          cursor: "pointer",
+        }}
+      >
+        <Plus size={14} />
+        Ajouter une section
+      </button>
+    </div>
+  );
+}
+
+function DetailItemsList({ items, onChange }) {
+  const en = Array.isArray(items.en) ? items.en : [];
+  const fr = Array.isArray(items.fr) ? items.fr : [];
+  const rows = Math.max(en.length, fr.length);
+
+  const setRow = (index, lang, value) => {
+    const nextEn = [...en];
+    const nextFr = [...fr];
+    while (nextEn.length < rows) nextEn.push("");
+    while (nextFr.length < rows) nextFr.push("");
+    if (lang === "en") nextEn[index] = value;
+    else nextFr[index] = value;
+    onChange({ en: nextEn, fr: nextFr });
+  };
+  const addRow = () => {
+    onChange({ en: [...en, ""], fr: [...fr, ""] });
+  };
+  const removeRow = (index) => {
+    onChange({
+      en: en.filter((_, i) => i !== index),
+      fr: fr.filter((_, i) => i !== index),
+    });
+  };
+
+  return (
+    <div>
+      <FieldLabel label="Liste à puces (optionnelle)" />
+      <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+        {Array.from({ length: rows }).map((_, index) => (
+          <div key={index} style={{ display: "grid", gridTemplateColumns: "1fr 1fr auto", gap: "8px", alignItems: "center" }}>
+            <input
+              className="admin-input"
+              placeholder="FR"
+              value={fr[index] || ""}
+              onChange={(e) => setRow(index, "fr", e.target.value)}
+            />
+            <input
+              className="admin-input"
+              placeholder="EN"
+              value={en[index] || ""}
+              onChange={(e) => setRow(index, "en", e.target.value)}
+            />
+            <button
+              type="button"
+              className="admin-icon-btn"
+              onClick={() => removeRow(index)}
+              title="Retirer cet item"
+            >
+              <Trash2 size={14} />
+            </button>
+          </div>
+        ))}
+        {rows === 0 && (
+          <div className="text-mono text-muted" style={{ fontSize: "11px" }}>
+            Aucun item — la section n'affichera que le titre et le texte.
+          </div>
+        )}
+        <button
+          type="button"
+          onClick={addRow}
+          style={{
+            marginTop: "4px",
+            justifySelf: "start",
+            border: "1px dashed var(--line)",
+            borderRadius: "8px",
+            padding: "8px 12px",
+            background: "transparent",
+            color: "var(--muted)",
+            fontSize: "11px",
+            fontFamily: "var(--mono)",
+            letterSpacing: "0.06em",
+            textTransform: "uppercase",
+            display: "inline-flex",
+            gap: "6px",
+            alignItems: "center",
+            cursor: "pointer",
+          }}
+        >
+          <Plus size={12} /> Ajouter un item
+        </button>
+      </div>
+    </div>
+  );
 }
 
 /* ==========================================================================
@@ -4545,29 +6223,166 @@ function LegalAdmin({ data, onRefresh }) {
   );
 }
 
+function ThemeColorsEditor({ data, onRefresh }) {
+  const { push: pushToast } = useToast();
+  const themeSetting = useMemo(
+    () => data.siteSettings.find((s) => s.key === "theme"),
+    [data.siteSettings],
+  );
+  const savedColors = useMemo(() => {
+    const stored = themeSetting?.value?.colors || {};
+    const out = {};
+    for (const key of Object.keys(DEFAULT_THEME_COLORS)) {
+      out[key] = stored[key] ?? DEFAULT_THEME_COLORS[key];
+    }
+    return out;
+  }, [themeSetting]);
+
+  const [draft, setDraft] = useState(savedColors);
+  const [saving, setSaving] = useState(false);
+  useEffect(() => {
+    setDraft(savedColors);
+  }, [savedColors]);
+
+  const isDirty = useMemo(
+    () => Object.keys(DEFAULT_THEME_COLORS).some((key) => draft[key] !== savedColors[key]),
+    [draft, savedColors],
+  );
+
+  const setColor = (name, value) => setDraft((prev) => ({ ...prev, [name]: value }));
+
+  const save = async () => {
+    if (!themeSetting) {
+      pushToast({ type: "error", title: "Réglage « theme » introuvable", message: "Vérifiez la table site_settings." });
+      return;
+    }
+    setSaving(true);
+    try {
+      const colors = expandThemeColors(draft);
+      const nextValue = { ...(themeSetting.value || {}), colors };
+      await updateSiteSetting("theme", { value: nextValue });
+      await onRefresh();
+      applyThemeColors(colors); // aperçu immédiat sur l'admin
+      pushToast({ type: "success", title: "Couleurs enregistrées" });
+    } catch (err) {
+      pushToast({ type: "error", title: "Échec de l'enregistrement", message: err.message });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const resetToDefaults = () => setDraft({ ...DEFAULT_THEME_COLORS });
+
+  return (
+    <Panel title="Couleurs du site">
+      <p style={{ color: "var(--muted)", fontSize: "13px", marginTop: 0, marginBottom: "16px" }}>
+        Modifie la palette appliquée sur le site public. Les changements prennent effet après
+        enregistrement (rechargement de la page côté visiteur). Attention aux contrastes :
+        un texte trop clair sur un fond clair devient illisible.
+      </p>
+
+      <div style={{ display: "grid", gap: "24px" }}>
+        {THEME_COLOR_GROUPS.map((group) => (
+          <div key={group.label}>
+            <FieldLabel label={group.label} large />
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+                gap: "12px",
+                marginTop: "8px",
+              }}
+            >
+              {group.fields.map((field) => {
+                const value = draft[field.var] ?? "";
+                const hex = isHexColor(value);
+                return (
+                  <div
+                    key={field.var}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "10px",
+                      border: "1px solid var(--line)",
+                      borderRadius: "10px",
+                      padding: "8px 10px",
+                      background: "var(--paper)",
+                    }}
+                  >
+                    <input
+                      type="color"
+                      value={hex ? value : "#000000"}
+                      disabled={!hex}
+                      onChange={(e) => setColor(field.var, e.target.value)}
+                      title={hex ? "Choisir une couleur" : "Valeur non hexadécimale — éditez le texte"}
+                      style={{
+                        width: "34px",
+                        height: "34px",
+                        flexShrink: 0,
+                        border: "1px solid var(--line)",
+                        borderRadius: "8px",
+                        background: "transparent",
+                        cursor: hex ? "pointer" : "not-allowed",
+                        padding: 0,
+                      }}
+                    />
+                    <div style={{ minWidth: 0, flex: 1 }}>
+                      <div style={{ fontSize: "12px", color: "var(--ink)", marginBottom: "3px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                        {field.label}
+                      </div>
+                      <input
+                        className="admin-input"
+                        value={value}
+                        onChange={(e) => setColor(field.var, e.target.value)}
+                        spellCheck={false}
+                        style={{ fontFamily: "var(--mono)", fontSize: "12px", padding: "5px 8px", width: "100%" }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ display: "flex", gap: "10px", alignItems: "center", marginTop: "20px", flexWrap: "wrap" }}>
+        <button className="btn" onClick={save} disabled={saving || !isDirty}>
+          {saving ? "Enregistrement…" : "Enregistrer les couleurs"}
+        </button>
+        <button className="btn btn-ghost" onClick={resetToDefaults} disabled={saving} style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+          <RefreshCw size={14} /> Réinitialiser (palette par défaut)
+        </button>
+        {isDirty && <span style={{ color: "var(--accent-deep)", fontSize: "12px" }}>Modifications non enregistrées</span>}
+      </div>
+    </Panel>
+  );
+}
+
 function SettingsAdmin({ data, onRefresh }) {
   return (
     <div>
-      <PageHead title="Réglages" sub="Modifier les contacts et réglages globaux" />
+      <PageHead title="Réglages" sub="Coordonnées de contact et paramètres généraux affichés sur le site public" />
       <div style={{ display: "grid", gap: "20px", marginTop: "24px" }}>
+        <ThemeColorsEditor data={data} onRefresh={onRefresh} />
         <RecordCollectionAdmin
-          title="Contact channels"
-          sub=""
+          title="Coordonnées de contact"
+          sub="Email, téléphone et adresse affichés dans le pied de page et sur la page Contact. Sélectionnez une ligne pour la modifier."
           records={data.contactChannels}
           fields={CONTACT_CHANNEL_FIELDS}
-          getLabel={(channel) => text(channel.label)}
-          getMeta={(channel) => channel.value}
+          getLabel={(channel) => text(channel.label) || CHANNEL_TYPE_LABELS[channel.channel_type] || channel.channel_key}
+          getMeta={(channel) => channel.value || CHANNEL_TYPE_LABELS[channel.channel_type] || ""}
           onSave={(id, payload) => updateContactChannel(id, payload)}
           onRefresh={onRefresh}
           embedded
         />
         <RecordCollectionAdmin
-          title="Site settings"
-          sub=""
+          title="Paramètres généraux"
+          sub="Identité de marque, langue par défaut, zone d'intervention et apparence du site. Sélectionnez un paramètre pour voir à quoi il sert."
           records={data.siteSettings}
           fields={SITE_SETTING_FIELDS}
-          getLabel={(setting) => setting.key}
-          getMeta={(setting) => setting.description || "Global setting"}
+          getLabel={(setting) => SITE_SETTING_META[setting.key]?.label || humanize(setting.key)}
+          getMeta={(setting) => SITE_SETTING_META[setting.key]?.hint || setting.description || ""}
           onSave={(key, payload) => updateSiteSetting(key, payload)}
           onRefresh={onRefresh}
           embedded

@@ -25,14 +25,9 @@ function mergeCmsSections(nextContent, sections) {
       ...sectionMap.hero_caption,
     };
   }
-  if (sectionMap.marquee_words) nextContent.marquee_words = sectionMap.marquee_words;
-  if (sectionMap.visual_strip) nextContent.visual_strip = sectionMap.visual_strip;
   if (sectionMap.before_after) nextContent.before_after = sectionMap.before_after;
-  if (sectionMap.why) nextContent.why = sectionMap.why;
-  if (sectionMap.audience) nextContent.audience = sectionMap.audience;
   if (sectionMap.final_cta) nextContent.final_cta = sectionMap.final_cta;
   if (sectionMap.use_cases) nextContent.use_cases = sectionMap.use_cases;
-  if (sectionMap.testimonials_v2) nextContent.testimonials_v2 = sectionMap.testimonials_v2;
   if (sectionMap.projects_page) nextContent.projects_page = sectionMap.projects_page;
   if (sectionMap.popup) nextContent.popup = sectionMap.popup;
 
@@ -41,22 +36,6 @@ function mergeCmsSections(nextContent, sections) {
       ...nextContent.services,
       ...sectionMap.services_intro,
       items: nextContent.services.items,
-    };
-  }
-
-  if (sectionMap.team_intro) {
-    nextContent.team = {
-      ...nextContent.team,
-      ...sectionMap.team_intro,
-      members: nextContent.team.members,
-    };
-  }
-
-  if (sectionMap.process_intro) {
-    nextContent.process = {
-      ...nextContent.process,
-      ...sectionMap.process_intro,
-      steps: nextContent.process.steps,
     };
   }
 
@@ -125,8 +104,10 @@ function mapTeamMembers(members) {
     name: member.name,
     role: member.role,
     bio: member.bio,
+    long_bio: member.long_bio,
     email: member.email,
     phone: member.phone,
+    website: member.website,
   }));
 }
 
@@ -212,6 +193,7 @@ export async function hydrateContentFromSupabase() {
     projectImagesResult,
     legalDocumentsResult,
     legalSectionsResult,
+    siteSettingsResult,
   ] = await Promise.all([
     supabase.from("cms_sections").select("*").eq("is_active", true).order("display_order"),
     supabase.from("contact_channels").select("*").eq("is_active", true).order("display_order"),
@@ -223,6 +205,7 @@ export async function hydrateContentFromSupabase() {
     supabase.from("project_images").select("*").order("display_order"),
     supabase.from("legal_documents").select("*").eq("is_active", true),
     supabase.from("legal_sections").select("*").eq("is_active", true).order("display_order"),
+    supabase.from("site_settings").select("key, value").eq("key", "theme"),
   ]);
 
   const cmsSections = assertNoError("cms_sections", cmsSectionsResult);
@@ -235,9 +218,15 @@ export async function hydrateContentFromSupabase() {
   const projectImages = assertNoError("project_images", projectImagesResult);
   const legalDocuments = assertNoError("legal_documents", legalDocumentsResult);
   const legalSections = assertNoError("legal_sections", legalSectionsResult);
+  const siteSettings = assertNoError("site_settings", siteSettingsResult);
 
   const servicesById = Object.fromEntries(services.map((service) => [service.id, service]));
   const nextContent = JSON.parse(JSON.stringify(CONTENT));
+
+  const themeSetting = siteSettings.find((row) => row.key === "theme");
+  if (themeSetting?.value && typeof themeSetting.value === "object") {
+    nextContent.theme = themeSetting.value;
+  }
 
   mergeCmsSections(nextContent, cmsSections);
   mergeContactChannels(nextContent, contactChannels);
@@ -259,10 +248,22 @@ export async function createEmailLead({ email, locale }) {
   const { error } = await supabase.from("email_leads").insert({
     email,
     locale,
-    source: "Exit popup",
+    source: "Welcome popup",
   });
 
   if (error) throw error;
+
+  // Envoi de l'email de bienvenue (non bloquant : on n'échoue pas la capture
+  // si Resend tombe ou si la fonction n'est pas encore déployée).
+  try {
+    const { error: fnError } = await supabase.functions.invoke("send-welcome-email", {
+      body: { email, locale },
+    });
+    if (fnError) console.warn("send-welcome-email failed:", fnError.message);
+  } catch (err) {
+    console.warn("send-welcome-email invocation error:", err?.message ?? err);
+  }
+
   return true;
 }
 

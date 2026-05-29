@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { CONTENT } from "../data/content";
 import { ImagePlaceholder, Reveal, useReveal } from "../components/common";
+import { cmsAttr, cmsRecordAttr } from "../lib/cmsEdit";
 
 export function HomePage({ lang, onNav }) {
   return (
@@ -53,7 +55,7 @@ function Hero({ lang, onNav }) {
           Orlando, FL
         </Reveal>
 
-        <Reveal as="h1" className="hero-v2__title">
+        <Reveal as="h1" className="hero-v2__title" {...cmsAttr("hero", "title", "lines")}>
           {titleLines.map((line, i) => {
             const words = String(line).split(" ");
             return (
@@ -73,16 +75,16 @@ function Hero({ lang, onNav }) {
         <Reveal as="div" className="hero-v2__row" delay={0.1}>
           <div className="hero-v2__sub-group">
             {C.tagline?.[lang] && (
-              <p className="hero-v2__tagline">{C.tagline[lang]}</p>
+              <p className="hero-v2__tagline" {...cmsAttr("hero", "tagline")}>{C.tagline[lang]}</p>
             )}
-            <p className="hero-v2__sub">{C.sub[lang]}</p>
+            <p className="hero-v2__sub" {...cmsAttr("hero", "sub")}>{C.sub[lang]}</p>
           </div>
           <div className="hero-v2__ctas">
             <button className="btn" onClick={() => onNav("contact")}>
-              {C.primary_cta[lang]} <span className="arrow">↗</span>
+              <span {...cmsAttr("hero", "primary_cta")}>{C.primary_cta[lang]}</span> <span className="arrow">↗</span>
             </button>
             <button className="btn btn-ghost" onClick={() => onNav("projects")}>
-              {C.secondary_cta[lang]}
+              <span {...cmsAttr("hero", "secondary_cta")}>{C.secondary_cta[lang]}</span>
             </button>
           </div>
         </Reveal>
@@ -100,14 +102,16 @@ function UseCasesSection({ lang, onNav }) {
     <section id="use_cases" className="usecases">
       <div className="usecases__inner">
         <div className="usecases__head">
-          <Reveal as="div" className="usecases__eyebrow">
+          <Reveal as="div" className="usecases__eyebrow" {...cmsAttr("use_cases", "eyebrow")}>
             {C.eyebrow?.[lang] || (lang === "en" ? "Transformations" : "Transformations")}
           </Reveal>
-          <Reveal as="h2" className="usecases__title">
-            {C.title?.[lang] || (lang === "en" ? "Pick your room." : "Choisissez votre pièce.")}
+          <Reveal as="h2" className="usecases__title" {...cmsAttr("use_cases", "title")}>
+            {C.title?.[lang] || (lang === "en"
+              ? "Discover Your Dream Garage. Explore, Imagine, and Get Inspired!"
+              : "Découvrez le garage de vos rêves. Explorez, imaginez et inspirez-vous !")}
           </Reveal>
           {C.sub?.[lang] && (
-            <Reveal as="p" className="usecases__sub" delay={0.1}>{C.sub[lang]}</Reveal>
+            <Reveal as="p" className="usecases__sub" delay={0.1} {...cmsAttr("use_cases", "sub")}>{C.sub[lang]}</Reveal>
           )}
         </div>
 
@@ -127,27 +131,48 @@ function UseCaseCard({ item, index, lang, onNav }) {
   const tagline = item.tagline?.[lang] || "";
   const image = item.image || "";
 
+  const linkedProject = item.project_slug
+    ? (CONTENT.projects || []).find((p) => p.slug === item.project_slug)
+    : null;
+  const albumImages = (linkedProject?.images || []).filter((img) => img.url);
+  const coverUrl = image || albumImages[0]?.url || "";
+  const coverColor = albumImages[0]?.color || "#a89378";
+  const photoCount = albumImages.length;
+
+  const goToProject = () => {
+    if (item.project_slug) {
+      sessionStorage.setItem("open_project_slug", item.project_slug);
+    }
+    onNav?.("projects");
+  };
+
   return (
     <article
       ref={ref}
       className="reveal usecase-card"
       style={{ transitionDelay: `${index * 0.08}s` }}
-      onClick={() => onNav?.("contact")}
+      onClick={goToProject}
       role="button"
       tabIndex={0}
-      onKeyDown={(e) => { if (e.key === "Enter") onNav?.("contact"); }}
+      onKeyDown={(e) => { if (e.key === "Enter") goToProject(); }}
+      aria-label={`${name} — voir le projet`}
     >
       <div className="usecase-card__media">
-        {image ? (
-          <img src={image} alt={name} loading="lazy" />
+        {coverUrl ? (
+          <img src={coverUrl} alt={name} loading="lazy" />
         ) : (
-          <ImagePlaceholder label={name || "Transformation"} color="#a89378" style={{ position: "absolute", inset: 0, borderRadius: 0 }} />
+          <ImagePlaceholder label={name || "Transformation"} color={coverColor} style={{ position: "absolute", inset: 0, borderRadius: 0 }} />
         )}
         <span className="usecase-card__index">0{index + 1}</span>
+        {photoCount > 1 && (
+          <span className="usecase-card__album-badge" aria-hidden="true">
+            {photoCount} <span>photos</span>
+          </span>
+        )}
       </div>
       <div className="usecase-card__body">
-        <h3 className="usecase-card__name">{name}</h3>
-        {tagline && <p className="usecase-card__tagline">{tagline}</p>}
+        <h3 className="usecase-card__name" {...cmsAttr("use_cases", `items.${index}.name`)}>{name}</h3>
+        {tagline && <p className="usecase-card__tagline" {...cmsAttr("use_cases", `items.${index}.tagline`)}>{tagline}</p>}
       </div>
     </article>
   );
@@ -160,10 +185,10 @@ function BeforeAfterSection({ lang }) {
     <section id="before_after" className="ba-v2">
       <div className="ba-v2__inner">
         <div className="ba-v2__head">
-          <Reveal as="div" className="ba-v2__eyebrow">
-            {lang === "en" ? "The transformation" : "La transformation"}
+          <Reveal as="div" className="ba-v2__eyebrow" {...cmsAttr("before_after", "eyebrow")}>
+            {C.eyebrow?.[lang] || (lang === "en" ? "The transformation" : "La transformation")}
           </Reveal>
-          <Reveal as="h2" className="ba-v2__title">
+          <Reveal as="h2" className="ba-v2__title" {...cmsAttr("before_after", "title")}>
             {C.title[lang]}
           </Reveal>
         </div>
@@ -182,20 +207,20 @@ function BeforeAfterSection({ lang }) {
           <Reveal>
             <div className="ba-v2__caption">
               <span className="ba-v2__caption-label">{lang === "en" ? "Before" : "Avant"}</span>
-              <p>{C.before[lang]}</p>
+              <p {...cmsAttr("before_after", "before")}>{C.before[lang]}</p>
             </div>
           </Reveal>
           <Reveal delay={0.1}>
             <div className="ba-v2__caption ba-v2__caption--after">
               <span className="ba-v2__caption-label">{lang === "en" ? "After" : "Après"}</span>
-              <p>{C.after[lang]}</p>
+              <p {...cmsAttr("before_after", "after")}>{C.after[lang]}</p>
             </div>
           </Reveal>
         </div>
 
         {C.statement?.[lang] && (
           <Reveal delay={0.15}>
-            <p className="ba-v2__statement">{C.statement[lang]}</p>
+            <p className="ba-v2__statement" {...cmsAttr("before_after", "statement")}>{C.statement[lang]}</p>
           </Reveal>
         )}
       </div>
@@ -316,11 +341,11 @@ function ServicesSection({ lang, onNav }) {
     <section id="services_intro" className="svc-v2">
       <div className="svc-v2__inner">
         <div className="svc-v2__head">
-          <Reveal as="div" className="svc-v2__eyebrow">
-            {lang === "en" ? "Pricing" : "Tarifs"}
+          <Reveal as="div" className="svc-v2__eyebrow" {...cmsAttr("services_intro", "eyebrow")}>
+            {C.eyebrow?.[lang] || (lang === "en" ? "Pricing" : "Tarifs")}
           </Reveal>
-          <Reveal as="h2" className="svc-v2__title">{C.title[lang]}</Reveal>
-          <Reveal as="p" className="svc-v2__sub" delay={0.1}>{C.sub[lang]}</Reveal>
+          <Reveal as="h2" className="svc-v2__title" {...cmsAttr("services_intro", "title")}>{C.title[lang]}</Reveal>
+          <Reveal as="p" className="svc-v2__sub" delay={0.1} {...cmsAttr("services_intro", "sub")}>{C.sub[lang]}</Reveal>
         </div>
 
         <div className="svc-v2__grid">
@@ -358,14 +383,14 @@ function ServiceCard({ svc, lang, index, onNav }) {
       >
         <div className="svc-card__top">
           <span className="svc-card__num">{svc.num}</span>
-          {svc.badge && <span className="svc-card__badge">{svc.badge[lang]}</span>}
-          {svc.tag && !svc.badge && <span className="svc-card__tag">{svc.tag[lang]}</span>}
+          {svc.badge && <span className="svc-card__badge" {...cmsRecordAttr("service", svc.id, "badge_label")}>{svc.badge[lang]}</span>}
+          {svc.tag && !svc.badge && <span className="svc-card__tag" {...cmsRecordAttr("service", svc.id, "tag_label")}>{svc.tag[lang]}</span>}
         </div>
-        <h3 className="svc-card__title">{svc.title[lang]}</h3>
+        <h3 className="svc-card__title" {...cmsRecordAttr("service", svc.id, "title")}>{svc.title[lang]}</h3>
         <div className="svc-card__price-row">
-          <span className="svc-card__price">{svc.price[lang]}</span>
+          <span className="svc-card__price" {...cmsRecordAttr("service", svc.id, "price_label")}>{svc.price[lang]}</span>
         </div>
-        <button className="svc-card__cta" onClick={() => setOpen(true)}>
+        <button className="svc-card__cta" onClick={() => setOpen(true)} data-cms-allow>
           {lang === "en" ? "View details" : "Voir les détails"} <span aria-hidden="true">→</span>
         </button>
       </article>
@@ -377,16 +402,28 @@ function ServiceCard({ svc, lang, index, onNav }) {
 function ServiceModal({ svc, lang, onClose, onNav }) {
   const includes = svc.includes?.[lang] ?? [];
   const details = svc.details ?? svc.detail_sections ?? [];
-  return (
+
+  useEffect(() => {
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [onClose]);
+
+  return createPortal(
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal" onClick={(e)=>e.stopPropagation()} style={{padding:"60px"}}>
-        <button className="modal__close" onClick={onClose}>×</button>
+        <button className="modal__close" onClick={onClose} data-cms-allow>×</button>
         <div style={{display:"grid", gridTemplateColumns:"1.2fr 1fr", gap:"60px"}}>
           <div>
             <div className="text-mono text-muted">SERVICE {svc.num}</div>
-            <h2 className="display-m" style={{marginTop:"16px"}}>{svc.title[lang]}</h2>
-            <p style={{fontStyle:"italic", color:"var(--accent)", fontSize:"20px", marginTop:"12px"}}>{svc.sub[lang]}</p>
-            <p className="lead" style={{marginTop:"24px"}}>{svc.description[lang]}</p>
+            <h2 className="display-m" style={{marginTop:"16px"}} {...cmsRecordAttr("service", svc.id, "title")}>{svc.title[lang]}</h2>
+            <p style={{fontStyle:"italic", color:"var(--accent)", fontSize:"20px", marginTop:"12px"}} {...cmsRecordAttr("service", svc.id, "subtitle")}>{svc.sub[lang]}</p>
+            <p className="lead" style={{marginTop:"24px"}} {...cmsRecordAttr("service", svc.id, "description")}>{svc.description[lang]}</p>
 
             {includes.length > 0 && <div style={{marginTop:"40px"}}>
               <div className="text-mono text-muted" style={{marginBottom:"16px"}}>{lang==="en"?"WHAT YOU GET":"CE QUE VOUS RECEVEZ"}</div>
@@ -402,7 +439,7 @@ function ServiceModal({ svc, lang, onClose, onNav }) {
 
             {svc.not_included && (
               <p style={{marginTop:"24px", padding:"16px", background:"var(--cream-deep)", borderRadius:"8px", fontSize:"13px", color:"var(--muted)"}}>
-                <strong>{lang==="en"?"Not included: ":"Non inclus : "}</strong>{svc.not_included[lang]}
+                <strong>{lang==="en"?"Not included: ":"Non inclus : "}</strong><span {...cmsRecordAttr("service", svc.id, "not_included")}>{svc.not_included[lang]}</span>
               </p>
             )}
 
@@ -435,10 +472,10 @@ function ServiceModal({ svc, lang, onClose, onNav }) {
           <div>
             <div style={{background:"var(--ink)", color:"var(--cream)", padding:"40px", borderRadius:"16px", marginBottom:"24px"}}>
               <div style={{fontFamily:"var(--mono)", fontSize:"11px", letterSpacing:"0.15em", color:"var(--brass-soft)"}}>{lang==="en"?"SERVICE FEE":"HONORAIRES"}</div>
-              <div style={{fontFamily:"var(--serif)", fontSize:"56px", letterSpacing:"-0.03em", marginTop:"16px", lineHeight:1}}>{svc.price[lang]}</div>
+              <div style={{fontFamily:"var(--serif)", fontSize:"56px", letterSpacing:"-0.03em", marginTop:"16px", lineHeight:1}} {...cmsRecordAttr("service", svc.id, "price_label")}>{svc.price[lang]}</div>
               {svc.deposit && <div style={{marginTop:"24px", paddingTop:"24px", borderTop:"1px solid rgba(244,237,226,0.15)", fontSize:"13px"}}>
                 <div className="text-mono" style={{color:"var(--brass-soft)", marginBottom:"8px"}}>DEPOSIT</div>
-                {svc.deposit[lang]}
+                <span {...cmsRecordAttr("service", svc.id, "deposit_schedule")}>{svc.deposit[lang]}</span>
               </div>}
               <button className="btn" style={{marginTop:"32px", width:"100%", justifyContent:"center", background:"var(--accent)"}} onClick={()=>{onClose(); onNav("contact");}}>
                 {lang==="en"?"Start this project":"Démarrer ce projet"} <span className="arrow">↗</span>
@@ -452,13 +489,14 @@ function ServiceModal({ svc, lang, onClose, onNav }) {
             </div>
             {svc.on_site && (
               <p style={{marginTop:"16px", fontSize:"13px", color:"var(--muted)"}}>
-                + {svc.on_site[lang]}
+                + <span {...cmsRecordAttr("service", svc.id, "onsite_label")}>{svc.on_site[lang]}</span>
               </p>
             )}
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
@@ -468,7 +506,7 @@ function FinalCTA({ lang, onNav }) {
   return (
     <section id="final_cta" className="fcta-v2">
       <div className="fcta-v2__inner">
-        <Reveal as="h2" className="fcta-v2__title">{C.title[lang]}</Reveal>
+        <Reveal as="h2" className="fcta-v2__title" {...cmsAttr("final_cta", "title")}>{C.title[lang]}</Reveal>
         <Reveal delay={0.15} className="fcta-v2__cta">
           <button className="btn" onClick={() => onNav("contact")}>
             {lang === "en" ? "Get my free estimate" : "Devis gratuit"} <span className="arrow">↗</span>

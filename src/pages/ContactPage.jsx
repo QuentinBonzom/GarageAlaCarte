@@ -1,10 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { CONTENT } from "../data/content";
 import { createContactSubmission } from "../data/contentRepository";
 import { Reveal } from "../components/common";
+import { cmsAttr } from "../lib/cmsEdit";
 
 export function ContactPage({ lang, onNav }) {
   const C = CONTENT.contact;
+  const team = CONTENT.team;
+  const [activeMember, setActiveMember] = useState(null);
   const [form, setForm] = useState({ name:"", email:"", phone:"", service:"blueprint", message:"", consent:false });
   const [sent, setSent] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -32,14 +36,14 @@ export function ContactPage({ lang, onNav }) {
       {/* Hero — minimal premium pattern */}
       <section className="contact-v2-head">
         <div className="contact-v2-head__inner">
-          <Reveal as="div" className="contact-v2-head__eyebrow">
+          <Reveal as="div" className="contact-v2-head__eyebrow" {...cmsAttr("contact_page", "eyebrow")}>
             {text(C.eyebrow, lang, lang === "en" ? "Get in touch" : "Contact")}
           </Reveal>
-          <Reveal as="h1" className="contact-v2-head__title">
+          <Reveal as="h1" className="contact-v2-head__title" {...cmsAttr("contact_page", "title")}>
             {text(C.title, lang, lang === "en" ? "Let's design your garage." : "Imaginons votre garage.")}
           </Reveal>
           {C.sub && (
-            <Reveal as="p" className="contact-v2-head__sub" delay={0.1}>
+            <Reveal as="p" className="contact-v2-head__sub" delay={0.1} {...cmsAttr("contact_page", "sub")}>
               {text(C.sub, lang)}
             </Reveal>
           )}
@@ -69,21 +73,21 @@ export function ContactPage({ lang, onNav }) {
                 <form onSubmit={submit} className="contact-form">
                   <div className="contact-form__row">
                     <div className="field">
-                      <label>{C.form.name[lang]}</label>
+                      <label {...cmsAttr("contact_page", "form.name")}>{C.form.name[lang]}</label>
                       <input value={form.name} onChange={(e) => setForm({...form, name: e.target.value})} required />
                     </div>
                     <div className="field">
-                      <label>{C.form.email[lang]}</label>
+                      <label {...cmsAttr("contact_page", "form.email")}>{C.form.email[lang]}</label>
                       <input type="email" value={form.email} onChange={(e) => setForm({...form, email: e.target.value})} required />
                     </div>
                   </div>
                   <div className="contact-form__row">
                     <div className="field">
-                      <label>{C.form.phone[lang]}</label>
+                      <label {...cmsAttr("contact_page", "form.phone")}>{C.form.phone[lang]}</label>
                       <input value={form.phone} onChange={(e) => setForm({...form, phone: e.target.value})} />
                     </div>
                     <div className="field">
-                      <label>{C.form.service[lang]}</label>
+                      <label {...cmsAttr("contact_page", "form.service")}>{C.form.service[lang]}</label>
                       <select value={form.service} onChange={(e) => setForm({...form, service: e.target.value})}>
                         <option value="blueprint">Design Blueprint</option>
                         <option value="delivery">Design & Setup</option>
@@ -94,7 +98,7 @@ export function ContactPage({ lang, onNav }) {
                     </div>
                   </div>
                   <div className="field">
-                    <label>{C.form.message[lang]}</label>
+                    <label {...cmsAttr("contact_page", "form.message")}>{C.form.message[lang]}</label>
                     <textarea
                       value={form.message}
                       onChange={(e) => setForm({...form, message: e.target.value})}
@@ -104,13 +108,13 @@ export function ContactPage({ lang, onNav }) {
                   </div>
                   <label className="checkbox">
                     <input type="checkbox" checked={form.consent} onChange={(e) => setForm({...form, consent: e.target.checked})} required />
-                    <span>{C.form.consent[lang]}{" "}
-                      <a onClick={(e) => { e.preventDefault(); onNav("conditions"); }} style={{textDecoration: "underline", cursor: "pointer"}}>{C.form.consent_link[lang]}</a>.
+                    <span><span {...cmsAttr("contact_page", "form.consent")}>{C.form.consent[lang]}</span>{" "}
+                      <a onClick={(e) => { e.preventDefault(); onNav("conditions"); }} style={{textDecoration: "underline", cursor: "pointer"}} {...cmsAttr("contact_page", "form.consent_link")}>{C.form.consent_link[lang]}</a>.
                     </span>
                   </label>
                   <div className="contact-form__submit">
                     <button type="submit" className="btn" disabled={!form.consent || submitting}>
-                      {submitting ? (lang === "en" ? "Sending..." : "Envoi...") : C.form.submit[lang]} <span className="arrow">↗</span>
+                      {submitting ? (lang === "en" ? "Sending..." : "Envoi...") : <span {...cmsAttr("contact_page", "form.submit")}>{C.form.submit[lang]}</span>} <span className="arrow">↗</span>
                     </button>
                     <span className="contact-form__hint text-mono text-muted">
                       {lang === "en" ? "A real person replies — never a bot." : "Une vraie personne vous répond."}
@@ -125,7 +129,7 @@ export function ContactPage({ lang, onNav }) {
           <Reveal delay={0.1}>
             <aside className="contact-v2-sidebar">
               <div className="contact-info-card">
-                <div className="contact-info-card__eyebrow text-mono">{text(C.info_title, lang, lang === "en" ? "Direct line" : "Contact direct")}</div>
+                <div className="contact-info-card__eyebrow text-mono" {...cmsAttr("contact_page", "info_title")}>{text(C.info_title, lang, lang === "en" ? "Direct line" : "Contact direct")}</div>
                 <a className="contact-info-card__contact" href={`mailto:${C.main_email}`}>{C.main_email}</a>
                 <a className="contact-info-card__contact contact-info-card__contact--brass" href={`tel:${C.main_phone}`}>{C.main_phone}</a>
                 <div className="contact-info-card__divider"></div>
@@ -133,16 +137,127 @@ export function ContactPage({ lang, onNav }) {
               </div>
 
               <ul className="contact-v2-trust">
-                <li>{lang === "en" ? "Reply within 48 hours" : "Réponse sous 48h"}</li>
-                <li>{lang === "en" ? "No commitment, no pressure" : "Sans engagement, sans pression"}</li>
+                <li>{lang === "en" ? "Free consultation" : "Consultation gratuite"}</li>
+                <li>{lang === "en" ? "Respond within 48 hours" : "Réponse sous 48h"}</li>
+                <li>{lang === "en" ? "No obligation, no pressure" : "Sans engagement, sans pression"}</li>
               </ul>
             </aside>
           </Reveal>
         </div>
       </section>
+
+      {/* Team — the people behind the project */}
+      {Array.isArray(team?.members) && team.members.length > 0 && (
+        <section className="contact-v2-team">
+          <div className="contact-v2-team__inner">
+            <Reveal as="div" className="contact-v2-team__eyebrow text-mono">
+              {lang === "en" ? "The team" : "L'équipe"}
+            </Reveal>
+            <Reveal as="h2" className="contact-v2-team__title">
+              {text(team.title, lang, lang === "en" ? "The people behind your project." : "Les personnes derrière votre projet.")}
+            </Reveal>
+            {team.sub && (
+              <Reveal as="p" className="contact-v2-team__sub" delay={0.05}>
+                {text(team.sub, lang)}
+              </Reveal>
+            )}
+            <div className="contact-v2-team__grid">
+              {team.members.map((m, i) => {
+                const hasLongBio = Boolean(text(m.long_bio, lang, ""));
+                const openModal = () => hasLongBio && setActiveMember(m);
+                return (
+                  <Reveal key={m.name} delay={0.06 + i * 0.06}>
+                    <article
+                      className={`team-card${hasLongBio ? " team-card--clickable" : ""}`}
+                      onClick={openModal}
+                      role={hasLongBio ? "button" : undefined}
+                      tabIndex={hasLongBio ? 0 : undefined}
+                      onKeyDown={(e) => { if (hasLongBio && e.key === "Enter") openModal(); }}
+                      aria-label={hasLongBio ? `${m.name} — read full bio` : undefined}
+                    >
+                      <div className="team-card__avatar" aria-hidden="true">{m.name?.charAt(0)}</div>
+                      <h3 className="team-card__name">{m.name}</h3>
+                      <div className="team-card__role text-mono">{text(m.role, lang)}</div>
+                      <p className="team-card__bio">{text(m.bio, lang)}</p>
+                      {(m.email || m.phone || m.website) && (
+                        <div className="team-card__links" onClick={(e) => e.stopPropagation()}>
+                          {m.email && <a href={`mailto:${m.email}`}>{m.email}</a>}
+                          {m.phone && <a href={`tel:${m.phone.replace(/\s+/g, "")}`}>{m.phone}</a>}
+                          {m.website && (
+                            <a href={m.website} target="_blank" rel="noreferrer noopener">
+                              {m.website.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}
+                            </a>
+                          )}
+                        </div>
+                      )}
+                      {hasLongBio && (
+                        <span className="team-card__read-more text-mono" aria-hidden="true">
+                          {lang === "en" ? "Read full bio →" : "Lire la bio complète →"}
+                        </span>
+                      )}
+                    </article>
+                  </Reveal>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+      {activeMember && (
+        <TeamMemberModal member={activeMember} lang={lang} onClose={() => setActiveMember(null)} />
+      )}
     </div>
   );
 };
+
+function TeamMemberModal({ member, lang, onClose }) {
+  useEffect(() => {
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [onClose]);
+
+  const role = text(member.role, lang, "");
+  const longBio = text(member.long_bio, lang, "");
+  const paragraphs = longBio.split(/\n+/).filter(Boolean);
+
+  return createPortal(
+    <div className="modal-backdrop" onClick={onClose}>
+      <div className="team-modal" onClick={(e) => e.stopPropagation()}>
+        <button className="modal__close" onClick={onClose} aria-label="Close">×</button>
+        <div className="team-modal__head">
+          <div className="team-modal__avatar" aria-hidden="true">{member.name?.charAt(0)}</div>
+          <div>
+            <h2 className="team-modal__name">{member.name}</h2>
+            {role && <div className="team-modal__role text-mono">{role}</div>}
+          </div>
+        </div>
+        <div className="team-modal__body">
+          {paragraphs.map((para, i) => (
+            <p key={i}>{para}</p>
+          ))}
+        </div>
+        {(member.email || member.phone || member.website) && (
+          <div className="team-modal__links">
+            {member.email && <a href={`mailto:${member.email}`}>{member.email}</a>}
+            {member.phone && <a href={`tel:${member.phone.replace(/\s+/g, "")}`}>{member.phone}</a>}
+            {member.website && (
+              <a href={member.website} target="_blank" rel="noreferrer noopener">
+                {member.website.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}
+              </a>
+            )}
+          </div>
+        )}
+      </div>
+    </div>,
+    document.body
+  );
+}
 
 // ===== CONDITIONS PAGE =====
 export function ConditionsPage({ lang }) {

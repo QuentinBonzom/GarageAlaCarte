@@ -1,24 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { CONTENT } from "../data/content";
 import { ImagePlaceholder, Reveal, useReveal } from "../components/common";
+import { cmsAttr } from "../lib/cmsEdit";
 
 export function ProjectsPage({ lang, onNav }) {
   const C = CONTENT.projects_page;
   const projects = CONTENT.projects || [];
   const [active, setActive] = useState(null);
 
+  // Si on arrive depuis une card UseCase, ouvre automatiquement le projet correspondant
+  useEffect(() => {
+    const targetSlug = sessionStorage.getItem("open_project_slug");
+    if (!targetSlug) return;
+    sessionStorage.removeItem("open_project_slug");
+    const target = projects.find((p) => p.slug === targetSlug && !p.placeholder);
+    if (target) setActive(target);
+  }, [projects]);
+
   return (
     <div className="page">
       <section className="projects-v2-head">
         <div className="projects-v2-head__inner">
-          <Reveal as="div" className="projects-v2-head__eyebrow">
+          <Reveal as="div" className="projects-v2-head__eyebrow" {...cmsAttr("projects_page", "eyebrow")}>
             {text(C.eyebrow, lang, lang === "en" ? "Selected work" : "Sélection")}
           </Reveal>
-          <Reveal as="h1" className="projects-v2-head__title">
+          <Reveal as="h1" className="projects-v2-head__title" {...cmsAttr("projects_page", "title")}>
             {text(C.title, lang, lang === "en" ? "Our garages, redesigned." : "Nos garages, repensés.")}
           </Reveal>
           {C.sub && (
-            <Reveal as="p" className="projects-v2-head__sub" delay={0.1}>
+            <Reveal as="p" className="projects-v2-head__sub" delay={0.1} {...cmsAttr("projects_page", "sub")}>
               {text(C.sub, lang)}
             </Reveal>
           )}
@@ -100,7 +111,6 @@ function ProjectTile({ project, lang, index, featured, onClick }) {
 }
 
 function ProjectModal({ project, lang, onClose, onNav }) {
-  const heroImage = project.images?.[0] || null;
   const projectName = text(project.name, lang, lang === "en" ? "Untitled project" : "Projet sans titre");
   const tagline = text(project.tagline, lang, "");
   const service = text(project.service, lang, "");
@@ -108,20 +118,76 @@ function ProjectModal({ project, lang, onClose, onNav }) {
   const includes = list(project.includes, lang);
   const images = project.images || [];
 
-  return (
+  const [slide, setSlide] = useState(0);
+  const total = images.length;
+  const safeSlide = total > 0 ? Math.min(slide, total - 1) : 0;
+  const currentImage = images[safeSlide] || null;
+  const prevSlide = () => setSlide((i) => (i - 1 + total) % total);
+  const nextSlide = () => setSlide((i) => (i + 1) % total);
+
+  useEffect(() => {
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e) => {
+      if (e.key === "Escape") onClose();
+      else if (total > 1 && e.key === "ArrowLeft") prevSlide();
+      else if (total > 1 && e.key === "ArrowRight") nextSlide();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [total, onClose]);
+
+  return createPortal(
     <div className="modal-backdrop" onClick={onClose}>
       <div className="project-v2-modal" onClick={(e) => e.stopPropagation()}>
         <button className="modal__close" onClick={onClose} aria-label="Close">×</button>
 
         <div className="project-v2-modal__hero">
           <ImagePlaceholder
-            color={heroImage?.color || "#70675d"}
-            label={heroImage?.label}
-            src={heroImage?.url}
-            alt={text(heroImage?.alt, lang, projectName)}
+            color={currentImage?.color || "#70675d"}
+            label={currentImage?.label}
+            src={currentImage?.url}
+            alt={text(currentImage?.alt, lang, projectName)}
             style={{ position: "absolute", inset: 0, borderRadius: 0 }}
           />
           <div className="project-v2-modal__scrim" aria-hidden="true" />
+
+          {total > 1 && (
+            <>
+              <button
+                type="button"
+                className="project-v2-modal__nav project-v2-modal__nav--prev"
+                onClick={(e) => { e.stopPropagation(); prevSlide(); }}
+                aria-label={lang === "en" ? "Previous image" : "Image précédente"}
+              >‹</button>
+              <button
+                type="button"
+                className="project-v2-modal__nav project-v2-modal__nav--next"
+                onClick={(e) => { e.stopPropagation(); nextSlide(); }}
+                aria-label={lang === "en" ? "Next image" : "Image suivante"}
+              >›</button>
+              <div className="project-v2-modal__counter" aria-live="polite">
+                {safeSlide + 1} / {total}
+              </div>
+              <div className="project-v2-modal__dots" role="tablist">
+                {images.map((_, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    role="tab"
+                    aria-selected={i === safeSlide}
+                    aria-label={`${lang === "en" ? "Image" : "Image"} ${i + 1}`}
+                    className={`project-v2-modal__dot${i === safeSlide ? " is-active" : ""}`}
+                    onClick={(e) => { e.stopPropagation(); setSlide(i); }}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+
           <div className="project-v2-modal__hero-body">
             {service && <span className="project-v2-modal__service">{service}</span>}
             <h2 className="project-v2-modal__title">{projectName}</h2>
@@ -155,21 +221,6 @@ function ProjectModal({ project, lang, onClose, onNav }) {
             </div>
           )}
 
-          {images.length > 1 && (
-            <div className="project-v2-modal__gallery">
-              {images.slice(1).map((img, i) => (
-                <ImagePlaceholder
-                  key={i}
-                  color={img.color}
-                  label={img.label}
-                  src={img.url}
-                  alt={text(img.alt, lang, img.label || "")}
-                  style={{ position: "absolute", inset: 0, borderRadius: 0 }}
-                />
-              ))}
-            </div>
-          )}
-
           <div className="project-v2-modal__footer">
             <button className="btn" onClick={() => { onClose(); onNav("contact"); }}>
               {lang === "en" ? "Start a similar project" : "Démarrer un projet similaire"} <span className="arrow">↗</span>
@@ -180,7 +231,8 @@ function ProjectModal({ project, lang, onClose, onNav }) {
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 

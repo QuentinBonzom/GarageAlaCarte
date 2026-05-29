@@ -12,7 +12,32 @@ values
   ), 'Brand identity used by the header, footer, and metadata.'),
   ('default_locale', '"en"'::jsonb, 'Default public language.'),
   ('service_area', jsonb_build_object('city', 'Orlando', 'state', 'FL', 'radius_miles', 20), 'Default service area.'),
-  ('theme', jsonb_build_object('accentColor', '#ff5e5b', 'density', 1, 'cardStyle', 'soft'), 'UI defaults for the React app.')
+  ('theme', jsonb_build_object(
+    'accentColor', '#F1B395',
+    'density', 1,
+    'cardStyle', 'soft',
+    'colors', jsonb_build_object(
+      '--cream', '#F2EDE5',
+      '--cream-deep', '#D8C7B3',
+      '--paper', '#FAF6EE',
+      '--ink', '#1F1F1F',
+      '--ink-soft', '#3A2D27',
+      '--muted', '#6b6157',
+      '--line', 'rgba(31, 31, 31, 0.10)',
+      '--line-strong', 'rgba(31, 31, 31, 0.22)',
+      '--accent', '#F1B395',
+      '--accent-deep', '#E89977',
+      '--terra-soft', '#F8D7C3',
+      '--slate', '#A9B6BF',
+      '--slate-soft', '#C3CCD2',
+      '--slate-deep', '#8A98A2',
+      '--brass', '#c9a961',
+      '--brass-soft', '#e0c994',
+      '--aqua', '#5ec4d6',
+      '--sunset', '#ffd166',
+      '--palm', '#2a9d8f'
+    )
+  ), 'UI defaults for the React app (accent, layout, and full color palette).')
 on conflict (key) do update
 set value = excluded.value,
     description = excluded.description,
@@ -44,83 +69,72 @@ values
     ),
     'primary_cta', jsonb_build_object('en', 'Get my free estimate', 'fr', 'Obtenir mon devis gratuit'),
     'secondary_cta', jsonb_build_object('en', 'See our work', 'fr', 'Voir nos réalisations')
-  ), 20, true),
+  ), 10, true),
   ('home', 'hero_caption', jsonb_build_object(
     'label', jsonb_build_object('en', 'Featured project', 'fr', 'Projet phare'),
     'image', '',
     'video_url', '/hero-video.mp4',
     'featured_label', jsonb_build_object('en', 'FEATURED PROJECT', 'fr', 'PROJET PHARE'),
     'featured_title', jsonb_build_object('en', 'The Social Hub', 'fr', 'The Social Hub')
-  ), 30, true),
+  ), 20, true),
   ('home', 'before_after', jsonb_build_object(
     'eyebrow', jsonb_build_object('en', 'The transformation', 'fr', 'La transformation'),
-    'title', jsonb_build_object('en', 'From cluttered space to designed living.', 'fr', 'D''un espace encombré à un lieu de vie pensé.'),
+    'title', jsonb_build_object('en', 'From cluttered garage to dream garage. See the transformation!', 'fr', 'D''un garage encombré au garage de rêve. Découvrez la transformation !'),
     'before', jsonb_build_object('en', 'Boxes, tools, wasted square footage. No clear purpose.', 'fr', 'Cartons, outils, mètres carrés perdus. Aucun usage clair.'),
     'after', jsonb_build_object('en', 'A clean, planned, functional garage designed around your lifestyle.', 'fr', 'Un garage propre, pensé, fonctionnel — conçu autour de votre vie.'),
     'statement', jsonb_build_object(
       'en', 'Experience American practicality and precision combined with European mood-visual design and advanced Color, Material & Finish (CMF) expertise for a stunning, functional space.',
       'fr', 'Découvrez la praticité et la précision américaines alliées au design visuel et à l''ambiance européens, ainsi qu''à une expertise avancée en Couleur, Matière & Finition (CMF), pour un espace fonctionnel et époustouflant.'
     )
-  ), 60, true),
+  ), 40, true),
   ('home', 'services_intro', jsonb_build_object(
     'eyebrow', jsonb_build_object('en', 'Pricing', 'fr', 'Tarifs'),
-    'title', jsonb_build_object('en', 'Choose your level of support.', 'fr', 'Choisissez votre niveau d''accompagnement.'),
+    'title', jsonb_build_object('en', 'Explore Our Four Signature Services', 'fr', 'Découvrez nos quatre services signature'),
     'sub', jsonb_build_object('en', 'Start with a plan. Go all the way. Upgrade anytime.', 'fr', 'Commencez par un plan. Allez jusqu''au bout. Évoluez à tout moment.')
-  ), 70, true),
-  ('home', 'process_intro', jsonb_build_object(
-    'eyebrow', jsonb_build_object('en', 'How it works', 'fr', 'Comment ça marche'),
-    'title', jsonb_build_object('en', 'From idea to delivered space.', 'fr', 'De l''idée à l''espace livré.')
-  ), 110, true),
+  ), 50, true),
   ('home', 'final_cta', jsonb_build_object(
     'title', jsonb_build_object('en', 'Ready to reimagine your garage?', 'fr', 'Prêt à réinventer votre garage ?'),
     'sub', jsonb_build_object('en', 'Tell us about your space. We''ll send a free estimate within 48 hours.', 'fr', 'Parlez-nous de votre espace. Nous envoyons un devis gratuit sous 48h.')
-  ), 120, true),
+  ), 60, true),
   ('home', 'use_cases', jsonb_build_object(
     'eyebrow', jsonb_build_object('en', 'Transformations', 'fr', 'Transformations'),
-    'title', jsonb_build_object('en', 'Pick your room.', 'fr', 'Choisissez votre pièce.'),
+    'title', jsonb_build_object('en', 'Discover Your Dream Garage. Explore, Imagine, and Get Inspired!', 'fr', 'Découvrez le garage de vos rêves. Explorez, imaginez et inspirez-vous !'),
     'sub', jsonb_build_object(
       'en', 'We specialize in garage remodeling, makeovers, and custom storage solutions for homeowners, real estate agencies, developers, builders, and property managers across Orlando and the surrounding areas.',
       'fr', 'Nous sommes spécialisés dans la rénovation de garages, les transformations et les solutions de rangement sur-mesure pour les propriétaires, les agences immobilières, les promoteurs, les constructeurs et les gestionnaires de biens à Orlando et ses environs.'
     ),
     'items', jsonb_build_array(
       jsonb_build_object(
-        'image', '/usecase-gym.svg',
-        'name', jsonb_build_object('en', 'Home Gym', 'fr', 'Salle de sport'),
-        'tagline', jsonb_build_object('en', 'Train at home, every day.', 'fr', 'S''entraîner chez soi, tous les jours.'),
-        'bullets', jsonb_build_object(
-          'en', jsonb_build_array('Mirrored wall', 'Rubber flooring', 'Smart storage'),
-          'fr', jsonb_build_array('Mur miroir', 'Sol caoutchouc', 'Rangements smart')
+        'image', '',
+        'name', jsonb_build_object('en', 'Daily Living Garage', 'fr', 'Garage du Quotidien'),
+        'tagline', jsonb_build_object('en', 'Multi-functional / Lifestyle', 'fr', 'Multifonctionnel / Art de vivre')
+      ),
+      jsonb_build_object(
+        'image', '',
+        'name', jsonb_build_object('en', 'The Social Hub — Smart Living Garage', 'fr', 'Le Social Hub — Smart Living Garage'),
+        'tagline', jsonb_build_object(
+          'en', 'A Garage Designed for Entertainment and Lifestyle',
+          'fr', 'Un garage conçu pour le divertissement et l''art de vivre'
         )
       ),
       jsonb_build_object(
-        'image', '/usecase-lounge.svg',
-        'name', jsonb_build_object('en', 'Lounge & Bar', 'fr', 'Lounge & Bar'),
-        'tagline', jsonb_build_object('en', 'The room you actually use on Fridays.', 'fr', 'La pièce que vous utilisez vraiment le vendredi.'),
-        'bullets', jsonb_build_object(
-          'en', jsonb_build_array('Wet bar', 'Custom cabinetry', 'Built-in screen'),
-          'fr', jsonb_build_array('Bar avec point d''eau', 'Mobilier sur-mesure', 'Écran encastré')
+        'image', '',
+        'name', jsonb_build_object('en', 'The Daily Living Garage', 'fr', 'Le Garage du Quotidien'),
+        'tagline', jsonb_build_object(
+          'en', 'A Multi-Functional Garage for Work, Fitness, and Relaxation',
+          'fr', 'Un garage multifonctionnel pour le travail, le fitness et la détente'
         )
       ),
       jsonb_build_object(
-        'image', '/usecase-office.svg',
-        'name', jsonb_build_object('en', 'Home Office', 'fr', 'Bureau'),
-        'tagline', jsonb_build_object('en', 'Quiet work, just outside the house.', 'fr', 'Travailler au calme, juste à côté.'),
-        'bullets', jsonb_build_object(
-          'en', jsonb_build_array('Soundproofing', 'Climate control', 'Built-in desk'),
-          'fr', jsonb_build_array('Isolation phonique', 'Climatisation', 'Bureau intégré')
-        )
-      ),
-      jsonb_build_object(
-        'image', '/usecase-storage.svg',
-        'name', jsonb_build_object('en', 'Smart Storage', 'fr', 'Rangement Smart'),
-        'tagline', jsonb_build_object('en', 'Everything in its place, finally.', 'fr', 'Tout à sa place, enfin.'),
-        'bullets', jsonb_build_object(
-          'en', jsonb_build_array('Floor-to-ceiling cabinetry', 'EV charging', 'Sport gear racks'),
-          'fr', jsonb_build_array('Rangements pleine hauteur', 'Recharge VE', 'Racks sport')
+        'image', '',
+        'name', jsonb_build_object('en', 'Modern Automotive Lounge', 'fr', 'Lounge Automobile Moderne'),
+        'tagline', jsonb_build_object(
+          'en', 'A High-End Garage for Cars, Work, Entertainment, and Lifestyle',
+          'fr', 'Un garage haut de gamme pour voitures, travail, divertissement et art de vivre'
         )
       )
     )
-  ), 123, true),
+  ), 30, true),
   ('projects', 'projects_page', jsonb_build_object(
     'eyebrow', jsonb_build_object('en', 'Selected work', 'fr', 'Sélection'),
     'title', jsonb_build_object('en', 'Our garages, redesigned.', 'fr', 'Nos garages, repensés.'),
@@ -171,30 +185,31 @@ set channel_type = excluded.channel_type,
     is_active = excluded.is_active,
     updated_at = now();
 
-insert into public.team_members (slug, name, role, bio, email, phone, display_order, is_active)
+insert into public.team_members (slug, name, role, bio, email, phone, website, display_order, is_active)
 values
   ('guillaume', 'Guillaume',
-    jsonb_build_object('en', 'Field & Execution Lead', 'fr', 'Lead Terrain & Exécution'),
+    jsonb_build_object('en', 'Garage Transformation & Build Lead', 'fr', 'Lead Transformation & Construction de Garage'),
     jsonb_build_object('en', 'Based in Orlando, Guillaume brings real-world construction experience and ensures every project is grounded, feasible, and built right.', 'fr', 'Basé à Orlando, Guillaume apporte une expérience terrain solide et garantit que chaque projet est faisable, ancré, et bien exécuté.'),
-    null, null, 10, true),
+    null, null, 'https://www.ecuafranceelectric.com/', 10, true),
   ('aymeric', 'Aymeric',
-    jsonb_build_object('en', 'Technical Design & Planning', 'fr', 'Design Technique & Plans'),
+    jsonb_build_object('en', '3D Space Planning & Technical Design Lead', 'fr', 'Lead Plans 3D & Design Technique'),
     jsonb_build_object('en', 'Specialised in European space efficiency, custom layouts, and 3D planning. Aymeric turns ideas into precise, build-ready designs.', 'fr', 'Spécialisé en efficacité spatiale européenne, plans sur-mesure et 3D. Aymeric transforme les idées en plans prêts à construire.'),
-    'aymeric.vanelle@gmail.com', '+33 6 72 54 54 51', 20, true),
+    'aymeric.vanelle@gmail.com', '+33 6 72 54 54 51', null, 20, true),
   ('juliette', 'Juliette',
-    jsonb_build_object('en', 'Visual Design & Atmosphere', 'fr', 'Design Visuel & Atmosphère'),
+    jsonb_build_object('en', 'Mood-Visual & Advanced Color, Material & Finish (CMF) Design Lead', 'fr', 'Lead Design Mood-Visual & Couleur, Matière & Finition (CMF) avancée'),
     jsonb_build_object('en', 'Combines American precision with European creativity and space-saving design — turning ideas into immersive visuals so you see your future space before it''s built.', 'fr', 'Allie précision américaine et créativité européenne. Juliette crée des visuels immersifs pour que vous voyiez votre espace avant même qu''il existe.'),
-    'juliette.bergougnoux@icloud.com', '+33 7 44 81 52 22', 30, true),
+    'juliette.bergougnoux@icloud.com', '+33 7 44 81 52 22', null, 30, true),
   ('nelly', 'Nelly',
-    jsonb_build_object('en', 'Coordinator', 'fr', 'Coordinatrice'),
+    jsonb_build_object('en', 'Project Coordination Lead', 'fr', 'Lead Coordination de Projet'),
     jsonb_build_object('en', 'Nelly keeps every project on track — coordinating schedules, suppliers, and your peace of mind from kickoff to handover.', 'fr', 'Nelly garde chaque projet sur les rails — coordonne plannings, fournisseurs et votre tranquillité d''esprit, du lancement à la livraison.'),
-    'loucie@icloud.com', null, 40, true)
+    'loucie@icloud.com', null, null, 40, true)
 on conflict (slug) do update
 set name = excluded.name,
     role = excluded.role,
     bio = excluded.bio,
     email = excluded.email,
     phone = excluded.phone,
+    website = excluded.website,
     display_order = excluded.display_order,
     is_active = excluded.is_active,
     updated_at = now();
@@ -328,9 +343,9 @@ values
   (3, jsonb_build_object('en', 'Plan before spending', 'fr', 'Planifiez avant de dépenser'), jsonb_build_object('en', 'See it in 3D first.', 'fr', 'Voyez votre garage en 3D.'), 30, true),
   (4, jsonb_build_object('en', 'Bring it to life', 'fr', 'Donnez-lui vie'), jsonb_build_object('en', 'DIY, supported, or turnkey.', 'fr', 'Vous-même, accompagné ou clé en main.'), 40, true);
 
--- Keep only the three portfolio projects currently used on the website.
+-- Keep only the portfolio projects currently used on the website.
 delete from public.projects
-where slug not in ('the-social-hub', 'the-daily-living-garage', 'smart-living-garage');
+where slug not in ('the-social-hub', 'the-daily-living-garage', 'smart-living-garage', 'modern-automotive-lounge');
 
 insert into public.projects (
   slug, service_id, name, tagline, project_type, size_label, duration_label, year,
@@ -361,15 +376,26 @@ values
     'live', true, false, 20),
   ('smart-living-garage', (select id from public.services where slug = 'transform'),
     jsonb_build_object('en', 'Smart Living Garage', 'fr', 'Smart Living Garage'),
-    jsonb_build_object('en', 'Utility, comfort, and style — designed for daily life.', 'fr', 'Utilité, confort, style — pensé pour le quotidien.'),
-    jsonb_build_object('en', 'Daily living / Utility', 'fr', 'Vie quotidienne / Utilitaire'),
+    jsonb_build_object('en', 'Where game day meets everyday.', 'fr', 'L''esprit jour de match, au quotidien.'),
+    jsonb_build_object('en', 'Sports bar / Lifestyle', 'fr', 'Bar sportif / Lifestyle'),
     jsonb_build_object('en', '2 car garage', 'fr', 'Garage 2 voitures'),
     jsonb_build_object('en', '5 weeks', 'fr', '5 semaines'),
     '2025',
-    jsonb_build_object('en', 'A complete transformation that turns your garage into a functional, comfortable extension of your home — combining utility, comfort, and style.', 'fr', 'Une transformation complète qui fait du garage une extension fonctionnelle et confortable de la maison — entre utilité, confort et style.'),
-    jsonb_build_object('en', jsonb_build_array('Integrated laundry and utility area', 'Comfortable lounge space with TV, relaxation, and daily use', 'Smart storage solutions to keep everything organized', 'Clean, functional environment ready for everyday living'), 'fr', jsonb_build_array('Zone buanderie et utilitaire intégrée', 'Lounge confortable avec TV, détente et usage quotidien', 'Rangements smart pour garder l''espace organisé', 'Environnement propre, fonctionnel et prêt à vivre')),
-    jsonb_build_object('en', jsonb_build_array('Free up space in the rest of your home', 'Simplify your daily routines and reduce clutter', 'Improve comfort while increasing your property value'), 'fr', jsonb_build_array('Libérer de l''espace dans le reste de la maison', 'Simplifier les routines quotidiennes et réduire le désordre', 'Améliorer le confort tout en valorisant le bien')),
-    'live', true, false, 30)
+    jsonb_build_object('en', 'A full transformation that turns a standard two-car garage into an industrial-chic sports bar and lounge — without sacrificing everyday utility. A butcher-block bar faces a big-screen media wall framed by open shelving, glassware, and team memorabilia, while exposed brick, track lighting, and custom neon set a warm game-day mood. Deep leather seating and a bean bag shape the lounge, and a fully integrated laundry and wet-bar corner keeps the space genuinely practical for daily life.', 'fr', 'Une transformation complète qui métamorphose un garage 2 voitures standard en bar sportif et lounge au style industriel — sans renoncer à l''utilité du quotidien. Un bar en bois massif fait face à un mur média grand écran encadré d''étagères ouvertes, de verrerie et de souvenirs sportifs, tandis que la brique apparente, l''éclairage sur rail et les néons sur-mesure installent une ambiance chaleureuse « jour de match ». Des assises en cuir et un pouf composent le lounge, et un coin buanderie et point d''eau entièrement intégré garde l''espace réellement pratique au quotidien.'),
+    jsonb_build_object('en', jsonb_build_array('Custom butcher-block bar with stool seating', 'Big-screen media wall with open shelving and glassware', 'Exposed brick feature wall and industrial track lighting', 'Custom neon signage and framed racing-poster gallery', 'Leather lounge seating with coffee table', 'Fully integrated laundry and wet-bar utility corner'), 'fr', jsonb_build_array('Bar sur-mesure en bois massif avec assises hautes', 'Mur média grand écran avec étagères ouvertes et verrerie', 'Mur en brique apparente et éclairage sur rail industriel', 'Néons sur-mesure et galerie d''affiches de course encadrées', 'Lounge en cuir avec table basse', 'Coin buanderie et point d''eau entièrement intégré')),
+    jsonb_build_object('en', jsonb_build_array('A dedicated space to host game days and unwind', 'Entertaining and everyday utility combined in one room', 'Frees up space inside the rest of your home', 'A high-impact upgrade that adds lasting property value'), 'fr', jsonb_build_array('Un espace dédié pour recevoir les soirs de match et se détendre', 'Réception et utilité quotidienne réunies dans une seule pièce', 'Libère de l''espace dans le reste de la maison', 'Une transformation forte qui valorise durablement le bien')),
+    'live', true, false, 30),
+  ('modern-automotive-lounge', (select id from public.services where slug = 'transform'),
+    jsonb_build_object('en', 'Modern Automotive Lounge', 'fr', 'Lounge Automobile Moderne'),
+    jsonb_build_object('en', 'A high-end garage for cars, work, entertainment, and lifestyle.', 'fr', 'Un garage haut de gamme pour la voiture, le travail, le divertissement et l''art de vivre.'),
+    jsonb_build_object('en', 'Automotive lounge / Multi-use', 'fr', 'Lounge automobile / Multi-usage'),
+    jsonb_build_object('en', '2 car garage', 'fr', 'Garage 2 voitures'),
+    jsonb_build_object('en', '7 weeks', 'fr', '7 semaines'),
+    '2025',
+    jsonb_build_object('en', 'A high-end transformation that lets you keep the car and gain a true lifestyle space around it. One bay still holds the vehicle on a sleek dark floor, while the rest of the garage becomes a multi-use retreat: a dedicated home-office and gaming workstation with a custom PC, a cinematic big-screen lounge with a deep velvet sofa and fur rug, and a retro-styled coffee and beverage bar set against a graphic feature wall. Track lighting, warm accents, and curated décor tie work, play, and automotive passion together in one refined room.', 'fr', 'Une transformation haut de gamme qui vous permet de garder la voiture tout en gagnant un véritable espace de vie autour d''elle. Une place accueille toujours le véhicule sur un sol sombre épuré, tandis que le reste du garage devient un lieu multi-usage : un poste home-office et gaming avec PC sur-mesure, un lounge home-cinéma avec canapé en velours et tapis en fourrure, et un coin café et bar au style rétro adossé à un mur graphique. Éclairage sur rail, touches chaleureuses et déco soignée réunissent travail, détente et passion automobile dans une seule pièce raffinée.'),
+    jsonb_build_object('en', jsonb_build_array('Dedicated car display bay with finished flooring', 'Home-office and gaming workstation with custom PC', 'Cinematic big-screen lounge with velvet sofa and fur rug', 'Retro coffee and beverage bar with mini-fridge', 'Graphic feature wall and curated styling', 'Track lighting and warm ambient accents'), 'fr', jsonb_build_array('Place dédiée à la voiture avec sol fini', 'Poste home-office et gaming avec PC sur-mesure', 'Lounge home-cinéma avec canapé velours et tapis fourrure', 'Coin café et bar rétro avec mini-frigo', 'Mur graphique et décoration soignée', 'Éclairage sur rail et touches d''ambiance chaleureuses')),
+    jsonb_build_object('en', jsonb_build_array('Keep your car and still gain a living space', 'Work, game, and relax without leaving home', 'A premium, multi-use upgrade for car lovers', 'Adds standout character and value to your property'), 'fr', jsonb_build_array('Gardez votre voiture tout en gagnant un espace de vie', 'Travailler, jouer et se détendre sans quitter la maison', 'Une transformation premium multi-usage pour passionnés', 'Ajoute du caractère et de la valeur au bien')),
+    'live', true, false, 40)
 on conflict (slug) do update
 set service_id = excluded.service_id,
     name = excluded.name,
@@ -398,9 +424,13 @@ from (
     ('the-daily-living-garage', 'Lounge zone', '#c4a575', 'hero', 10),
     ('the-daily-living-garage', 'Fitness corner', '#3d322a', 'gallery', 20),
     ('the-daily-living-garage', 'Home office', '#7a6450', 'gallery', 30),
-    ('smart-living-garage', 'Hero · open view', '#a89378', 'hero', 10),
-    ('smart-living-garage', 'Laundry corner', '#4a3d33', 'gallery', 20),
-    ('smart-living-garage', 'Lounge detail', '#d4bfa3', 'detail', 30)
+    ('smart-living-garage', 'Bar & media wall', '#3a2c22', 'hero', 10),
+    ('smart-living-garage', 'Lounge & laundry corner', '#4a3d33', 'gallery', 20),
+    ('smart-living-garage', 'Lounge & racing wall', '#5a4334', 'detail', 30),
+    ('modern-automotive-lounge', 'Lounge & workspace · overview', '#2c2722', 'hero', 10),
+    ('modern-automotive-lounge', 'Car bay & lounge', '#7a6450', 'gallery', 20),
+    ('modern-automotive-lounge', 'Retro coffee bar', '#b5703a', 'detail', 30),
+    ('modern-automotive-lounge', 'Media lounge & sofa', '#3d322a', 'gallery', 40)
 ) as x(project_slug, label, placeholder_color, kind, display_order)
 join public.projects p on p.slug = x.project_slug
 on conflict (project_id, display_order) do update
