@@ -28,6 +28,7 @@ function mergeCmsSections(nextContent, sections) {
   if (sectionMap.before_after) nextContent.before_after = sectionMap.before_after;
   if (sectionMap.final_cta) nextContent.final_cta = sectionMap.final_cta;
   if (sectionMap.use_cases) nextContent.use_cases = sectionMap.use_cases;
+
   if (sectionMap.projects_page) nextContent.projects_page = sectionMap.projects_page;
   if (sectionMap.popup) nextContent.popup = sectionMap.popup;
 

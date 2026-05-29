@@ -4,6 +4,7 @@ import { CONTENT } from "../data/content";
 import { ImagePlaceholder, Reveal, useReveal } from "../components/common";
 import { cmsAttr, cmsRecordAttr } from "../lib/cmsEdit";
 
+
 export function HomePage({ lang, onNav }) {
   return (
     <div className="page">
@@ -11,6 +12,7 @@ export function HomePage({ lang, onNav }) {
       <UseCasesSection lang={lang} onNav={onNav} />
       <BeforeAfterSection lang={lang} />
       <ServicesSection lang={lang} onNav={onNav} />
+
       <FinalCTA lang={lang} onNav={onNav} />
     </div>
   );
@@ -22,6 +24,7 @@ function Hero({ lang, onNav }) {
   const cap = CONTENT.hero_caption || {};
   const heroImage = cap.image || cap.after_image || "";
   const heroVideo = cap.video_url || cap.video || "";
+
 
   const titleLines = Array.isArray(C.title?.[lang])
     ? C.title[lang]
@@ -56,6 +59,7 @@ function Hero({ lang, onNav }) {
         </Reveal>
 
         <Reveal as="h1" className="hero-v2__title" {...cmsAttr("hero", "title", "lines")}>
+
           {titleLines.map((line, i) => {
             const words = String(line).split(" ");
             return (
@@ -87,6 +91,7 @@ function Hero({ lang, onNav }) {
               <span {...cmsAttr("hero", "secondary_cta")}>{C.secondary_cta[lang]}</span>
             </button>
           </div>
+
         </Reveal>
       </div>
     </section>
@@ -112,6 +117,7 @@ function UseCasesSection({ lang, onNav }) {
           </Reveal>
           {C.sub?.[lang] && (
             <Reveal as="p" className="usecases__sub" delay={0.1} {...cmsAttr("use_cases", "sub")}>{C.sub[lang]}</Reveal>
+
           )}
         </div>
 
@@ -146,6 +152,7 @@ function UseCaseCard({ item, index, lang, onNav }) {
     onNav?.("projects");
   };
 
+
   return (
     <article
       ref={ref}
@@ -173,6 +180,7 @@ function UseCaseCard({ item, index, lang, onNav }) {
       <div className="usecase-card__body">
         <h3 className="usecase-card__name" {...cmsAttr("use_cases", `items.${index}.name`)}>{name}</h3>
         {tagline && <p className="usecase-card__tagline" {...cmsAttr("use_cases", `items.${index}.tagline`)}>{tagline}</p>}
+
       </div>
     </article>
   );
@@ -208,12 +216,14 @@ function BeforeAfterSection({ lang }) {
             <div className="ba-v2__caption">
               <span className="ba-v2__caption-label">{lang === "en" ? "Before" : "Avant"}</span>
               <p {...cmsAttr("before_after", "before")}>{C.before[lang]}</p>
+
             </div>
           </Reveal>
           <Reveal delay={0.1}>
             <div className="ba-v2__caption ba-v2__caption--after">
               <span className="ba-v2__caption-label">{lang === "en" ? "After" : "Après"}</span>
               <p {...cmsAttr("before_after", "after")}>{C.after[lang]}</p>
+
             </div>
           </Reveal>
         </div>
@@ -346,6 +356,7 @@ function ServicesSection({ lang, onNav }) {
           </Reveal>
           <Reveal as="h2" className="svc-v2__title" {...cmsAttr("services_intro", "title")}>{C.title[lang]}</Reveal>
           <Reveal as="p" className="svc-v2__sub" delay={0.1} {...cmsAttr("services_intro", "sub")}>{C.sub[lang]}</Reveal>
+
         </div>
 
         <div className="svc-v2__grid">
@@ -359,6 +370,7 @@ function ServicesSection({ lang, onNav }) {
             ? "Our expert team delivers space optimization, organization systems, and innovative renovations — enhanced by mood visual design and advanced Color, Material, and Finish (CMF) expertise to maximize garage functionality, improve curb appeal, and add lasting value to your property."
             : "Notre équipe experte propose optimisation de l’espace, systèmes d’organisation et rénovations innovantes — renforcées par le mood visual design et une expertise avancée en Color, Material, and Finish (CMF) afin de maximiser la fonctionnalité du garage, améliorer l’attrait extérieur et ajouter une valeur durable à votre propriété."}
         </Reveal>
+
 
         <Reveal as="p" className="svc-v2__note" delay={0.2}>
           {lang === "en"
@@ -391,6 +403,7 @@ function ServiceCard({ svc, lang, index, onNav }) {
           <span className="svc-card__price" {...cmsRecordAttr("service", svc.id, "price_label")}>{svc.price[lang]}</span>
         </div>
         <button className="svc-card__cta" onClick={() => setOpen(true)} data-cms-allow>
+
           {lang === "en" ? "View details" : "Voir les détails"} <span aria-hidden="true">→</span>
         </button>
       </article>
@@ -497,6 +510,7 @@ function ServiceModal({ svc, lang, onClose, onNav }) {
       </div>
     </div>,
     document.body
+
   );
 }
 
@@ -507,6 +521,7 @@ function FinalCTA({ lang, onNav }) {
     <section id="final_cta" className="fcta-v2">
       <div className="fcta-v2__inner">
         <Reveal as="h2" className="fcta-v2__title" {...cmsAttr("final_cta", "title")}>{C.title[lang]}</Reveal>
+
         <Reveal delay={0.15} className="fcta-v2__cta">
           <button className="btn" onClick={() => onNav("contact")}>
             {lang === "en" ? "Get my free estimate" : "Devis gratuit"} <span className="arrow">↗</span>

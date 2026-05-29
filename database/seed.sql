@@ -63,6 +63,7 @@ values
       'en', 'Unlock the Full Potential of Your Garage',
       'fr', 'Révélez tout le potentiel de votre garage'
     ),
+
     'sub', jsonb_build_object(
       'en', 'Custom garage transformations in Orlando.',
       'fr', 'Transformations de garage sur-mesure à Orlando.'
@@ -70,6 +71,7 @@ values
     'primary_cta', jsonb_build_object('en', 'Get my free estimate', 'fr', 'Obtenir mon devis gratuit'),
     'secondary_cta', jsonb_build_object('en', 'See our work', 'fr', 'Voir nos réalisations')
   ), 10, true),
+
   ('home', 'hero_caption', jsonb_build_object(
     'label', jsonb_build_object('en', 'Featured project', 'fr', 'Projet phare'),
     'image', '',
@@ -80,6 +82,7 @@ values
   ('home', 'before_after', jsonb_build_object(
     'eyebrow', jsonb_build_object('en', 'The transformation', 'fr', 'La transformation'),
     'title', jsonb_build_object('en', 'From cluttered garage to dream garage. See the transformation!', 'fr', 'D''un garage encombré au garage de rêve. Découvrez la transformation !'),
+
     'before', jsonb_build_object('en', 'Boxes, tools, wasted square footage. No clear purpose.', 'fr', 'Cartons, outils, mètres carrés perdus. Aucun usage clair.'),
     'after', jsonb_build_object('en', 'A clean, planned, functional garage designed around your lifestyle.', 'fr', 'Un garage propre, pensé, fonctionnel — conçu autour de votre vie.'),
     'statement', jsonb_build_object(
@@ -135,6 +138,7 @@ values
       )
     )
   ), 30, true),
+
   ('projects', 'projects_page', jsonb_build_object(
     'eyebrow', jsonb_build_object('en', 'Selected work', 'fr', 'Sélection'),
     'title', jsonb_build_object('en', 'Our garages, redesigned.', 'fr', 'Nos garages, repensés.'),

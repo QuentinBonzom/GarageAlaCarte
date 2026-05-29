@@ -44,6 +44,7 @@ export function ContactPage({ lang, onNav }) {
           </Reveal>
           {C.sub && (
             <Reveal as="p" className="contact-v2-head__sub" delay={0.1} {...cmsAttr("contact_page", "sub")}>
+
               {text(C.sub, lang)}
             </Reveal>
           )}
@@ -78,6 +79,7 @@ export function ContactPage({ lang, onNav }) {
                     </div>
                     <div className="field">
                       <label {...cmsAttr("contact_page", "form.email")}>{C.form.email[lang]}</label>
+
                       <input type="email" value={form.email} onChange={(e) => setForm({...form, email: e.target.value})} required />
                     </div>
                   </div>
@@ -88,6 +90,7 @@ export function ContactPage({ lang, onNav }) {
                     </div>
                     <div className="field">
                       <label {...cmsAttr("contact_page", "form.service")}>{C.form.service[lang]}</label>
+
                       <select value={form.service} onChange={(e) => setForm({...form, service: e.target.value})}>
                         <option value="blueprint">Design Blueprint</option>
                         <option value="delivery">Design & Setup</option>
@@ -99,6 +102,7 @@ export function ContactPage({ lang, onNav }) {
                   </div>
                   <div className="field">
                     <label {...cmsAttr("contact_page", "form.message")}>{C.form.message[lang]}</label>
+
                     <textarea
                       value={form.message}
                       onChange={(e) => setForm({...form, message: e.target.value})}
@@ -110,11 +114,13 @@ export function ContactPage({ lang, onNav }) {
                     <input type="checkbox" checked={form.consent} onChange={(e) => setForm({...form, consent: e.target.checked})} required />
                     <span><span {...cmsAttr("contact_page", "form.consent")}>{C.form.consent[lang]}</span>{" "}
                       <a onClick={(e) => { e.preventDefault(); onNav("conditions"); }} style={{textDecoration: "underline", cursor: "pointer"}} {...cmsAttr("contact_page", "form.consent_link")}>{C.form.consent_link[lang]}</a>.
+
                     </span>
                   </label>
                   <div className="contact-form__submit">
                     <button type="submit" className="btn" disabled={!form.consent || submitting}>
                       {submitting ? (lang === "en" ? "Sending..." : "Envoi...") : <span {...cmsAttr("contact_page", "form.submit")}>{C.form.submit[lang]}</span>} <span className="arrow">↗</span>
+
                     </button>
                     <span className="contact-form__hint text-mono text-muted">
                       {lang === "en" ? "A real person replies — never a bot." : "Une vraie personne vous répond."}
@@ -206,6 +212,7 @@ export function ContactPage({ lang, onNav }) {
       {activeMember && (
         <TeamMemberModal member={activeMember} lang={lang} onClose={() => setActiveMember(null)} />
       )}
+
     </div>
   );
 };

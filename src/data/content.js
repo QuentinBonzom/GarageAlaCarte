@@ -29,6 +29,7 @@ export const CONTENT = {
       en: "Unlock the Full Potential of Your Garage",
       fr: "Révélez tout le potentiel de votre garage"
     },
+
     sub: {
       en: "Custom garage transformations in Orlando.",
       fr: "Transformations de garage sur-mesure à Orlando."
@@ -457,6 +458,7 @@ export const CONTENT = {
         }
       }
     ]
+
   },
 
   // ===== RÉALISATIONS =====

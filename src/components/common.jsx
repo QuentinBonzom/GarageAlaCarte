@@ -133,6 +133,7 @@ export function Footer({ onNav, lang }) {
               </>
             )}
           </div>
+
         </div>
         <div className="footer-v2__col">
           <h4>{lang==="en"?"Navigate":"Navigation"}</h4>
@@ -162,6 +163,7 @@ export function Footer({ onNav, lang }) {
 
       <div className="footer-v2__bottom">
         <span>© 2025 Garage à la Carte. All rights reserved.</span>
+
         <a href="https://webcodestudio.fr" target="_blank" rel="noreferrer noopener">
           Designed by WebCode Studio
         </a>
@@ -216,6 +218,7 @@ export function Reveal({ children, delay=0, as="div", style={}, className="", ..
   const ref = useReveal();
   const Tag = as;
   return <Tag ref={ref} className={`reveal ${className}`} style={{transitionDelay:`${delay}s`, ...style}} {...rest}>{children}</Tag>;
+
 };
 
 // ---------- Email capture popup ----------

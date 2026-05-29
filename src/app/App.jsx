@@ -28,6 +28,7 @@ const AdminPage = lazy(() => import("../pages/AdminPage"));
 
 const TWEAK_DEFAULTS = {
   accentColor: "#F1B395",
+
   density: 1,
   cardStyle: "soft",
 };

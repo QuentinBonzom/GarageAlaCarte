@@ -18,6 +18,7 @@ export function ProjectsPage({ lang, onNav }) {
     if (target) setActive(target);
   }, [projects]);
 
+
   return (
     <div className="page">
       <section className="projects-v2-head">
@@ -30,6 +31,7 @@ export function ProjectsPage({ lang, onNav }) {
           </Reveal>
           {C.sub && (
             <Reveal as="p" className="projects-v2-head__sub" delay={0.1} {...cmsAttr("projects_page", "sub")}>
+
               {text(C.sub, lang)}
             </Reveal>
           )}
@@ -111,6 +113,7 @@ function ProjectTile({ project, lang, index, featured, onClick }) {
 }
 
 function ProjectModal({ project, lang, onClose, onNav }) {
+
   const projectName = text(project.name, lang, lang === "en" ? "Untitled project" : "Projet sans titre");
   const tagline = text(project.tagline, lang, "");
   const service = text(project.service, lang, "");
@@ -188,6 +191,7 @@ function ProjectModal({ project, lang, onClose, onNav }) {
             </>
           )}
 
+
           <div className="project-v2-modal__hero-body">
             {service && <span className="project-v2-modal__service">{service}</span>}
             <h2 className="project-v2-modal__title">{projectName}</h2>
@@ -220,6 +224,7 @@ function ProjectModal({ project, lang, onClose, onNav }) {
               </ul>
             </div>
           )}
+
 
           <div className="project-v2-modal__footer">
             <button className="btn" onClick={() => { onClose(); onNav("contact"); }}>

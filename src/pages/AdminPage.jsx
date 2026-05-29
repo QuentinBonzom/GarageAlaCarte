@@ -174,6 +174,7 @@ const LIVE_SECTION_ORDER = {
   final_cta: 15,
   projects_page: 20,
   contact_page: 21,
+
 };
 
 function isLiveSection(sectionKey) {
@@ -215,6 +216,7 @@ const FIELD_LABELS = {
   video_url: "URL vidéo",
   featured_label: "Eyebrow projet phare",
   featured_title: "Titre projet phare",
+
 };
 
 // Ordre d'affichage des champs dans l'éditeur, de haut en bas, calqué sur la
@@ -291,6 +293,21 @@ const KNOWN_SECTION_DEFAULTS = {
     },
     items: [
       { image: "", name: { en: "", fr: "" }, tagline: { en: "", fr: "" } },
+    ],
+  },
+  testimonials_v2: {
+    eyebrow: { en: "Real homeowners, real stories", fr: "De vrais clients, de vraies histoires" },
+    title: { en: "Where Orlando homeowners fall in love with their garage.", fr: "Là où les propriétaires d'Orlando tombent amoureux de leur garage." },
+    items: [
+      { quote: { en: "", fr: "" }, name: "", city: "", rating: 5, avatar_image: "" },
+    ],
+  },
+  use_cases: {
+    eyebrow: { en: "Transformations", fr: "Transformations" },
+    title: { en: "Pick your room.", fr: "Choisissez votre pièce." },
+    sub: { en: "Four ways homeowners reclaim their garage.", fr: "Quatre façons de récupérer son garage." },
+    items: [
+      { image: "", name: { en: "", fr: "" }, tagline: { en: "", fr: "" }, bullets: { en: [], fr: [] } },
     ],
   },
 };
