@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { CONTENT } from "../data/content";
 import { routeToPath } from "../lib/seo";
+import { cmsAttr } from "../lib/cmsEdit";
 
 // ---------- Reveal on scroll ----------
 export function useReveal() {
@@ -43,16 +44,16 @@ export function Header({ route, onNav, lang, onLang }) {
         <nav className="header__nav">
           {links.map((l) => (
             <a key={l.id} href={routeToPath(l.id)} className={route === l.id ? "active" : ""}
-               onClick={(e)=>{e.preventDefault();onNav(l.id);}}>{l.label}</a>
+               onClick={(e)=>{e.preventDefault();onNav(l.id);}} {...cmsAttr("nav", `{lang}.${l.id}`)}>{l.label}</a>
           ))}
         </nav>
         <div className="header__right">
           <div className="lang-switch">
-            <button className={lang==="en"?"on":""} onClick={()=>onLang("en")}>EN</button>
-            <button className={lang==="fr"?"on":""} onClick={()=>onLang("fr")}>FR</button>
+            <button data-cms-allow className={lang==="en"?"on":""} onClick={()=>onLang("en")}>EN</button>
+            <button data-cms-allow className={lang==="fr"?"on":""} onClick={()=>onLang("fr")}>FR</button>
           </div>
           <button className="btn" onClick={()=>onNav("contact")}>
-            {lang==="en"?"Free estimate":"Devis gratuit"} <span className="arrow">↗</span>
+            <span {...cmsAttr("nav", "{lang}.cta")}>{t.cta || (lang==="en"?"Free estimate":"Devis gratuit")}</span> <span className="arrow">↗</span>
           </button>
         </div>
         <button
@@ -75,6 +76,7 @@ export function Header({ route, onNav, lang, onLang }) {
                   href={routeToPath(l.id)}
                   className={route === l.id ? "active" : ""}
                   onClick={(e)=>{e.preventDefault();go(l.id);}}
+                  {...cmsAttr("nav", `{lang}.${l.id}`)}
                 >
                   {l.label}
                 </a>
@@ -82,11 +84,11 @@ export function Header({ route, onNav, lang, onLang }) {
             </nav>
             <div className="header__mobile-actions">
               <div className="lang-switch">
-                <button className={lang==="en"?"on":""} onClick={()=>onLang("en")}>EN</button>
-                <button className={lang==="fr"?"on":""} onClick={()=>onLang("fr")}>FR</button>
+                <button data-cms-allow className={lang==="en"?"on":""} onClick={()=>onLang("en")}>EN</button>
+                <button data-cms-allow className={lang==="fr"?"on":""} onClick={()=>onLang("fr")}>FR</button>
               </div>
               <button className="btn" onClick={()=>go("contact")}>
-                {lang==="en"?"Free estimate":"Devis gratuit"} <span className="arrow">↗</span>
+                <span {...cmsAttr("nav", "{lang}.cta")}>{t.cta || (lang==="en"?"Free estimate":"Devis gratuit")}</span> <span className="arrow">↗</span>
               </button>
             </div>
           </div>
@@ -99,6 +101,10 @@ export function Header({ route, onNav, lang, onLang }) {
 // ---------- Footer ----------
 export function Footer({ onNav, lang }) {
   const t = CONTENT.nav[lang];
+  const c = CONTENT.contact || {};
+  const email = c.main_email || "hello@garagealacarte.com";
+  const phone = c.main_phone || "+1 (407) 555-0142";
+  const address = c.address?.[lang] || c.address?.en || "Orlando, FL · USA";
   return (
     <footer className="footer-v2">
       <div className="footer-v2__grid">
@@ -150,9 +156,9 @@ export function Footer({ onNav, lang }) {
         </div>
         <div className="footer-v2__col">
           <h4>{lang==="en"?"Contact":"Contact"}</h4>
-          <a href="mailto:hello@garagealacarte.com">hello@garagealacarte.com</a>
-          <a href="tel:+14075550142">+1 (407) 555-0142</a>
-          <div className="footer-v2__address">Orlando, FL · USA</div>
+          <a href={`mailto:${email}`}>{email}</a>
+          <a href={`tel:${phone.replace(/[^+\d]/g, "")}`}>{phone}</a>
+          <div className="footer-v2__address">{address}</div>
         </div>
         <div className="footer-v2__col">
           <h4>{lang==="en"?"Legal":"Mentions"}</h4>

@@ -237,7 +237,11 @@ serve(async (req) => {
 
   if (!resendRes.ok) {
     const text = await resendRes.text();
-    return new Response(JSON.stringify({ error: "Resend failed", details: text }), {
+    // Visible via `supabase functions logs send-welcome-email`. Cause la plus
+    // fréquente : domaine non vérifié sur Resend → l'envoi n'est autorisé que
+    // vers l'adresse du compte. Vérifiez un domaine et réglez FROM_EMAIL dessus.
+    console.error(`Resend error ${resendRes.status} (from=${FROM_EMAIL}, to=${email}):`, text);
+    return new Response(JSON.stringify({ error: "Resend failed", status: resendRes.status, details: text }), {
       status: 502,
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
     });

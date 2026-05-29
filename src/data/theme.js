@@ -107,19 +107,36 @@ export function expandThemeColors(colors) {
   return out;
 }
 
+// Échelle typographique : multiplicateurs par rôle (1 = taille d'origine),
+// appliqués via les variables CSS --fs-* qui enveloppent les font-size clés.
+export const DEFAULT_TEXT_SCALE = {
+  "--fs-title": 1,
+  "--fs-subtitle": 1,
+  "--fs-body": 1,
+  "--fs-eyebrow": 1,
+};
+
+export const TEXT_SCALE_FIELDS = [
+  { var: "--fs-title", label: "Titres", min: 0.7, max: 1.5, step: 0.05 },
+  { var: "--fs-subtitle", label: "Sous-titres / cartes", min: 0.7, max: 1.5, step: 0.05 },
+  { var: "--fs-body", label: "Corps de texte", min: 0.8, max: 1.4, step: 0.05 },
+  { var: "--fs-eyebrow", label: "Petits labels", min: 0.7, max: 1.6, step: 0.05 },
+];
+
 // Une valeur hex (#abc / #aabbcc) peut alimenter un <input type="color"> ;
 // les autres (rgba, hsl…) ne sont éditables qu'en texte.
 export function isHexColor(value) {
   return typeof value === "string" && /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(value.trim());
 }
 
-// Applique un mapping { "--var": "valeur" } sur la racine du document.
-export function applyThemeColors(colors) {
-  if (!colors || typeof colors !== "object") return;
+// Applique un mapping { "--var": valeur } sur la racine du document.
+// Accepte des chaînes (couleurs) comme des nombres (multiplicateurs de texte).
+export function applyThemeColors(vars) {
+  if (!vars || typeof vars !== "object") return;
   const root = document.documentElement;
-  for (const [name, value] of Object.entries(colors)) {
-    if (name.startsWith("--") && typeof value === "string" && value.trim()) {
-      root.style.setProperty(name, value);
-    }
+  for (const [name, raw] of Object.entries(vars)) {
+    if (!name.startsWith("--")) continue;
+    const value = typeof raw === "number" ? String(raw) : raw;
+    if (typeof value === "string" && value.trim()) root.style.setProperty(name, value);
   }
 }

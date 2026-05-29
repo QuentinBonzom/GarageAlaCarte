@@ -48,6 +48,14 @@
 
   --pad-x: clamp(20px, 4vw, 80px);
   --density: 1;
+
+  /* Multiplicateurs de taille de texte par rôle (réglables depuis l'admin ›
+     Apparence). 1 = taille d'origine. Ils enveloppent les font-size des classes
+     clés en calc(... * var(--fs-role)), ce qui préserve le responsive clamp(). */
+  --fs-title: 1;
+  --fs-subtitle: 1;
+  --fs-body: 1;
+  --fs-eyebrow: 1;
 }
 
 * { box-sizing: border-box; }
@@ -85,11 +93,11 @@ h1, h2, h3, h4 {
   margin: 0;
 }
 /* Legacy display classes still used by ServiceModal (.display-m) and EmailPopup (.display-s). */
-.display-m  { font-size: clamp(28px, 3.5vw, 48px); letter-spacing: -0.02em; line-height: 1.1; }
-.display-s  { font-size: clamp(22px, 2.6vw, 34px); letter-spacing: -0.015em; }
+.display-m  { font-size: calc((clamp(28px, 3.5vw, 48px)) * var(--fs-title)); letter-spacing: -0.02em; line-height: 1.1; }
+.display-s  { font-size: calc((clamp(22px, 2.6vw, 34px)) * var(--fs-title)); letter-spacing: -0.015em; }
 .italic { font-style: italic; }
 
-.lead { font-size: clamp(18px, 1.5vw, 22px); color: var(--ink-soft); max-width: 60ch; line-height: 1.5; }
+.lead { font-size: calc((clamp(18px, 1.5vw, 22px)) * var(--fs-body)); color: var(--ink-soft); max-width: 60ch; line-height: 1.5; }
 
 /* Layout */
 .section {
@@ -486,7 +494,7 @@ body[data-card="outline"] .card {
 .hero-v2__title {
   font-family: var(--serif);
   font-weight: 700;
-  font-size: clamp(44px, 8.5vw, 132px);
+  font-size: calc((clamp(44px, 8.5vw, 132px)) * var(--fs-title));
   line-height: 0.95;
   letter-spacing: -0.035em;
   margin: 0;
@@ -516,7 +524,7 @@ body[data-card="outline"] .card {
 .hero-v2__tagline {
   font-family: var(--serif);
   font-style: italic;
-  font-size: clamp(22px, 2.5vw, 34px);
+  font-size: calc((clamp(22px, 2.5vw, 34px)) * var(--fs-body));
   line-height: 1.15;
   font-weight: 400;
   letter-spacing: -0.02em;
@@ -527,7 +535,7 @@ body[data-card="outline"] .card {
 }
 .hero-v2__sub {
   font-family: var(--sans);
-  font-size: clamp(15px, 1.15vw, 19px);
+  font-size: calc((clamp(15px, 1.15vw, 19px)) * var(--fs-body));
   line-height: 1.55;
   color: rgba(247, 244, 238, 0.88);
   max-width: 56ch;
@@ -556,7 +564,7 @@ body[data-card="outline"] .card {
 }
 .hero-v2__locale {
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: calc((10px) * var(--fs-eyebrow));
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: rgba(247, 244, 238, 0.55);
@@ -608,7 +616,7 @@ body[data-card="outline"] .card {
 }
 .usecases__eyebrow {
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: calc((11px) * var(--fs-eyebrow));
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--terra-deep);
@@ -621,7 +629,7 @@ body[data-card="outline"] .card {
 .usecases__title {
   font-family: var(--serif);
   font-weight: 400;
-  font-size: clamp(34px, 5.5vw, 64px);
+  font-size: calc((clamp(34px, 5.5vw, 64px)) * var(--fs-title));
   letter-spacing: -0.025em;
   line-height: 1.02;
   color: var(--ink);
@@ -631,7 +639,7 @@ body[data-card="outline"] .card {
 }
 .usecases__sub {
   font-family: var(--sans);
-  font-size: clamp(16px, 1.2vw, 19px);
+  font-size: calc((clamp(16px, 1.2vw, 19px)) * var(--fs-body));
   line-height: 1.55;
   color: var(--muted);
   margin: 0;
@@ -730,7 +738,7 @@ body[data-card="outline"] .card {
 .usecase-card__name {
   font-family: var(--serif);
   font-weight: 400;
-  font-size: clamp(22px, 2vw, 28px);
+  font-size: calc((clamp(22px, 2vw, 28px)) * var(--fs-subtitle));
   letter-spacing: -0.02em;
   line-height: 1.1;
   color: var(--ink);
@@ -817,7 +825,7 @@ body[data-card="outline"] .card {
 }
 .ba-v2__eyebrow {
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: calc((11px) * var(--fs-eyebrow));
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--terra-soft);
@@ -829,7 +837,7 @@ body[data-card="outline"] .card {
 .ba-v2__title {
   font-family: var(--serif);
   font-weight: 400;
-  font-size: clamp(34px, 5.5vw, 64px);
+  font-size: calc((clamp(34px, 5.5vw, 64px)) * var(--fs-title));
   letter-spacing: -0.025em;
   line-height: 1.02;
   color: #fff;
@@ -874,7 +882,7 @@ body[data-card="outline"] .card {
   max-width: 64ch;
   text-align: center;
   font-family: var(--sans);
-  font-size: clamp(17px, 1.5vw, 23px);
+  font-size: calc((clamp(17px, 1.5vw, 23px)) * var(--fs-body));
   line-height: 1.6;
   font-weight: 400;
   color: rgba(247, 244, 238, 0.92);
@@ -895,7 +903,7 @@ body[data-card="outline"] .card {
 }
 .svc-v2__eyebrow {
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: calc((11px) * var(--fs-eyebrow));
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--terra-deep);
@@ -907,7 +915,7 @@ body[data-card="outline"] .card {
 .svc-v2__title {
   font-family: var(--serif);
   font-weight: 400;
-  font-size: clamp(34px, 5.5vw, 64px);
+  font-size: calc((clamp(34px, 5.5vw, 64px)) * var(--fs-title));
   letter-spacing: -0.025em;
   line-height: 1.02;
   color: var(--ink);
@@ -917,7 +925,7 @@ body[data-card="outline"] .card {
 }
 .svc-v2__sub {
   font-family: var(--sans);
-  font-size: clamp(16px, 1.2vw, 19px);
+  font-size: calc((clamp(16px, 1.2vw, 19px)) * var(--fs-body));
   line-height: 1.55;
   color: var(--muted);
   margin: 0;
@@ -1002,7 +1010,7 @@ body[data-card="outline"] .card {
 .svc-card__title {
   font-family: var(--serif);
   font-weight: 400;
-  font-size: clamp(22px, 2vw, 28px);
+  font-size: calc((clamp(22px, 2vw, 28px)) * var(--fs-subtitle));
   letter-spacing: -0.02em;
   line-height: 1.1;
   color: inherit;
@@ -1081,7 +1089,7 @@ body[data-card="outline"] .card {
 .fcta-v2__title {
   font-family: var(--serif);
   font-weight: 400;
-  font-size: clamp(36px, 6vw, 72px);
+  font-size: calc((clamp(36px, 6vw, 72px)) * var(--fs-title));
   letter-spacing: -0.03em;
   line-height: 1.02;
   color: #fff;
@@ -1127,7 +1135,7 @@ body[data-card="outline"] .card {
 }
 .contact-v2-head__eyebrow {
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: calc((11px) * var(--fs-eyebrow));
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--terra-deep);
@@ -1139,7 +1147,7 @@ body[data-card="outline"] .card {
 .contact-v2-head__title {
   font-family: var(--serif);
   font-weight: 400;
-  font-size: clamp(40px, 7vw, 88px);
+  font-size: calc((clamp(40px, 7vw, 88px)) * var(--fs-title));
   letter-spacing: -0.03em;
   line-height: 1.0;
   color: var(--ink);
@@ -1149,7 +1157,7 @@ body[data-card="outline"] .card {
 }
 .contact-v2-head__sub {
   font-family: var(--sans);
-  font-size: clamp(16px, 1.3vw, 19px);
+  font-size: calc((clamp(16px, 1.3vw, 19px)) * var(--fs-body));
   line-height: 1.55;
   color: var(--muted);
   margin: 0;
@@ -1170,7 +1178,7 @@ body[data-card="outline"] .card {
 .contact-v2-form-title {
   font-family: var(--serif);
   font-weight: 400;
-  font-size: clamp(22px, 2.4vw, 30px);
+  font-size: calc((clamp(22px, 2.4vw, 30px)) * var(--fs-subtitle));
   letter-spacing: -0.02em;
   line-height: 1.1;
   color: var(--ink);
@@ -1624,7 +1632,7 @@ body[data-card="outline"] .card {
 }
 .projects-v2-head__eyebrow {
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: calc((11px) * var(--fs-eyebrow));
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--terra-deep);
@@ -1636,7 +1644,7 @@ body[data-card="outline"] .card {
 .projects-v2-head__title {
   font-family: var(--serif);
   font-weight: 400;
-  font-size: clamp(40px, 7vw, 88px);
+  font-size: calc((clamp(40px, 7vw, 88px)) * var(--fs-title));
   letter-spacing: -0.03em;
   line-height: 1.0;
   color: var(--ink);
@@ -1646,7 +1654,7 @@ body[data-card="outline"] .card {
 }
 .projects-v2-head__sub {
   font-family: var(--sans);
-  font-size: clamp(16px, 1.3vw, 19px);
+  font-size: calc((clamp(16px, 1.3vw, 19px)) * var(--fs-body));
   line-height: 1.55;
   color: var(--muted);
   margin: 0;
@@ -1878,7 +1886,7 @@ body[data-card="outline"] .card {
 .project-v2-modal__lead {
   margin: 0;
   font-family: var(--sans);
-  font-size: clamp(16px, 1.3vw, 19px);
+  font-size: calc((clamp(16px, 1.3vw, 19px)) * var(--fs-body));
   line-height: 1.6;
   color: var(--ink-soft);
 }
@@ -2191,7 +2199,7 @@ body[data-card="outline"] .card {
 }
 .hero-v2__sub {
   font-family: var(--sans);
-  font-size: clamp(15px, 1.15vw, 19px);
+  font-size: calc((clamp(15px, 1.15vw, 19px)) * var(--fs-body));
   line-height: 1.55;
   color: rgba(247, 244, 238, 0.88);
   max-width: 56ch;
@@ -2220,7 +2228,7 @@ body[data-card="outline"] .card {
 }
 .hero-v2__locale {
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: calc((10px) * var(--fs-eyebrow));
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: rgba(247, 244, 238, 0.55);
@@ -2272,7 +2280,7 @@ body[data-card="outline"] .card {
 }
 .usecases__eyebrow {
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: calc((11px) * var(--fs-eyebrow));
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--terra-deep);
@@ -2285,7 +2293,7 @@ body[data-card="outline"] .card {
 .usecases__title {
   font-family: var(--serif);
   font-weight: 400;
-  font-size: clamp(34px, 5.5vw, 64px);
+  font-size: calc((clamp(34px, 5.5vw, 64px)) * var(--fs-title));
   letter-spacing: -0.025em;
   line-height: 1.02;
   color: var(--ink);
@@ -2295,7 +2303,7 @@ body[data-card="outline"] .card {
 }
 .usecases__sub {
   font-family: var(--sans);
-  font-size: clamp(16px, 1.2vw, 19px);
+  font-size: calc((clamp(16px, 1.2vw, 19px)) * var(--fs-body));
   line-height: 1.55;
   color: var(--muted);
   margin: 0;
@@ -2364,7 +2372,7 @@ body[data-card="outline"] .card {
 .usecase-card__name {
   font-family: var(--serif);
   font-weight: 400;
-  font-size: clamp(22px, 2vw, 28px);
+  font-size: calc((clamp(22px, 2vw, 28px)) * var(--fs-subtitle));
   letter-spacing: -0.02em;
   line-height: 1.1;
   color: var(--ink);
@@ -2451,7 +2459,7 @@ body[data-card="outline"] .card {
 }
 .ba-v2__eyebrow {
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: calc((11px) * var(--fs-eyebrow));
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--terra-soft);
@@ -2463,7 +2471,7 @@ body[data-card="outline"] .card {
 .ba-v2__title {
   font-family: var(--serif);
   font-weight: 400;
-  font-size: clamp(34px, 5.5vw, 64px);
+  font-size: calc((clamp(34px, 5.5vw, 64px)) * var(--fs-title));
   letter-spacing: -0.025em;
   line-height: 1.02;
   color: #fff;
@@ -2517,7 +2525,7 @@ body[data-card="outline"] .card {
 }
 .svc-v2__eyebrow {
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: calc((11px) * var(--fs-eyebrow));
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--terra-deep);
@@ -2529,7 +2537,7 @@ body[data-card="outline"] .card {
 .svc-v2__title {
   font-family: var(--serif);
   font-weight: 400;
-  font-size: clamp(34px, 5.5vw, 64px);
+  font-size: calc((clamp(34px, 5.5vw, 64px)) * var(--fs-title));
   letter-spacing: -0.025em;
   line-height: 1.02;
   color: var(--ink);
@@ -2539,7 +2547,7 @@ body[data-card="outline"] .card {
 }
 .svc-v2__sub {
   font-family: var(--sans);
-  font-size: clamp(16px, 1.2vw, 19px);
+  font-size: calc((clamp(16px, 1.2vw, 19px)) * var(--fs-body));
   line-height: 1.55;
   color: var(--muted);
   margin: 0;
@@ -2616,7 +2624,7 @@ body[data-card="outline"] .card {
 .svc-card__title {
   font-family: var(--serif);
   font-weight: 400;
-  font-size: clamp(22px, 2vw, 28px);
+  font-size: calc((clamp(22px, 2vw, 28px)) * var(--fs-subtitle));
   letter-spacing: -0.02em;
   line-height: 1.1;
   color: inherit;
@@ -2787,7 +2795,7 @@ body[data-card="outline"] .card {
 .fcta-v2__title {
   font-family: var(--serif);
   font-weight: 400;
-  font-size: clamp(36px, 6vw, 72px);
+  font-size: calc((clamp(36px, 6vw, 72px)) * var(--fs-title));
   letter-spacing: -0.03em;
   line-height: 1.02;
   color: #fff;
@@ -2833,7 +2841,7 @@ body[data-card="outline"] .card {
 }
 .contact-v2-head__eyebrow {
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: calc((11px) * var(--fs-eyebrow));
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--terra-deep);
@@ -2845,7 +2853,7 @@ body[data-card="outline"] .card {
 .contact-v2-head__title {
   font-family: var(--serif);
   font-weight: 400;
-  font-size: clamp(40px, 7vw, 88px);
+  font-size: calc((clamp(40px, 7vw, 88px)) * var(--fs-title));
   letter-spacing: -0.03em;
   line-height: 1.0;
   color: var(--ink);
@@ -2855,7 +2863,7 @@ body[data-card="outline"] .card {
 }
 .contact-v2-head__sub {
   font-family: var(--sans);
-  font-size: clamp(16px, 1.3vw, 19px);
+  font-size: calc((clamp(16px, 1.3vw, 19px)) * var(--fs-body));
   line-height: 1.55;
   color: var(--muted);
   margin: 0;
@@ -2876,7 +2884,7 @@ body[data-card="outline"] .card {
 .contact-v2-form-title {
   font-family: var(--serif);
   font-weight: 400;
-  font-size: clamp(22px, 2.4vw, 30px);
+  font-size: calc((clamp(22px, 2.4vw, 30px)) * var(--fs-subtitle));
   letter-spacing: -0.02em;
   line-height: 1.1;
   color: var(--ink);
@@ -3123,7 +3131,7 @@ body[data-card="outline"] .card {
 }
 .projects-v2-head__eyebrow {
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: calc((11px) * var(--fs-eyebrow));
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--terra-deep);
@@ -3135,7 +3143,7 @@ body[data-card="outline"] .card {
 .projects-v2-head__title {
   font-family: var(--serif);
   font-weight: 400;
-  font-size: clamp(40px, 7vw, 88px);
+  font-size: calc((clamp(40px, 7vw, 88px)) * var(--fs-title));
   letter-spacing: -0.03em;
   line-height: 1.0;
   color: var(--ink);
@@ -3145,7 +3153,7 @@ body[data-card="outline"] .card {
 }
 .projects-v2-head__sub {
   font-family: var(--sans);
-  font-size: clamp(16px, 1.3vw, 19px);
+  font-size: calc((clamp(16px, 1.3vw, 19px)) * var(--fs-body));
   line-height: 1.55;
   color: var(--muted);
   margin: 0;
@@ -3370,7 +3378,7 @@ body[data-card="outline"] .card {
 .project-v2-modal__lead {
   margin: 0;
   font-family: var(--sans);
-  font-size: clamp(16px, 1.3vw, 19px);
+  font-size: calc((clamp(16px, 1.3vw, 19px)) * var(--fs-body));
   line-height: 1.6;
   color: var(--ink-soft);
 }
@@ -3674,9 +3682,9 @@ body[data-card="outline"] .card {
   .contact-info-card__contact { font-size: 20px !important; }
 
   /* Tighter type & spacing for legacy display classes still in use (ServiceModal, EmailPopup) */
-  .display-m  { font-size: clamp(26px, 6.4vw, 36px); }
-  .display-s  { font-size: clamp(22px, 5.6vw, 28px); }
-  .lead { font-size: 16px; line-height: 1.55; }
+  .display-m  { font-size: calc((clamp(26px, 6.4vw, 36px)) * var(--fs-title)); }
+  .display-s  { font-size: calc((clamp(22px, 5.6vw, 28px)) * var(--fs-title)); }
+  .lead { font-size: calc((16px) * var(--fs-body)); line-height: 1.55; }
 
   /* Buttons more thumb-friendly but smaller footprint */
   .btn { padding: 14px 20px; font-size: 13px; gap: 8px; }
@@ -3769,7 +3777,7 @@ body[data-card="outline"] .card {
 }
 
 @media (max-width: 480px) {
-  .display-xl { font-size: clamp(34px, 13vw, 56px); }
+  .display-xl { font-size: calc((clamp(34px, 13vw, 56px)) * var(--fs-title)); }
   .header__logo { font-size: 16px; }
   .header__logo .mark { width: 22px; height: 22px; }
   .header__logo--badge img { height: 64px; }

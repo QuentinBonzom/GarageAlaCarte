@@ -12,8 +12,9 @@ import { hydrateContentFromSupabase } from "../data/contentRepository";
 import {
   THEME_COLOR_GROUPS,
   DEFAULT_THEME_COLORS,
+  DEFAULT_TEXT_SCALE,
+  TEXT_SCALE_FIELDS,
   isHexColor,
-  applyThemeColors,
   expandThemeColors,
 } from "../data/theme";
 import { setLocalizedAtPath } from "../lib/cmsEdit";
@@ -73,6 +74,7 @@ import {
   MessageSquare,
   Pencil,
   Phone,
+  Palette,
   Plus,
   RefreshCw,
   Scale,
@@ -1140,6 +1142,7 @@ function AdminPageInner({ onNav }) {
           <Dashboard data={data} loadingData={loadingData} onTab={requestTab} />
         )}
         {tab === "pages" && <PagesAdmin data={data} onRefresh={refresh} />}
+        {tab === "colors" && <ColorsAdmin data={data} onRefresh={refresh} />}
         {tab === "projects" && <ProjectsAdmin data={data} onRefresh={refresh} />}
         {tab === "services" && (
           <RecordCollectionAdmin
@@ -1194,6 +1197,7 @@ const NAV_GROUPS = [
     title: "Contenu",
     items: [
       { id: "pages", label: "Pages", icon: FileText },
+      { id: "colors", label: "Apparence", icon: Palette },
       { id: "projects", label: "Projets", icon: FolderKanban },
       { id: "services", label: "Services", icon: Wrench },
       { id: "team", label: "Équipe", icon: Users },
@@ -2932,7 +2936,8 @@ function PagesAdmin({ data, onRefresh }) {
         if (!section) return;
 
         if (msg.type === "cms_inline_focus") {
-          setPageKey(section.page_key);
+          // On ne change pas de page (le nav/footer sont présents partout —
+          // basculer rechargerait l'aperçu en pleine édition).
           setActiveId(section.id);
           return;
         }
@@ -6240,7 +6245,60 @@ function LegalAdmin({ data, onRefresh }) {
   );
 }
 
-function ThemeColorsEditor({ data, onRefresh }) {
+function ColorField({ label, value, onChange }) {
+  const hex = isHexColor(value);
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "10px",
+        border: "1px solid var(--line)",
+        borderRadius: "10px",
+        padding: "8px 10px",
+        background: "var(--paper)",
+      }}
+    >
+      <input
+        type="color"
+        value={hex ? value : "#000000"}
+        disabled={!hex}
+        onChange={(e) => onChange(e.target.value)}
+        title={hex ? "Choisir une couleur" : "Valeur non hexadécimale — éditez le texte"}
+        style={{
+          width: "34px",
+          height: "34px",
+          flexShrink: 0,
+          border: "1px solid var(--line)",
+          borderRadius: "8px",
+          background: "transparent",
+          cursor: hex ? "pointer" : "not-allowed",
+          padding: 0,
+        }}
+      />
+      <div style={{ minWidth: 0, flex: 1 }}>
+        <div style={{ fontSize: "12px", color: "var(--ink)", marginBottom: "3px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+          {label}
+        </div>
+        <input
+          className="admin-input"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          spellCheck={false}
+          style={{ fontFamily: "var(--mono)", fontSize: "12px", padding: "5px 8px", width: "100%" }}
+        />
+      </div>
+    </div>
+  );
+}
+
+const COLOR_PREVIEW_PAGES = [
+  { key: "home", label: "Accueil" },
+  { key: "projects", label: "Réalisations" },
+  { key: "contact", label: "Contact" },
+];
+
+function ColorsAdmin({ data, onRefresh }) {
   const { push: pushToast } = useToast();
   const themeSetting = useMemo(
     () => data.siteSettings.find((s) => s.key === "theme"),
@@ -6254,19 +6312,75 @@ function ThemeColorsEditor({ data, onRefresh }) {
     }
     return out;
   }, [themeSetting]);
+  const savedText = useMemo(() => {
+    const stored = themeSetting?.value?.text || {};
+    const out = {};
+    for (const key of Object.keys(DEFAULT_TEXT_SCALE)) {
+      out[key] = stored[key] ?? DEFAULT_TEXT_SCALE[key];
+    }
+    return out;
+  }, [themeSetting]);
 
-  const [draft, setDraft] = useState(savedColors);
+  const labelByVar = useMemo(() => {
+    const map = {};
+    for (const group of THEME_COLOR_GROUPS) for (const f of group.fields) map[f.var] = f.label;
+    return map;
+  }, []);
+
+  const [colorDraft, setColorDraft] = useState(savedColors);
+  const [textDraft, setTextDraft] = useState(savedText);
   const [saving, setSaving] = useState(false);
-  useEffect(() => {
-    setDraft(savedColors);
-  }, [savedColors]);
+  const [page, setPage] = useState("home");
+  const [selection, setSelection] = useState(null);
+  const iframeRef = useRef(null);
+
+  useEffect(() => { setColorDraft(savedColors); }, [savedColors]);
+  useEffect(() => { setTextDraft(savedText); }, [savedText]);
+
+  // Refs pour lire les valeurs courantes depuis les handlers enregistrés une fois.
+  const colorRef = useRef(colorDraft);
+  colorRef.current = colorDraft;
+  const textRef = useRef(textDraft);
+  textRef.current = textDraft;
 
   const isDirty = useMemo(
-    () => Object.keys(DEFAULT_THEME_COLORS).some((key) => draft[key] !== savedColors[key]),
-    [draft, savedColors],
+    () =>
+      Object.keys(DEFAULT_THEME_COLORS).some((k) => colorDraft[k] !== savedColors[k]) ||
+      Object.keys(DEFAULT_TEXT_SCALE).some((k) => textDraft[k] !== savedText[k]),
+    [colorDraft, textDraft, savedColors, savedText],
   );
 
-  const setColor = (name, value) => setDraft((prev) => ({ ...prev, [name]: value }));
+  // Prévient avant de quitter l'onglet / la page avec des réglages non enregistrés.
+  const guard = useNavGuard();
+  useEffect(() => guard.register(() => isDirty), [guard, isDirty]);
+
+  const pushPreview = useCallback(() => {
+    iframeRef.current?.contentWindow?.postMessage(
+      { type: "cms_apply_vars", vars: { ...expandThemeColors(colorRef.current), ...textRef.current } },
+      window.location.origin,
+    );
+  }, []);
+
+  // Aperçu live à chaque changement de couleur ou de taille.
+  useEffect(() => { pushPreview(); }, [colorDraft, textDraft, pushPreview]);
+
+  const setColor = (name, value) => setColorDraft((prev) => ({ ...prev, [name]: value }));
+  const setText = (name, value) => setTextDraft((prev) => ({ ...prev, [name]: value }));
+
+  // Clic sur un élément de l'aperçu + signal « prêt » (renvoie l'aperçu courant).
+  useEffect(() => {
+    const handler = (event) => {
+      if (event.origin !== window.location.origin) return;
+      const type = event.data?.type;
+      if (type === "cms_color_pick") {
+        setSelection({ label: event.data.label, matches: event.data.matches || [] });
+      } else if (type === "cms_color_ready") {
+        pushPreview();
+      }
+    };
+    window.addEventListener("message", handler);
+    return () => window.removeEventListener("message", handler);
+  }, [pushPreview]);
 
   const save = async () => {
     if (!themeSetting) {
@@ -6275,12 +6389,10 @@ function ThemeColorsEditor({ data, onRefresh }) {
     }
     setSaving(true);
     try {
-      const colors = expandThemeColors(draft);
-      const nextValue = { ...(themeSetting.value || {}), colors };
-      await updateSiteSetting("theme", { value: nextValue });
+      const colors = expandThemeColors(colorDraft);
+      await updateSiteSetting("theme", { value: { ...(themeSetting.value || {}), colors, text: textDraft } });
       await onRefresh();
-      applyThemeColors(colors); // aperçu immédiat sur l'admin
-      pushToast({ type: "success", title: "Couleurs enregistrées" });
+      pushToast({ type: "success", title: "Apparence enregistrée" });
     } catch (err) {
       pushToast({ type: "error", title: "Échec de l'enregistrement", message: err.message });
     } finally {
@@ -6288,91 +6400,137 @@ function ThemeColorsEditor({ data, onRefresh }) {
     }
   };
 
-  const resetToDefaults = () => setDraft({ ...DEFAULT_THEME_COLORS });
+  const resetToDefaults = () => {
+    setColorDraft({ ...DEFAULT_THEME_COLORS });
+    setTextDraft({ ...DEFAULT_TEXT_SCALE });
+  };
 
   return (
-    <Panel title="Couleurs du site">
-      <p style={{ color: "var(--muted)", fontSize: "13px", marginTop: 0, marginBottom: "16px" }}>
-        Modifie la palette appliquée sur le site public. Les changements prennent effet après
-        enregistrement (rechargement de la page côté visiteur). Attention aux contrastes :
-        un texte trop clair sur un fond clair devient illisible.
-      </p>
-
-      <div style={{ display: "grid", gap: "24px" }}>
-        {THEME_COLOR_GROUPS.map((group) => (
-          <div key={group.label}>
-            <FieldLabel label={group.label} large />
-            <div
+    <div>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "20px", flexWrap: "wrap", gap: "12px" }}>
+        <div>
+          <h2 style={{ fontFamily: "var(--serif)", fontSize: "30px", margin: 0, letterSpacing: "-0.025em" }}>Apparence</h2>
+          <p style={{ color: "var(--muted)", fontSize: "13px", marginTop: "4px" }}>
+            Cliquez un élément dans l'aperçu pour cibler ses couleurs, ou réglez la palette et la taille des textes.
+          </p>
+        </div>
+        <div style={{ display: "flex", gap: "4px", padding: "4px", border: "1px solid var(--line)", borderRadius: "100px" }}>
+          {COLOR_PREVIEW_PAGES.map((p) => (
+            <button
+              key={p.key}
+              onClick={() => setPage(p.key)}
               style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-                gap: "12px",
-                marginTop: "8px",
+                padding: "6px 14px",
+                borderRadius: "100px",
+                border: 0,
+                cursor: "pointer",
+                fontFamily: "var(--mono)",
+                fontSize: "11px",
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+                background: page === p.key ? "var(--ink)" : "transparent",
+                color: page === p.key ? "var(--cream)" : "var(--muted)",
               }}
             >
-              {group.fields.map((field) => {
-                const value = draft[field.var] ?? "";
-                const hex = isHexColor(value);
-                return (
-                  <div
-                    key={field.var}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "10px",
-                      border: "1px solid var(--line)",
-                      borderRadius: "10px",
-                      padding: "8px 10px",
-                      background: "var(--paper)",
-                    }}
-                  >
-                    <input
-                      type="color"
-                      value={hex ? value : "#000000"}
-                      disabled={!hex}
-                      onChange={(e) => setColor(field.var, e.target.value)}
-                      title={hex ? "Choisir une couleur" : "Valeur non hexadécimale — éditez le texte"}
-                      style={{
-                        width: "34px",
-                        height: "34px",
-                        flexShrink: 0,
-                        border: "1px solid var(--line)",
-                        borderRadius: "8px",
-                        background: "transparent",
-                        cursor: hex ? "pointer" : "not-allowed",
-                        padding: 0,
-                      }}
-                    />
-                    <div style={{ minWidth: 0, flex: 1 }}>
-                      <div style={{ fontSize: "12px", color: "var(--ink)", marginBottom: "3px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                        {field.label}
-                      </div>
-                      <input
-                        className="admin-input"
-                        value={value}
-                        onChange={(e) => setColor(field.var, e.target.value)}
-                        spellCheck={false}
-                        style={{ fontFamily: "var(--mono)", fontSize: "12px", padding: "5px 8px", width: "100%" }}
-                      />
+              {p.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ display: "flex", gap: "16px", height: "calc(100vh - 220px)", minHeight: "560px" }}>
+        <div style={{ width: "340px", flexShrink: 0, overflowY: "auto", display: "flex", flexDirection: "column", gap: "12px" }}>
+          {selection && (
+            <Panel title="Élément sélectionné">
+              <div style={{ fontFamily: "var(--mono)", fontSize: "11px", color: "var(--muted)", marginBottom: "10px" }}>{selection.label}</div>
+              {selection.matches.length ? (
+                <div style={{ display: "grid", gap: "12px" }}>
+                  {selection.matches.map((m) => (
+                    <div key={m.var}>
+                      <FieldLabel label={`${m.label} · ${labelByVar[m.var] || m.var}`} />
+                      <ColorField label={m.var} value={colorDraft[m.var] ?? ""} onChange={(v) => setColor(m.var, v)} />
                     </div>
+                  ))}
+                </div>
+              ) : (
+                <p style={{ color: "var(--muted)", fontSize: "13px", margin: 0, lineHeight: 1.5 }}>
+                  Aucune variable de thème détectée pour cet élément (couleur peut-être codée en dur). Utilisez la palette ci-dessous.
+                </p>
+              )}
+            </Panel>
+          )}
+
+          <Panel title="Tailles de texte">
+            <p style={{ color: "var(--muted)", fontSize: "12px", marginTop: 0, marginBottom: "14px", lineHeight: 1.5 }}>
+              Agrandit ou réduit le texte par rôle (1× = taille d'origine).
+            </p>
+            <div style={{ display: "grid", gap: "16px" }}>
+              {TEXT_SCALE_FIELDS.map((f) => {
+                const value = Number(textDraft[f.var] ?? 1);
+                return (
+                  <div key={f.var}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "4px" }}>
+                      <FieldLabel label={f.label} />
+                      <span className="text-mono" style={{ fontSize: "12px", color: "var(--ink)" }}>{value.toFixed(2)}×</span>
+                    </div>
+                    <input
+                      type="range"
+                      min={f.min}
+                      max={f.max}
+                      step={f.step}
+                      value={value}
+                      onChange={(e) => setText(f.var, Number(e.target.value))}
+                      style={{ width: "100%", accentColor: "var(--accent)" }}
+                    />
                   </div>
                 );
               })}
             </div>
-          </div>
-        ))}
-      </div>
+          </Panel>
 
-      <div style={{ display: "flex", gap: "10px", alignItems: "center", marginTop: "20px", flexWrap: "wrap" }}>
-        <button className="btn" onClick={save} disabled={saving || !isDirty}>
-          {saving ? "Enregistrement…" : "Enregistrer les couleurs"}
-        </button>
-        <button className="btn btn-ghost" onClick={resetToDefaults} disabled={saving} style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
-          <RefreshCw size={14} /> Réinitialiser (palette par défaut)
-        </button>
-        {isDirty && <span style={{ color: "var(--accent-deep)", fontSize: "12px" }}>Modifications non enregistrées</span>}
+          <Panel title="Palette complète">
+            <div style={{ display: "grid", gap: "18px" }}>
+              {THEME_COLOR_GROUPS.map((group) => (
+                <div key={group.label}>
+                  <FieldLabel label={group.label} large />
+                  <div style={{ display: "grid", gap: "8px", marginTop: "8px" }}>
+                    {group.fields.map((f) => (
+                      <ColorField key={f.var} label={f.label} value={colorDraft[f.var] ?? ""} onChange={(v) => setColor(f.var, v)} />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Panel>
+
+          <div style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap", position: "sticky", bottom: 0, background: "var(--cream)", paddingTop: "10px" }}>
+            <button className="btn" onClick={save} disabled={saving || !isDirty}>
+              {saving ? "Enregistrement…" : "Enregistrer"}
+            </button>
+            <button className="btn btn-ghost" onClick={resetToDefaults} disabled={saving} style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+              <RefreshCw size={14} /> Réinitialiser
+            </button>
+            {isDirty && <span style={{ color: "var(--accent-deep)", fontSize: "12px" }}>Non enregistré</span>}
+          </div>
+        </div>
+
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
+          <div style={{ fontSize: "11px", fontFamily: "var(--mono)", letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--muted)", marginBottom: "8px", flexShrink: 0 }}>
+            Aperçu — cliquez un élément pour modifier ses couleurs
+          </div>
+          <div style={{ flex: 1, borderRadius: "14px", overflow: "hidden", border: "1px solid var(--line)", background: "var(--cream-deep)" }}>
+            <iframe
+              ref={iframeRef}
+              key={page}
+              src={`/?cms=colors#${page}`}
+              title="Aperçu apparence"
+              onLoad={() => pushPreview()}
+              style={{ width: "100%", height: "100%", border: 0 }}
+            />
+          </div>
+        </div>
       </div>
-    </Panel>
+    </div>
   );
 }
 
@@ -6381,7 +6539,6 @@ function SettingsAdmin({ data, onRefresh }) {
     <div>
       <PageHead title="Réglages" sub="Coordonnées de contact et paramètres généraux affichés sur le site public" />
       <div style={{ display: "grid", gap: "20px", marginTop: "24px" }}>
-        <ThemeColorsEditor data={data} onRefresh={onRefresh} />
         <RecordCollectionAdmin
           title="Coordonnées de contact"
           sub="Email, téléphone et adresse affichés dans le pied de page et sur la page Contact. Sélectionnez une ligne pour la modifier."

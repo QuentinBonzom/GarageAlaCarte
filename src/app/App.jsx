@@ -10,7 +10,7 @@ import {
 } from "../data/contentRepository";
 import { CONTENT } from "../data/content";
 import { applyThemeColors, expandThemeColors } from "../data/theme";
-import { isCmsEditMode, enableCmsInlineEdit } from "../lib/cmsEdit";
+import { isCmsEditMode, enableCmsInlineEdit, isCmsColorMode, enableCmsColorPick } from "../lib/cmsEdit";
 import { applyPageSeo, routeFromLocation, routeToPath } from "../lib/seo";
 import {
   TweakColor,
@@ -71,11 +71,19 @@ export function App() {
   // Appliquées après l'hydratation Supabase, elles écrasent les valeurs par
   // défaut de :root et l'accent du panneau Tweaks (dev only).
   useEffect(() => {
-    applyThemeColors(expandThemeColors(CONTENT.theme?.colors));
+    const theme = CONTENT.theme;
+    applyThemeColors(expandThemeColors(theme?.colors));
+    applyThemeColors(theme?.text); // multiplicateurs de taille de texte (--fs-*)
   }, [contentVersion]);
 
-  // Édition in-context : uniquement dans l'aperçu de l'admin (iframe + ?cms=edit).
+  // Aperçus de l'admin (iframe) :
+  //  - ?cms=colors → sélection de couleurs au clic ;
+  //  - ?cms=edit   → édition de texte in-context.
   useEffect(() => {
+    if (isCmsColorMode()) {
+      enableCmsColorPick();
+      return undefined;
+    }
     if (!isCmsEditMode()) return undefined;
     enableCmsInlineEdit();
     const onChanged = () => setContentVersion((version) => version + 1);
@@ -109,6 +117,9 @@ export function App() {
 
   useEffect(() => {
     const handleAdminMessage = (event) => {
+      // N'accepter que les messages de l'admin (même origine) — empêche un site
+      // tiers qui intégrerait la page en iframe d'injecter styles/rechargements.
+      if (event.origin !== window.location.origin) return;
       const type = event.data?.type;
       if (type === "admin_scroll_to") {
         const el = document.getElementById(event.data.sectionKey);
@@ -119,6 +130,9 @@ export function App() {
         hydrateContentFromSupabase()
           .then(() => setContentVersion((version) => version + 1))
           .catch(() => {});
+      } else if (type === "cms_apply_vars") {
+        // Aperçu live (onglet Apparence) : couleurs + tailles de texte, sans persistance.
+        applyThemeColors(event.data.vars);
       }
     };
     window.addEventListener("message", handleAdminMessage);

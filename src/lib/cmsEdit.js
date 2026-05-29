@@ -7,10 +7,12 @@
 //   2. postMessage « cms_inline_edit » vers l'admin parent, qui persiste en base.
 
 import { CONTENT } from "../data/content";
+import { THEME_COLOR_GROUPS } from "../data/theme";
 
 // Clé de section CMS (en base) → clé correspondante dans l'objet CONTENT rendu.
 // Doit rester cohérent avec mergeCmsSections() dans contentRepository.js.
 export const SECTION_TO_CONTENT_KEY = {
+  nav: "nav",
   hero: "hero",
   hero_caption: "hero_caption",
   use_cases: "use_cases",
@@ -62,8 +64,12 @@ export function parseCmsValue(fieldType, value) {
 // Écrit une valeur localisée au bout d'un chemin (ex. "title", "form.name",
 // "items.2.name"), de façon immuable : on clone chaque niveau traversé, on
 // préserve les frères et l'autre langue. Les segments numériques = index de tableau.
+// Le chemin peut contenir le jeton {lang} (ex. nav en « langue d'abord » :
+// "{lang}.home" → content.en.home = valeur simple). Sans jeton, la feuille est
+// un objet localisé et on écrit content[...][lang].
 export function setLocalizedAtPath(root, path, lang, value, fieldType = "text") {
-  const segments = String(path).split(".");
+  const langFirst = String(path).includes("{lang}");
+  const segments = String(path).replace(/\{lang\}/g, lang).split(".");
   const parsed = parseCmsValue(fieldType, value);
 
   const apply = (node, idx) => {
@@ -71,14 +77,18 @@ export function setLocalizedAtPath(root, path, lang, value, fieldType = "text") 
     const container =
       node && typeof node === "object" ? node : /^\d+$/.test(key) ? [] : {};
     const last = idx === segments.length - 1;
-    const nextValue = last
-      ? (() => {
-          const cur = container[key];
-          const base =
-            cur && typeof cur === "object" && !Array.isArray(cur) ? cur : {};
-          return { ...base, [lang]: parsed };
-        })()
-      : apply(container[key], idx + 1);
+    let nextValue;
+    if (last) {
+      if (langFirst) {
+        nextValue = parsed; // la langue est déjà un segment du chemin
+      } else {
+        const cur = container[key];
+        const base = cur && typeof cur === "object" && !Array.isArray(cur) ? cur : {};
+        nextValue = { ...base, [lang]: parsed };
+      }
+    } else {
+      nextValue = apply(container[key], idx + 1);
+    }
 
     if (Array.isArray(container)) {
       const clone = container.slice();
@@ -285,4 +295,142 @@ export function enableCmsInlineEdit() {
     },
     true,
   );
+}
+
+/* ==========================================================================
+   Mode « Couleurs » : dans l'aperçu de l'admin (?cms=colors), on clique un
+   élément pour repérer quelles variables de couleur le pilotent (fond, texte,
+   bordure), par correspondance avec les valeurs actuellement appliquées.
+   ========================================================================== */
+
+export function isCmsColorMode() {
+  try {
+    return (
+      window.self !== window.top &&
+      new URLSearchParams(window.location.search).get("cms") === "colors"
+    );
+  } catch {
+    return false;
+  }
+}
+
+const THEME_VARS = THEME_COLOR_GROUPS.flatMap((group) => group.fields.map((f) => f.var));
+
+// Normalise n'importe quelle couleur CSS en chaîne « rgb(...) » comparable.
+function normalizeColor(input) {
+  if (!input) return null;
+  const probe = document.createElement("span");
+  probe.style.display = "none";
+  probe.style.color = String(input).trim();
+  document.body.appendChild(probe);
+  const out = getComputedStyle(probe).color;
+  probe.remove();
+  return out || null;
+}
+
+function describeElement(el) {
+  const tag = el.tagName.toLowerCase();
+  const cls =
+    typeof el.className === "string" && el.className.trim()
+      ? "." + el.className.trim().split(/\s+/)[0]
+      : "";
+  return tag + cls;
+}
+
+// Repère les variables de thème en jeu sur l'élément cliqué.
+// On remonte la hiérarchie pour les fonds : cliquer sur le libellé d'un bouton
+// (fond transparent) doit quand même proposer le fond du bouton / de la section.
+function inspectElementColors(el) {
+  const root = getComputedStyle(document.documentElement);
+  const valueToVar = {};
+  for (const v of THEME_VARS) {
+    const norm = normalizeColor(root.getPropertyValue(v));
+    if (norm && !(norm in valueToVar)) valueToVar[norm] = v;
+  }
+
+  const matches = [];
+  const seen = new Set();
+  const add = (label, value) => {
+    const norm = normalizeColor(value);
+    if (!norm || norm === "rgba(0, 0, 0, 0)") return;
+    const variable = valueToVar[norm];
+    if (variable && !seen.has(variable)) {
+      seen.add(variable);
+      matches.push({ label, var: variable });
+    }
+  };
+
+  const cs0 = getComputedStyle(el);
+  add("Texte", cs0.color);
+  if (cs0.borderTopStyle !== "none" && parseFloat(cs0.borderTopWidth) > 0) {
+    add("Bordure", cs0.borderTopColor);
+  }
+
+  // Fonds, du plus proche (bouton) au plus large (section, page).
+  let node = el;
+  let depth = 0;
+  while (node && node !== document.documentElement && depth < 6) {
+    add("Fond", getComputedStyle(node).backgroundColor);
+    node = node.parentElement;
+    depth += 1;
+  }
+
+  return matches;
+}
+
+let colorPickInstalled = false;
+
+export function enableCmsColorPick() {
+  if (colorPickInstalled) return;
+  colorPickInstalled = true;
+
+  const post = (msg) => {
+    try {
+      window.parent.postMessage(msg, window.location.origin);
+    } catch {
+      /* ignore */
+    }
+  };
+
+  // Surlignage de l'élément survolé.
+  document.addEventListener(
+    "mouseover",
+    (e) => {
+      const el = e.target;
+      if (!(el instanceof HTMLElement)) return;
+      el.style.outline = "2px solid var(--accent, #F1B395)";
+      el.style.outlineOffset = "-2px";
+    },
+    true,
+  );
+  document.addEventListener(
+    "mouseout",
+    (e) => {
+      const el = e.target;
+      if (el instanceof HTMLElement) {
+        el.style.outline = "";
+        el.style.outlineOffset = "";
+      }
+    },
+    true,
+  );
+
+  document.addEventListener(
+    "click",
+    (e) => {
+      const el = e.target;
+      if (!(el instanceof Element)) return;
+      e.preventDefault();
+      e.stopPropagation();
+      post({
+        type: "cms_color_pick",
+        label: describeElement(el),
+        matches: inspectElementColors(el),
+      });
+    },
+    true,
+  );
+
+  // Signale à l'admin qu'on est prêt à recevoir l'aperçu live (couleurs + tailles).
+  post({ type: "cms_color_ready" });
 }
