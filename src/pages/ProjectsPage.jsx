@@ -259,5 +259,10 @@ function text(value, lang, fallback = "—") {
 function list(value, lang) {
   if (!value) return [];
   if (Array.isArray(value)) return value;
-  return value[lang] || value.en || value.fr || [];
+  const picked = value[lang] ?? value.en ?? value.fr;
+  if (Array.isArray(picked)) return picked;
+  if (picked == null || picked === "") return [];
+  // Valeur localisée non tabulaire (ex. chaîne mal saisie en base) :
+  // on la présente comme un seul élément plutôt que de planter sur .map.
+  return [picked];
 }

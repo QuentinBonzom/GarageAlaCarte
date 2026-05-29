@@ -413,7 +413,8 @@ function ServiceCard({ svc, lang, index, onNav }) {
 }
 
 function ServiceModal({ svc, lang, onClose, onNav }) {
-  const includes = svc.includes?.[lang] ?? [];
+  const rawIncludes = svc.includes?.[lang] ?? svc.includes?.en ?? svc.includes?.fr;
+  const includes = Array.isArray(rawIncludes) ? rawIncludes : rawIncludes ? [rawIncludes] : [];
   const details = svc.details ?? svc.detail_sections ?? [];
 
   useEffect(() => {
