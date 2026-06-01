@@ -153,6 +153,8 @@ function mapProjects(projects, images, servicesById) {
       description: localizedText(project.description),
       includes: localizedList(project.includes),
       why: localizedList(project.value_points),
+      project_range: project.project_range ?? null,
+      closing_line: project.closing_line ?? null,
       images: projectImages,
     };
   });

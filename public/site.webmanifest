@@ -1,7 +1,7 @@
 {
-  "name": "Garage à la Carte",
-  "short_name": "Garage à la Carte",
-  "description": "Custom garage transformations in Orlando, Florida.",
+  "name": "Garage a la Carte",
+  "short_name": "Garage a la Carte",
+  "description": "Custom garage design, remodeling, storage, and smart garage transformations in Orlando, Florida.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

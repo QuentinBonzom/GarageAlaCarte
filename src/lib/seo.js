@@ -2,74 +2,223 @@ const viteSiteUrl = typeof import.meta !== "undefined" ? import.meta.env?.VITE_S
 const nodeSiteUrl = typeof process !== "undefined" ? process.env?.VITE_SITE_URL : "";
 export const SITE_URL = (viteSiteUrl || nodeSiteUrl || "https://garagealacarte.com").replace(/\/$/, "");
 
-const BRAND = "Garage à la Carte";
+const BRAND = "Garage a la Carte";
 const DEFAULT_IMAGE = `${SITE_URL}/og-image.svg`;
 const DEFAULT_LOCALE = {
   en: "en_US",
-  fr: "fr_FR",
+  fr: "es_ES",
 };
+
+export const SERVICE_AREA_PLACES = [
+  "Orlando, FL",
+  "Winter Park, FL",
+  "Lake Nona, FL",
+  "Windermere, FL",
+  "Winter Garden, FL",
+  "Kissimmee, FL",
+  "Maitland, FL",
+  "Doctor Phillips, FL",
+  "Central Florida",
+];
+
+export const PRIMARY_SEO_KEYWORDS = [
+  "garage remodeling Orlando",
+  "garage renovation Orlando",
+  "custom garage design Orlando",
+  "garage makeover Orlando",
+  "garage organization Orlando",
+  "garage storage solutions Orlando",
+  "garage cabinets Orlando",
+  "luxury garage design",
+  "garage man cave",
+  "garage transformation Orlando",
+];
+
+export const SERVICE_SEO = {
+  blueprint: {
+    route: "serviceBlueprint",
+    path: "/services/garage-design-blueprint-orlando/",
+    label: "Design Blueprint",
+    title: {
+      en: "Custom Garage Design Orlando | 3D Garage Plans",
+      fr: "Plan de diseño de garaje en Orlando, FL | Planos 3D",
+    },
+    description: {
+      en: "Custom garage design Orlando service with 3D garage plans, realistic views, luxury garage design direction, and expert space-planning guidance.",
+      fr: "Planifica tu reforma de garaje en Orlando antes de construir con distribuciones a medida, planos 3D, vistas realistas y asesoramiento experto.",
+    },
+    keywords: [
+      "custom garage design Orlando",
+      "luxury garage design",
+      "garage transformation Orlando",
+    ],
+    serviceType: "Garage design planning and 3D space planning",
+  },
+  delivery: {
+    route: "serviceSetup",
+    path: "/services/garage-design-setup-orlando/",
+    label: "Design & Setup",
+    title: {
+      en: "Garage Organization Orlando | Storage Solutions & Cabinets",
+      fr: "Diseño y setup de garaje en Orlando | Almacenamiento y materiales",
+    },
+    description: {
+      en: "Garage organization Orlando service for custom layouts, garage storage solutions Orlando homeowners need, cabinet planning, sourcing, and setup guidance.",
+      fr: "Pasa del diseño a la ejecución con planificación del espacio, selección de productos, coordinación de sourcing, almacenamiento y guía de instalación en Orlando.",
+    },
+    keywords: [
+      "garage organization Orlando",
+      "garage storage solutions Orlando",
+      "garage cabinets Orlando",
+      "custom garage design Orlando",
+    ],
+    serviceType: "Garage design, product sourcing, setup planning, and storage coordination",
+  },
+  transform: {
+    route: "serviceTransformation",
+    path: "/services/full-garage-transformation-orlando/",
+    label: "Full Transformation",
+    title: {
+      en: "Garage Remodeling Orlando | Renovation & Transformation",
+      fr: "Reforma y transformación completa de garaje en Orlando, FL",
+    },
+    description: {
+      en: "Garage remodeling Orlando and garage renovation Orlando service for makeovers, garage man cave concepts, home gyms, offices, lounges, and full transformations.",
+      fr: "Convierte tu garaje en Orlando en gimnasio, oficina, lounge, sala de ocio, zona de almacenamiento o espacio multiuso premium con una transformación completa.",
+    },
+    keywords: [
+      "garage remodeling Orlando",
+      "garage renovation Orlando",
+      "garage makeover Orlando",
+      "garage transformation Orlando",
+      "garage man cave",
+    ],
+    serviceType: "Full garage remodeling, renovation, and transformation",
+  },
+  smart: {
+    route: "serviceSmart",
+    path: "/services/smart-garage-integration-orlando/",
+    label: "Smart Integration",
+    title: {
+      en: "Luxury Garage Design & Smart Integration Orlando",
+      fr: "Integración smart para garajes en Orlando | HVAC, iluminación y multimedia",
+    },
+    description: {
+      en: "Luxury garage design support for Orlando garage transformation projects with smart lighting, electrical planning, HVAC, ventilation, media, and integrated systems.",
+      fr: "Mejora tu transformación de garaje en Orlando con iluminación inteligente, planificación eléctrica, HVAC, ventilación, multimedia, fontanería y sistemas integrados.",
+    },
+    keywords: [
+      "luxury garage design",
+      "garage transformation Orlando",
+      "custom garage design Orlando",
+    ],
+    serviceType: "Smart garage systems, HVAC, lighting, electrical, media, and integrated technical planning",
+  },
+};
+
+export const SERVICE_ROUTE_BY_ID = Object.fromEntries(
+  Object.entries(SERVICE_SEO).map(([serviceId, config]) => [serviceId, config.route]),
+);
 
 export const SEO_ROUTES = {
   home: {
     path: "/",
     title: {
-      en: "Garage à la Carte | Custom Garage Transformations in Orlando, FL",
-      fr: "Garage à la Carte | Transformation de garage sur-mesure à Orlando",
+      en: "Garage Remodeling Orlando | Custom Garage Design Orlando",
+      fr: "Diseño y reforma de garajes en Orlando, FL | Garage a la Carte",
     },
     description: {
-      en: "Garage à la Carte designs and transforms garages into home gyms, lounges, offices, entertainment spaces, and smart storage in Orlando, Florida.",
-      fr: "Garage à la Carte conçoit et transforme les garages en salles de sport, lounges, bureaux, espaces de vie et rangements intelligents à Orlando, Floride.",
+      en: "Garage remodeling Orlando, custom garage design Orlando, and garage transformation Orlando for home gyms, offices, lounges, storage, and premium rooms.",
+      fr: "Garage a la Carte diseña y reforma garajes en Orlando para crear gimnasios, oficinas, lounges, espacios de ocio, almacenamiento inteligente y estancias multiuso.",
     },
+    keywords: PRIMARY_SEO_KEYWORDS,
   },
   projects: {
     path: "/projects/",
     title: {
-      en: "Garage Transformation Portfolio | Garage à la Carte Orlando",
-      fr: "Réalisations de garages transformés | Garage à la Carte Orlando",
+      en: "Garage Makeover Orlando | Luxury Garage Design Ideas",
+      fr: "Portfolio de reformas de garaje en Orlando, FL | Ideas antes y después",
     },
     description: {
-      en: "Explore custom garage transformation projects in the Orlando area, from social hubs and daily living garages to premium entertainment suites.",
-      fr: "Découvrez nos transformations de garages dans la région d'Orlando : espaces de vie, social hubs et suites de divertissement premium.",
+      en: "Explore garage makeover Orlando projects, luxury garage design ideas, garage man cave concepts, storage upgrades, lounges, offices, and full transformations.",
+      fr: "Descubre proyectos de transformación de garajes en Orlando: lounges, gimnasios, oficinas, salas de ocio, almacenamiento y espacios premium.",
     },
+    keywords: [
+      "garage makeover Orlando",
+      "luxury garage design",
+      "garage man cave",
+      "garage transformation Orlando",
+      "garage remodeling Orlando",
+    ],
   },
   contact: {
     path: "/contact/",
     title: {
-      en: "Free Garage Transformation Estimate in Orlando | Garage à la Carte",
-      fr: "Devis gratuit pour transformer votre garage à Orlando | Garage à la Carte",
+      en: "Garage Renovation Orlando | Free Remodel Estimate",
+      fr: "Presupuesto gratuito para reformar tu garaje en Orlando, FL",
     },
     description: {
-      en: "Request a free estimate for a custom garage design or full garage transformation in Orlando, FL and nearby Central Florida communities.",
-      fr: "Demandez un devis gratuit pour un design ou une transformation complète de garage à Orlando et dans la région de Central Florida.",
+      en: "Request a free estimate for garage renovation Orlando, garage organization Orlando, garage storage solutions Orlando, garage cabinets Orlando, or remodel.",
+      fr: "Solicita un presupuesto gratuito para diseño, reforma, almacenamiento o transformación completa de garaje en Orlando y Central Florida.",
     },
+    keywords: [
+      "garage renovation Orlando",
+      "garage organization Orlando",
+      "garage storage solutions Orlando",
+      "garage cabinets Orlando",
+      "garage remodeling Orlando",
+    ],
   },
   conditions: {
     path: "/conditions/",
     title: {
-      en: "Project Conditions | Garage à la Carte Orlando",
-      fr: "Conditions de projet | Garage à la Carte Orlando",
+      en: "Project Conditions | Garage Remodels in Orlando, FL",
+      fr: "Condiciones del proyecto | Reformas de garaje en Orlando, FL",
     },
     description: {
-      en: "Review Garage à la Carte project conditions, estimates, delivery area, timelines, documentation, permits, and payment terms.",
-      fr: "Consultez les conditions de projet Garage à la Carte : devis, zone de service, délais, documentation, permis et paiements.",
+      en: "Review Garage a la Carte project conditions, estimates, delivery area, timelines, documentation, permits, and payment terms.",
+      fr: "Consulta las condiciones del proyecto de Garage a la Carte: presupuestos, zona de servicio, plazos, documentación, permisos y pagos.",
     },
+    keywords: [
+      "garage remodeling Orlando",
+      "garage renovation Orlando",
+      "garage transformation Orlando",
+    ],
   },
   admin: {
     path: "/admin/",
     title: {
-      en: "Admin | Garage à la Carte",
-      fr: "Admin | Garage à la Carte",
+      en: "Admin | Garage a la Carte",
+      fr: "Admin | Garage a la Carte",
     },
     description: {
-      en: "Garage à la Carte administration.",
-      fr: "Administration Garage à la Carte.",
+      en: "Garage a la Carte administration.",
+      fr: "Administración Garage a la Carte.",
     },
     noindex: true,
   },
 };
 
+Object.entries(SERVICE_SEO).forEach(([serviceId, service]) => {
+  SEO_ROUTES[service.route] = {
+    path: service.path,
+    title: service.title,
+    description: service.description,
+    serviceId,
+    serviceType: service.serviceType,
+  };
+});
+
 export function routeToPath(route) {
   return SEO_ROUTES[route]?.path || "/";
+}
+
+export function getServiceRouteForId(serviceId) {
+  return SERVICE_ROUTE_BY_ID[serviceId] || "home";
+}
+
+export function getServicePathForId(serviceId) {
+  return routeToPath(getServiceRouteForId(serviceId));
 }
 
 export function routeFromLocation(location) {
@@ -83,6 +232,7 @@ export function routeFromLocation(location) {
 
 export function getPageSeo(route, lang) {
   const page = SEO_ROUTES[route] || SEO_ROUTES.home;
+  const serviceConfig = page.serviceId ? SERVICE_SEO[page.serviceId] : null;
   return {
     ...page,
     route,
@@ -92,6 +242,9 @@ export function getPageSeo(route, lang) {
     canonical: `${SITE_URL}${page.path}`,
     image: DEFAULT_IMAGE,
     locale: DEFAULT_LOCALE[lang] || DEFAULT_LOCALE.en,
+    serviceName: serviceConfig?.label,
+    serviceType: serviceConfig?.serviceType || page.serviceType,
+    keywords: serviceConfig?.keywords || page.keywords || [],
   };
 }
 
@@ -131,6 +284,18 @@ function setJsonLd(id, data) {
 }
 
 export function buildBusinessJsonLd() {
+  const serviceOffers = Object.values(SERVICE_SEO).map((service) => ({
+    "@type": "Offer",
+    url: `${SITE_URL}${service.path}`,
+    itemOffered: {
+      "@type": "Service",
+      "@id": `${SITE_URL}${service.path}#service`,
+      name: service.label,
+      serviceType: service.serviceType,
+      areaServed: "Orlando, FL",
+    },
+  }));
+
   return {
     "@context": "https://schema.org",
     "@type": "HomeAndConstructionBusiness",
@@ -138,11 +303,12 @@ export function buildBusinessJsonLd() {
     name: BRAND,
     url: `${SITE_URL}/`,
     logo: `${SITE_URL}/logo.png`,
-    image: DEFAULT_IMAGE,
+    image: [DEFAULT_IMAGE, `${SITE_URL}/logo.png`],
     description:
-      "Custom garage design and transformation services based in Orlando, Florida.",
+      "Custom garage design, garage remodeling, 3D space planning, storage, and smart garage transformation services based in Orlando, Florida.",
     email: "hello@garagealacarte.com",
     telephone: "+1-407-555-0142",
+    slogan: "American precision, European design.",
     priceRange: "$$",
     address: {
       "@type": "PostalAddress",
@@ -155,53 +321,73 @@ export function buildBusinessJsonLd() {
       latitude: 28.5383,
       longitude: -81.3792,
     },
-    areaServed: [
-      "Orlando, FL",
-      "Winter Park, FL",
-      "Lake Nona, FL",
-      "Windermere, FL",
-      "Winter Garden, FL",
-      "Kissimmee, FL",
-      "Central Florida",
+    areaServed: SERVICE_AREA_PLACES.map((name) => ({
+      "@type": "Place",
+      name,
+    })),
+    knowsAbout: [
+      ...PRIMARY_SEO_KEYWORDS,
+      "Garage remodeling",
+      "Garage renovation",
+      "Garage design",
+      "3D garage plans",
+      "Garage storage systems",
+      "Home gym garage conversion",
+      "Garage office conversion",
+      "Garage lounge design",
+      "Smart garage integration",
+      "HVAC and electrical planning for garages",
     ],
-    makesOffer: [
-      {
-        "@type": "Offer",
-        itemOffered: {
-          "@type": "Service",
-          name: "Garage Design Blueprint",
-          serviceType: "Garage design planning",
-          areaServed: "Orlando, FL",
-        },
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: "Garage design and remodeling services in Orlando",
+      itemListElement: serviceOffers,
+    },
+    makesOffer: serviceOffers,
+    contactPoint: {
+      "@type": "ContactPoint",
+      email: "hello@garagealacarte.com",
+      telephone: "+1-407-555-0142",
+      contactType: "customer service",
+      areaServed: "US-FL",
+      availableLanguage: ["English", "Spanish"],
+    },
+  };
+}
+
+function getPageType(route) {
+  if (route === "home") return "WebPage";
+  if (route === "projects") return "CollectionPage";
+  if (route === "contact") return "ContactPage";
+  return "WebPage";
+}
+
+function buildServiceJsonLd(page) {
+  if (!page.serviceId) return null;
+  return {
+    "@type": "Service",
+    "@id": `${page.canonical}#service`,
+    name: page.serviceName,
+    serviceType: page.serviceType,
+    description: page.description,
+    keywords: page.keywords?.join(", "),
+    url: page.canonical,
+    provider: {
+      "@id": `${SITE_URL}/#business`,
+    },
+    areaServed: SERVICE_AREA_PLACES.map((name) => ({
+      "@type": "Place",
+      name,
+    })),
+    offers: {
+      "@type": "Offer",
+      url: page.canonical,
+      priceCurrency: "USD",
+      availability: "https://schema.org/InStock",
+      offeredBy: {
+        "@id": `${SITE_URL}/#business`,
       },
-      {
-        "@type": "Offer",
-        itemOffered: {
-          "@type": "Service",
-          name: "Garage Design and Setup",
-          serviceType: "Garage design and installation support",
-          areaServed: "Orlando, FL",
-        },
-      },
-      {
-        "@type": "Offer",
-        itemOffered: {
-          "@type": "Service",
-          name: "Full Garage Transformation",
-          serviceType: "Garage remodeling and transformation",
-          areaServed: "Orlando, FL",
-        },
-      },
-      {
-        "@type": "Offer",
-        itemOffered: {
-          "@type": "Service",
-          name: "Smart Garage Integration",
-          serviceType: "Smart home and garage technology integration",
-          areaServed: "Orlando, FL",
-        },
-      },
-    ],
+    },
   };
 }
 
@@ -224,44 +410,61 @@ export function buildPageJsonLd(page) {
     });
   }
 
+  const graph = [
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      name: BRAND,
+      url: `${SITE_URL}/`,
+      inLanguage: page.lang === "fr" ? "es-ES" : "en-US",
+      publisher: {
+        "@id": `${SITE_URL}/#business`,
+      },
+    },
+    {
+      "@type": getPageType(page.route),
+      "@id": `${page.canonical}#webpage`,
+      url: page.canonical,
+      name: page.title,
+      description: page.description,
+      keywords: page.keywords?.join(", "),
+      isPartOf: {
+        "@id": `${SITE_URL}/#website`,
+      },
+      about: {
+        "@id": `${SITE_URL}/#business`,
+      },
+      inLanguage: page.lang === "fr" ? "es-ES" : "en-US",
+      primaryImageOfPage: {
+        "@type": "ImageObject",
+        url: page.image,
+      },
+      ...(page.serviceId
+        ? {
+            mainEntity: {
+              "@id": `${page.canonical}#service`,
+            },
+          }
+        : {}),
+    },
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: breadcrumbs,
+    },
+  ];
+
+  const serviceJsonLd = buildServiceJsonLd(page);
+  if (serviceJsonLd) graph.push(serviceJsonLd);
+
   return {
     "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "WebSite",
-        "@id": `${SITE_URL}/#website`,
-        name: BRAND,
-        url: `${SITE_URL}/`,
-        inLanguage: page.lang === "fr" ? "fr-FR" : "en-US",
-        publisher: {
-          "@id": `${SITE_URL}/#business`,
-        },
-      },
-      {
-        "@type": "WebPage",
-        "@id": `${page.canonical}#webpage`,
-        url: page.canonical,
-        name: page.title,
-        description: page.description,
-        isPartOf: {
-          "@id": `${SITE_URL}/#website`,
-        },
-        about: {
-          "@id": `${SITE_URL}/#business`,
-        },
-        inLanguage: page.lang === "fr" ? "fr-FR" : "en-US",
-      },
-      {
-        "@type": "BreadcrumbList",
-        itemListElement: breadcrumbs,
-      },
-    ],
+    "@graph": graph,
   };
 }
 
 export function applyPageSeo({ route, lang }) {
   const page = getPageSeo(route, lang);
-  document.documentElement.lang = lang === "fr" ? "fr" : "en";
+  document.documentElement.lang = lang === "fr" ? "es" : "en";
   document.title = page.title;
 
   setMeta('meta[name="description"]', { name: "description", content: page.description });

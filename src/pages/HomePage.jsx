@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { CONTENT } from "../data/content";
-import { ImagePlaceholder, Reveal, useReveal } from "../components/common";
+import { ImagePlaceholder, Reveal, useReveal, TeamSection } from "../components/common";
 import { cmsAttr, cmsRecordAttr } from "../lib/cmsEdit";
+import { getServiceRouteForId, routeToPath } from "../lib/seo";
 
 
 export function HomePage({ lang, onNav }) {
@@ -12,6 +13,7 @@ export function HomePage({ lang, onNav }) {
       <UseCasesSection lang={lang} onNav={onNav} />
       <BeforeAfterSection lang={lang} />
       <ServicesSection lang={lang} onNav={onNav} />
+      <TeamSection lang={lang} />
 
       <FinalCTA lang={lang} onNav={onNav} />
     </div>
@@ -23,8 +25,25 @@ function Hero({ lang, onNav }) {
   const C = CONTENT.hero;
   const cap = CONTENT.hero_caption || {};
   const heroImage = cap.image || cap.after_image || "";
-  const heroVideo = cap.video_url || cap.video || "";
 
+  const carouselImages = React.useMemo(() => {
+    const fromCap = Array.isArray(cap.images)
+      ? cap.images
+          .map((img) => (typeof img === "string" ? img : img?.image || img?.url))
+          .filter(Boolean)
+      : [];
+    if (fromCap.length > 0) return fromCap;
+    return heroImage ? [heroImage] : [];
+  }, [cap.images, heroImage]);
+
+  const [activeIdx, setActiveIdx] = useState(0);
+  useEffect(() => {
+    if (carouselImages.length < 2) return;
+    const interval = setInterval(() => {
+      setActiveIdx((i) => (i + 1) % carouselImages.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [carouselImages.length]);
 
   const titleLines = Array.isArray(C.title?.[lang])
     ? C.title[lang]
@@ -34,18 +53,17 @@ function Hero({ lang, onNav }) {
   return (
     <section id="hero" className="hero-v2">
       <div className="hero-v2__media" aria-hidden="true">
-        {heroVideo ? (
-          <video
-            src={heroVideo}
-            poster={heroImage || undefined}
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-          />
-        ) : heroImage ? (
-          <img src={heroImage} alt="" loading="eager" fetchpriority="high" />
+        {carouselImages.length > 0 ? (
+          carouselImages.map((src, i) => (
+            <img
+              key={src}
+              src={src}
+              alt=""
+              className={`hero-v2__slide${i === activeIdx ? " is-active" : ""}`}
+              loading={i === 0 ? "eager" : "lazy"}
+              fetchpriority={i === 0 ? "high" : "auto"}
+            />
+          ))
         ) : (
           <div className="hero-v2__placeholder" />
         )}
@@ -108,12 +126,12 @@ function UseCasesSection({ lang, onNav }) {
       <div className="usecases__inner">
         <div className="usecases__head">
           <Reveal as="div" className="usecases__eyebrow" {...cmsAttr("use_cases", "eyebrow")}>
-            {C.eyebrow?.[lang] || (lang === "en" ? "Transformations" : "Transformations")}
+            {C.eyebrow?.[lang] || (lang === "en" ? "Transformations" : "Transformaciones")}
           </Reveal>
           <Reveal as="h2" className="usecases__title" {...cmsAttr("use_cases", "title")}>
             {C.title?.[lang] || (lang === "en"
               ? "Discover Your Dream Garage. Explore, Imagine, and Get Inspired!"
-              : "Découvrez le garage de vos rêves. Explorez, imaginez et inspirez-vous !")}
+              : "Descubre el garaje de tus sueños. ¡Explora, imagina e inspírate!")}
           </Reveal>
           {C.sub?.[lang] && (
             <Reveal as="p" className="usecases__sub" delay={0.1} {...cmsAttr("use_cases", "sub")}>{C.sub[lang]}</Reveal>
@@ -170,7 +188,6 @@ function UseCaseCard({ item, index, lang, onNav }) {
         ) : (
           <ImagePlaceholder label={name || "Transformation"} color={coverColor} style={{ position: "absolute", inset: 0, borderRadius: 0 }} />
         )}
-        <span className="usecase-card__index">0{index + 1}</span>
         {photoCount > 1 && (
           <span className="usecase-card__album-badge" aria-hidden="true">
             {photoCount} <span>photos</span>
@@ -194,7 +211,7 @@ function BeforeAfterSection({ lang }) {
       <div className="ba-v2__inner">
         <div className="ba-v2__head">
           <Reveal as="div" className="ba-v2__eyebrow" {...cmsAttr("before_after", "eyebrow")}>
-            {C.eyebrow?.[lang] || (lang === "en" ? "The transformation" : "La transformation")}
+            {C.eyebrow?.[lang] || (lang === "en" ? "The transformation" : "La transformación")}
           </Reveal>
           <Reveal as="h2" className="ba-v2__title" {...cmsAttr("before_after", "title")}>
             {C.title[lang]}
@@ -205,8 +222,8 @@ function BeforeAfterSection({ lang }) {
           <BeforeAfterSlider
             beforeSrc={C.before_image}
             afterSrc={C.after_image}
-            beforeLabel={lang === "en" ? "Before" : "Avant"}
-            afterLabel={lang === "en" ? "After" : "Après"}
+            beforeLabel={lang === "en" ? "Before" : "Antes"}
+            afterLabel={lang === "en" ? "After" : "Después"}
             height="clamp(360px, 56vh, 720px)"
           />
         </Reveal>
@@ -214,14 +231,14 @@ function BeforeAfterSection({ lang }) {
         <div className="ba-v2__captions">
           <Reveal>
             <div className="ba-v2__caption">
-              <span className="ba-v2__caption-label">{lang === "en" ? "Before" : "Avant"}</span>
+              <span className="ba-v2__caption-label">{lang === "en" ? "Before" : "Antes"}</span>
               <p {...cmsAttr("before_after", "before")}>{C.before[lang]}</p>
 
             </div>
           </Reveal>
           <Reveal delay={0.1}>
             <div className="ba-v2__caption ba-v2__caption--after">
-              <span className="ba-v2__caption-label">{lang === "en" ? "After" : "Après"}</span>
+              <span className="ba-v2__caption-label">{lang === "en" ? "After" : "Después"}</span>
               <p {...cmsAttr("before_after", "after")}>{C.after[lang]}</p>
 
             </div>
@@ -352,7 +369,7 @@ function ServicesSection({ lang, onNav }) {
       <div className="svc-v2__inner">
         <div className="svc-v2__head">
           <Reveal as="div" className="svc-v2__eyebrow" {...cmsAttr("services_intro", "eyebrow")}>
-            {C.eyebrow?.[lang] || (lang === "en" ? "Pricing" : "Tarifs")}
+            {C.eyebrow?.[lang] || (lang === "en" ? "Pricing" : "Tarifas")}
           </Reveal>
           <Reveal as="h2" className="svc-v2__title" {...cmsAttr("services_intro", "title")}>{C.title[lang]}</Reveal>
           <Reveal as="p" className="svc-v2__sub" delay={0.1} {...cmsAttr("services_intro", "sub")}>{C.sub[lang]}</Reveal>
@@ -368,14 +385,14 @@ function ServicesSection({ lang, onNav }) {
         <Reveal as="p" className="svc-v2__expertise" delay={0.18}>
           {lang === "en"
             ? "Our expert team delivers space optimization, organization systems, and innovative renovations — enhanced by mood visual design and advanced Color, Material, and Finish (CMF) expertise to maximize garage functionality, improve curb appeal, and add lasting value to your property."
-            : "Notre équipe experte propose optimisation de l’espace, systèmes d’organisation et rénovations innovantes — renforcées par le mood visual design et une expertise avancée en Color, Material, and Finish (CMF) afin de maximiser la fonctionnalité du garage, améliorer l’attrait extérieur et ajouter une valeur durable à votre propriété."}
+            : "Nuestro equipo experto ofrece optimización del espacio, sistemas de organización y reformas innovadoras — potenciadas por el mood visual design y una experiencia avanzada en Color, Material y Acabado (CMF) para maximizar la funcionalidad del garaje, mejorar el atractivo exterior y aportar un valor duradero a tu propiedad."}
         </Reveal>
 
 
         <Reveal as="p" className="svc-v2__note" delay={0.2}>
           {lang === "en"
             ? "Service fees are credited 100% on a signed project contract."
-            : "Les honoraires sont crédités à 100 % sur un contrat de projet signé."}
+            : "Los honorarios se acreditan al 100 % al firmar un contrato de proyecto."}
         </Reveal>
       </div>
     </section>
@@ -386,6 +403,7 @@ function ServiceCard({ svc, lang, index, onNav }) {
   const [open, setOpen] = useState(false);
   const ref = useReveal();
   const isFeatured = Boolean(svc.badge);
+  const serviceRoute = getServiceRouteForId(svc.id);
   return (
     <>
       <article
@@ -404,8 +422,18 @@ function ServiceCard({ svc, lang, index, onNav }) {
         </div>
         <button className="svc-card__cta" onClick={() => setOpen(true)} data-cms-allow>
 
-          {lang === "en" ? "View details" : "Voir les détails"} <span aria-hidden="true">→</span>
+          {lang === "en" ? "View details" : "Ver detalles"} <span aria-hidden="true">→</span>
         </button>
+        <a
+          className="svc-card__seo-link"
+          href={routeToPath(serviceRoute)}
+          onClick={(event) => {
+            event.preventDefault();
+            onNav(serviceRoute);
+          }}
+        >
+          {lang === "en" ? "Orlando service page" : "Página del servicio en Orlando"}
+        </a>
       </article>
       {open && <ServiceModal svc={svc} lang={lang} onClose={()=>setOpen(false)} onNav={onNav} />}
     </>
@@ -440,7 +468,7 @@ function ServiceModal({ svc, lang, onClose, onNav }) {
             <p className="lead" style={{marginTop:"24px"}} {...cmsRecordAttr("service", svc.id, "description")}>{svc.description[lang]}</p>
 
             {includes.length > 0 && <div style={{marginTop:"40px"}}>
-              <div className="text-mono text-muted" style={{marginBottom:"16px"}}>{lang==="en"?"WHAT YOU GET":"CE QUE VOUS RECEVEZ"}</div>
+              <div className="text-mono text-muted" style={{marginBottom:"16px"}}>{lang==="en"?"WHAT YOU GET":"LO QUE INCLUYE"}</div>
               <ul style={{listStyle:"none", padding:0, margin:0}}>
                 {includes.map((it, i) => (
                   <li key={i} style={{padding:"12px 0", borderBottom:"1px solid var(--line)", display:"flex", gap:"16px"}}>
@@ -453,7 +481,7 @@ function ServiceModal({ svc, lang, onClose, onNav }) {
 
             {svc.not_included && (
               <p style={{marginTop:"24px", padding:"16px", background:"var(--cream-deep)", borderRadius:"8px", fontSize:"13px", color:"var(--muted)"}}>
-                <strong>{lang==="en"?"Not included: ":"Non inclus : "}</strong><span {...cmsRecordAttr("service", svc.id, "not_included")}>{svc.not_included[lang]}</span>
+                <strong>{lang==="en"?"Not included: ":"No incluido: "}</strong><span {...cmsRecordAttr("service", svc.id, "not_included")}>{svc.not_included[lang]}</span>
               </p>
             )}
 
@@ -485,18 +513,18 @@ function ServiceModal({ svc, lang, onClose, onNav }) {
           </div>
           <div>
             <div style={{background:"var(--ink)", color:"var(--cream)", padding:"40px", borderRadius:"16px", marginBottom:"24px"}}>
-              <div style={{fontFamily:"var(--mono)", fontSize:"11px", letterSpacing:"0.15em", color:"var(--brass-soft)"}}>{lang==="en"?"SERVICE FEE":"HONORAIRES"}</div>
+              <div style={{fontFamily:"var(--mono)", fontSize:"11px", letterSpacing:"0.15em", color:"var(--brass-soft)"}}>{lang==="en"?"SERVICE FEE":"HONORARIOS"}</div>
               <div style={{fontFamily:"var(--serif)", fontSize:"56px", letterSpacing:"-0.03em", marginTop:"16px", lineHeight:1}} {...cmsRecordAttr("service", svc.id, "price_label")}>{svc.price[lang]}</div>
               {svc.deposit && <div style={{marginTop:"24px", paddingTop:"24px", borderTop:"1px solid rgba(244,237,226,0.15)", fontSize:"13px"}}>
                 <div className="text-mono" style={{color:"var(--brass-soft)", marginBottom:"8px"}}>DEPOSIT</div>
                 <span {...cmsRecordAttr("service", svc.id, "deposit_schedule")}>{svc.deposit[lang]}</span>
               </div>}
               <button className="btn" style={{marginTop:"32px", width:"100%", justifyContent:"center", background:"var(--accent)"}} onClick={()=>{onClose(); onNav("contact");}}>
-                {lang==="en"?"Start this project":"Démarrer ce projet"} <span className="arrow">↗</span>
+                {lang==="en"?"Start this project":"Iniciar este proyecto"} <span className="arrow">↗</span>
               </button>
             </div>
             <div style={{padding:"24px", border:"1px solid var(--line)", borderRadius:"16px"}}>
-              <div className="text-mono text-muted" style={{marginBottom:"12px"}}>{lang==="en"?"LED BY":"PAR"}</div>
+              <div className="text-mono text-muted" style={{marginBottom:"12px"}}>{lang==="en"?"LED BY":"POR"}</div>
               <div style={{display:"flex", flexDirection:"column", gap:"4px", fontFamily:"var(--serif)", fontSize:"22px"}}>
                 {svc.led_by.map((n) => <span key={n}>{n}</span>)}
               </div>
@@ -525,13 +553,13 @@ function FinalCTA({ lang, onNav }) {
 
         <Reveal delay={0.15} className="fcta-v2__cta">
           <button className="btn" onClick={() => onNav("contact")}>
-            {lang === "en" ? "Get my free estimate" : "Devis gratuit"} <span className="arrow">↗</span>
+            {lang === "en" ? "Get my free estimate" : "Presupuesto gratuito"} <span className="arrow">↗</span>
           </button>
         </Reveal>
         <Reveal as="p" className="fcta-v2__fineprint" delay={0.25}>
           {lang === "en"
-            ? "Free 30-min consultation · No commitment · Reply within 48h"
-            : "Consultation 30 min · Sans engagement · Réponse sous 48h"}
+            ? "Free consultation · No commitment · Reply within 48h"
+            : "Consulta gratuita · Sin compromiso · Respuesta en 48 h"}
         </Reveal>
       </div>
     </section>

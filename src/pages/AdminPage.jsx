@@ -206,6 +206,7 @@ const FIELD_LABELS = {
   name: "Nom",
   role: "Rôle",
   bio: "Bio",
+  long_bio: "Bio longue",
   label: "Libellé",
   text: "Texte",
   body: "Texte",
@@ -215,6 +216,7 @@ const FIELD_LABELS = {
   before_image: "Image avant",
   after_image: "Image après",
   image: "Image",
+  images: "Carrousel d'images (diaporama auto)",
   video_url: "URL vidéo",
   featured_label: "Eyebrow projet phare",
   featured_title: "Titre projet phare",
@@ -246,6 +248,7 @@ const FIELD_ORDER = [
   "text",
   "role",
   "bio",
+  "long_bio",
   "why",
   // Détails structurés
   "value_points",
@@ -260,6 +263,7 @@ const FIELD_ORDER = [
   "cta",
   "form",
   // Médias
+  "images",
   "image",
   "before_image",
   "after_image",
@@ -278,8 +282,7 @@ function orderedEntries(value) {
 const KNOWN_SECTION_DEFAULTS = {
   before_after: { before_image: "", after_image: "" },
   hero_caption: {
-    image: "",
-    video_url: "",
+    images: [],
     featured_label: { en: "FEATURED PROJECT", fr: "PROJET PHARE" },
     featured_title: { en: "The Social Hub", fr: "The Social Hub" },
   },
@@ -302,14 +305,6 @@ const KNOWN_SECTION_DEFAULTS = {
     title: { en: "Where Orlando homeowners fall in love with their garage.", fr: "Là où les propriétaires d'Orlando tombent amoureux de leur garage." },
     items: [
       { quote: { en: "", fr: "" }, name: "", city: "", rating: 5, avatar_image: "" },
-    ],
-  },
-  use_cases: {
-    eyebrow: { en: "Transformations", fr: "Transformations" },
-    title: { en: "Pick your room.", fr: "Choisissez votre pièce." },
-    sub: { en: "Four ways homeowners reclaim their garage.", fr: "Quatre façons de récupérer son garage." },
-    items: [
-      { image: "", name: { en: "", fr: "" }, tagline: { en: "", fr: "" }, bullets: { en: [], fr: [] } },
     ],
   },
 };
@@ -349,6 +344,8 @@ const PROJECT_FIELDS = [
   "description",
   "includes",
   "value_points",
+  "project_range",
+  "closing_line",
   "status",
   "is_featured",
   "is_large",
@@ -364,6 +361,8 @@ const PROJECT_EDITABLE_FIELDS = [
   { key: "description", label: "Description" },
   { key: "includes", label: "Inclus" },
   { key: "value_points", label: "Pourquoi ce projet compte" },
+  { key: "project_range", label: "Fourchette de projet (paragraphe)" },
+  { key: "closing_line", label: "Phrase de clôture" },
 ];
 
 function buildNewServicePayload(existing = []) {
@@ -426,6 +425,7 @@ const TEAM_FIELDS = [
   { key: "name", label: "Nom" },
   { key: "role", label: "Rôle" },
   { key: "bio", label: "Bio" },
+  { key: "long_bio", label: "Bio longue", fallback: { en: "", fr: "" }, optionalLocalized: true },
   { key: "email", label: "Email" },
   { key: "phone", label: "Téléphone" },
   { key: "website", label: "Site web" },
@@ -1586,7 +1586,7 @@ function AdminLogin({ onSignedIn }) {
               ADMIN · ACCÈS PRIVÉ
             </div>
             <div style={{ fontFamily: "var(--serif)", fontSize: "24px", letterSpacing: "-0.02em" }}>
-              Garage à la Carte
+              Garage a la Carte
             </div>
           </div>
         </div>
@@ -3611,6 +3611,11 @@ function ObjectField({ label, value, onChange, root, depth }) {
               <ImageField key={key} label={label} fieldKey={key} value={nextValue || ""} onChange={setKey} />
             );
           }
+          if (key === "images" && Array.isArray(nextValue)) {
+            return (
+              <ImagesArrayField key={key} label={label} fieldKey={key} value={nextValue} onChange={setKey} />
+            );
+          }
           return (
             <InlineFieldEditor
               key={key}
@@ -3621,6 +3626,133 @@ function ObjectField({ label, value, onChange, root, depth }) {
             />
           );
         })}
+      </div>
+    </div>
+  );
+}
+
+function ImagesArrayField({ label, fieldKey, value, onChange }) {
+  const items = value.map((item) => {
+    if (typeof item === "string") return item;
+    return item?.image || item?.url || "";
+  });
+
+  const updateItem = (index, nextUrl) => {
+    onChange(items.map((url, i) => (i === index ? nextUrl : url)));
+  };
+  const addItem = () => {
+    onChange([...items, ""]);
+  };
+  const removeItem = (index) => {
+    onChange(items.filter((_, i) => i !== index));
+  };
+  const moveItem = (from, to) => {
+    if (to < 0 || to >= items.length) return;
+    const next = [...items];
+    const [removed] = next.splice(from, 1);
+    next.splice(to, 0, removed);
+    onChange(next);
+  };
+
+  return (
+    <div>
+      {label && <FieldLabel label={label} large />}
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        {items.length === 0 && (
+          <div
+            style={{
+              padding: "20px",
+              border: "1px dashed var(--line-strong)",
+              borderRadius: "10px",
+              color: "var(--muted)",
+              fontSize: "13px",
+              textAlign: "center",
+            }}
+          >
+            Aucune image. Cliquez sur « Ajouter une image » pour commencer.
+          </div>
+        )}
+        {items.map((url, index) => (
+          <div
+            key={index}
+            style={{
+              display: "grid",
+              gridTemplateColumns: "auto 1fr auto",
+              gap: "12px",
+              alignItems: "center",
+              padding: "10px",
+              border: "1px solid var(--line)",
+              borderRadius: "12px",
+              background: "var(--paper)",
+            }}
+          >
+            <span
+              className="text-mono"
+              style={{
+                fontSize: "10px",
+                color: "var(--muted)",
+                minWidth: "24px",
+              }}
+            >
+              #{index + 1}
+            </span>
+            <div style={{ minWidth: 0 }}>
+              <ImageField
+                fieldKey={`${fieldKey}_${index}`}
+                value={url}
+                onChange={(next) => updateItem(index, next)}
+              />
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+              <button
+                className="admin-icon-btn"
+                onClick={() => moveItem(index, index - 1)}
+                disabled={index === 0}
+                title="Monter"
+              >
+                <ChevronDown size={14} style={{ transform: "rotate(180deg)" }} />
+              </button>
+              <button
+                className="admin-icon-btn"
+                onClick={() => moveItem(index, index + 1)}
+                disabled={index === items.length - 1}
+                title="Descendre"
+              >
+                <ChevronDown size={14} />
+              </button>
+              <button
+                className="admin-icon-btn"
+                onClick={() => removeItem(index)}
+                title="Supprimer"
+              >
+                <Trash2 size={14} />
+              </button>
+            </div>
+          </div>
+        ))}
+        <button
+          type="button"
+          onClick={addItem}
+          style={{
+            justifySelf: "start",
+            border: "1px dashed var(--line-strong)",
+            borderRadius: "10px",
+            padding: "10px 14px",
+            background: "transparent",
+            color: "var(--muted)",
+            fontSize: "12px",
+            fontFamily: "var(--mono)",
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            display: "inline-flex",
+            gap: "8px",
+            alignItems: "center",
+            cursor: "pointer",
+          }}
+        >
+          <Plus size={13} />
+          Ajouter une image
+        </button>
       </div>
     </div>
   );
@@ -3933,6 +4065,11 @@ function summarizeItem(item) {
     if (item.title) return text(item.title, "fr");
     if (item.name) return text(item.name, "fr");
     if (item.text) return text(item.text, "fr");
+    if (typeof item.image === "string" && item.image) {
+      const filename = item.image.split("/").pop() || item.image;
+      return filename;
+    }
+    if (typeof item.image === "string") return "(image vide)";
     return "(détails)";
   }
   if (Array.isArray(item)) return `[${item.length} éléments]`;
@@ -4383,6 +4520,8 @@ function NewProjectModal({ services, existingSlugs, onCancel, onCreated, onRefre
         description: { fr: "", en: "" },
         includes: { fr: [], en: [] },
         value_points: { fr: [], en: [] },
+        project_range: { fr: "", en: "" },
+        closing_line: { fr: "", en: "" },
         year: String(new Date().getFullYear()),
       });
       pushToast({ type: "success", title: "Projet créé", message: created.slug });
@@ -4516,10 +4655,13 @@ function NewProjectModal({ services, existingSlugs, onCancel, onCreated, onRefre
 
 function ProjectEditor({ project, services, images, onRefresh }) {
   const initial = useMemo(
-    () => ({
-      data: pickFields(project, PROJECT_FIELDS),
-      images: clone(images),
-    }),
+    () => {
+      const data = pickFields(project, PROJECT_FIELDS);
+      // Ensure optional localized fields render as bilingual inputs even when null in DB
+      if (!isLocalizedObject(data.project_range)) data.project_range = { en: "", fr: "" };
+      if (!isLocalizedObject(data.closing_line)) data.closing_line = { en: "", fr: "" };
+      return { data, images: clone(images) };
+    },
     [project, images],
   );
   const editor = useEditorState(initial);

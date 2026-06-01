@@ -1,13 +1,13 @@
--- Garage à la Carte seed data
+-- Garage a la Carte seed data
 -- Run after database/schema.sql.
 
 insert into public.site_settings (key, value, description)
 values
   ('brand', jsonb_build_object(
-    'name', 'Garage à la Carte',
+    'name', 'Garage a la Carte',
     'tagline', jsonb_build_object(
       'en', 'American precision, European design.',
-      'fr', 'Précision américaine, design européen.'
+      'fr', 'Precisión americana, diseño europeo.'
     )
   ), 'Brand identity used by the header, footer, and metadata.'),
   ('default_locale', '"en"'::jsonb, 'Default public language.'),
@@ -47,126 +47,125 @@ insert into public.cms_sections (page_key, section_key, content, display_order, 
 values
   ('global', 'nav', jsonb_build_object(
     'en', jsonb_build_object('home', 'Home', 'projects', 'Projects', 'contact', 'Contact', 'admin', 'Admin'),
-    'fr', jsonb_build_object('home', 'Accueil', 'projects', 'Réalisations', 'contact', 'Contact', 'admin', 'Admin')
+    'fr', jsonb_build_object('home', 'Inicio', 'projects', 'Proyectos', 'contact', 'Contacto', 'admin', 'Admin')
   ), 10, true),
   ('home', 'hero', jsonb_build_object(
     'eyebrow', jsonb_build_object(
       'en', 'Orlando, FL · Custom garage transformations',
-      'fr', 'Orlando, FL · Transformations de garage sur-mesure'
+      'fr', 'Orlando, FL · Transformaciones de garaje a medida'
     ),
     'title', jsonb_build_object(
       'en', jsonb_build_array('Your garage,', 'reimagined.'),
-      'fr', jsonb_build_array('Votre garage,', 'réinventé.')
+      'fr', jsonb_build_array('Tu garaje,', 'reinventado.')
     ),
-    'italic_word', jsonb_build_object('en', 'reimagined.', 'fr', 'réinventé.'),
+    'italic_word', jsonb_build_object('en', 'reimagined.', 'fr', 'reinventado.'),
     'tagline', jsonb_build_object(
       'en', 'Unlock the Full Potential of Your Garage',
-      'fr', 'Révélez tout le potentiel de votre garage'
+      'fr', 'Libera todo el potencial de tu garaje'
     ),
 
     'sub', jsonb_build_object(
       'en', 'Custom garage transformations in Orlando.',
-      'fr', 'Transformations de garage sur-mesure à Orlando.'
+      'fr', 'Transformaciones de garaje a medida en Orlando.'
     ),
-    'primary_cta', jsonb_build_object('en', 'Get my free estimate', 'fr', 'Obtenir mon devis gratuit'),
-    'secondary_cta', jsonb_build_object('en', 'See our work', 'fr', 'Voir nos réalisations')
+    'primary_cta', jsonb_build_object('en', 'Get my free estimate', 'fr', 'Obtener mi presupuesto gratuito'),
+    'secondary_cta', jsonb_build_object('en', 'See our work', 'fr', 'Ver nuestros proyectos')
   ), 10, true),
 
   ('home', 'hero_caption', jsonb_build_object(
-    'label', jsonb_build_object('en', 'Featured project', 'fr', 'Projet phare'),
-    'image', '',
-    'video_url', '/hero-video.mp4',
-    'featured_label', jsonb_build_object('en', 'FEATURED PROJECT', 'fr', 'PROJET PHARE'),
+    'label', jsonb_build_object('en', 'Featured project', 'fr', 'Proyecto destacado'),
+    'images', jsonb_build_array(),
+    'featured_label', jsonb_build_object('en', 'FEATURED PROJECT', 'fr', 'PROYECTO DESTACADO'),
     'featured_title', jsonb_build_object('en', 'The Social Hub', 'fr', 'The Social Hub')
   ), 20, true),
   ('home', 'before_after', jsonb_build_object(
-    'eyebrow', jsonb_build_object('en', 'The transformation', 'fr', 'La transformation'),
-    'title', jsonb_build_object('en', 'From cluttered garage to dream garage. See the transformation!', 'fr', 'D''un garage encombré au garage de rêve. Découvrez la transformation !'),
+    'eyebrow', jsonb_build_object('en', 'The transformation', 'fr', 'La transformación'),
+    'title', jsonb_build_object('en', 'From cluttered garage to dream garage. See the transformation!', 'fr', 'De un garaje desordenado al garaje de tus sueños. ¡Descubre la transformación!'),
 
-    'before', jsonb_build_object('en', 'Boxes, tools, wasted square footage. No clear purpose.', 'fr', 'Cartons, outils, mètres carrés perdus. Aucun usage clair.'),
-    'after', jsonb_build_object('en', 'A clean, planned, functional garage designed around your lifestyle.', 'fr', 'Un garage propre, pensé, fonctionnel — conçu autour de votre vie.'),
+    'before', jsonb_build_object('en', 'Boxes, tools, wasted square footage. No clear purpose.', 'fr', 'Cajas, herramientas, metros cuadrados desperdiciados. Sin un propósito claro.'),
+    'after', jsonb_build_object('en', 'A clean, planned, functional garage designed around your lifestyle.', 'fr', 'Un garaje limpio, planificado y funcional, diseñado en torno a tu estilo de vida.'),
     'statement', jsonb_build_object(
       'en', 'Experience American practicality and precision combined with European mood-visual design and advanced Color, Material & Finish (CMF) expertise for a stunning, functional space.',
-      'fr', 'Découvrez la praticité et la précision américaines alliées au design visuel et à l''ambiance européens, ainsi qu''à une expertise avancée en Couleur, Matière & Finition (CMF), pour un espace fonctionnel et époustouflant.'
+      'fr', 'Descubre la practicidad y precisión americanas combinadas con el diseño visual y la atmósfera europeos, junto a una experiencia avanzada en Color, Material y Acabado (CMF), para un espacio funcional e impresionante.'
     )
   ), 40, true),
   ('home', 'services_intro', jsonb_build_object(
-    'eyebrow', jsonb_build_object('en', 'Pricing', 'fr', 'Tarifs'),
-    'title', jsonb_build_object('en', 'Explore Our Four Signature Services', 'fr', 'Découvrez nos quatre services signature'),
-    'sub', jsonb_build_object('en', 'Start with a plan. Go all the way. Upgrade anytime.', 'fr', 'Commencez par un plan. Allez jusqu''au bout. Évoluez à tout moment.')
+    'eyebrow', jsonb_build_object('en', 'Pricing', 'fr', 'Tarifas'),
+    'title', jsonb_build_object('en', 'Explore Our Four Signature Services', 'fr', 'Descubre nuestros cuatro servicios estrella'),
+    'sub', jsonb_build_object('en', 'Start with a plan. Go all the way. Upgrade anytime.', 'fr', 'Empieza con un plan. Ve hasta el final. Mejora cuando quieras.')
   ), 50, true),
   ('home', 'final_cta', jsonb_build_object(
-    'title', jsonb_build_object('en', 'Ready to reimagine your garage?', 'fr', 'Prêt à réinventer votre garage ?'),
-    'sub', jsonb_build_object('en', 'Tell us about your space. We''ll send a free estimate within 48 hours.', 'fr', 'Parlez-nous de votre espace. Nous envoyons un devis gratuit sous 48h.')
+    'title', jsonb_build_object('en', 'Ready to reimagine your garage?', 'fr', '¿Listo para reinventar tu garaje?'),
+    'sub', jsonb_build_object('en', 'Tell us about your space. We''ll send a free estimate within 48 hours.', 'fr', 'Cuéntanos sobre tu espacio. Te enviaremos un presupuesto gratuito en 48 h.')
   ), 60, true),
   ('home', 'use_cases', jsonb_build_object(
-    'eyebrow', jsonb_build_object('en', 'Transformations', 'fr', 'Transformations'),
-    'title', jsonb_build_object('en', 'Discover Your Dream Garage. Explore, Imagine, and Get Inspired!', 'fr', 'Découvrez le garage de vos rêves. Explorez, imaginez et inspirez-vous !'),
+    'eyebrow', jsonb_build_object('en', 'Transformations', 'fr', 'Transformaciones'),
+    'title', jsonb_build_object('en', 'Discover Your Dream Garage. Explore, Imagine, and Get Inspired!', 'fr', 'Descubre el garaje de tus sueños. ¡Explora, imagina e inspírate!'),
     'sub', jsonb_build_object(
       'en', 'We specialize in garage remodeling, makeovers, and custom storage solutions for homeowners, real estate agencies, developers, builders, and property managers across Orlando and the surrounding areas.',
-      'fr', 'Nous sommes spécialisés dans la rénovation de garages, les transformations et les solutions de rangement sur-mesure pour les propriétaires, les agences immobilières, les promoteurs, les constructeurs et les gestionnaires de biens à Orlando et ses environs.'
+      'fr', 'Estamos especializados en la reforma de garajes, transformaciones y soluciones de almacenamiento a medida para propietarios, agencias inmobiliarias, promotores, constructores y administradores de fincas en Orlando y alrededores.'
     ),
     'items', jsonb_build_array(
       jsonb_build_object(
         'image', '',
-        'name', jsonb_build_object('en', 'Daily Living Garage', 'fr', 'Garage du Quotidien'),
-        'tagline', jsonb_build_object('en', 'Multi-functional / Lifestyle', 'fr', 'Multifonctionnel / Art de vivre')
+        'name', jsonb_build_object('en', 'Daily Living Garage', 'fr', 'Garaje del Día a Día'),
+        'tagline', jsonb_build_object('en', 'Multi-functional / Lifestyle', 'fr', 'Multifuncional / Estilo de vida')
       ),
       jsonb_build_object(
         'image', '',
-        'name', jsonb_build_object('en', 'The Social Hub — Smart Living Garage', 'fr', 'Le Social Hub — Smart Living Garage'),
+        'name', jsonb_build_object('en', 'The Social Hub — Smart Living Garage', 'fr', 'The Social Hub — Smart Living Garage'),
         'tagline', jsonb_build_object(
           'en', 'A Garage Designed for Entertainment and Lifestyle',
-          'fr', 'Un garage conçu pour le divertissement et l''art de vivre'
+          'fr', 'Un garaje diseñado para el entretenimiento y el estilo de vida'
         )
       ),
       jsonb_build_object(
         'image', '',
-        'name', jsonb_build_object('en', 'The Daily Living Garage', 'fr', 'Le Garage du Quotidien'),
+        'name', jsonb_build_object('en', 'The Daily Living Garage', 'fr', 'El Garaje del Día a Día'),
         'tagline', jsonb_build_object(
           'en', 'A Multi-Functional Garage for Work, Fitness, and Relaxation',
-          'fr', 'Un garage multifonctionnel pour le travail, le fitness et la détente'
+          'fr', 'Un garaje multifuncional para el trabajo, el fitness y la relajación'
         )
       ),
       jsonb_build_object(
         'image', '',
-        'name', jsonb_build_object('en', 'Modern Automotive Lounge', 'fr', 'Lounge Automobile Moderne'),
+        'name', jsonb_build_object('en', 'Modern Automotive Lounge', 'fr', 'Lounge Automovilístico Moderno'),
         'tagline', jsonb_build_object(
           'en', 'A High-End Garage for Cars, Work, Entertainment, and Lifestyle',
-          'fr', 'Un garage haut de gamme pour voitures, travail, divertissement et art de vivre'
+          'fr', 'Un garaje de alta gama para coches, trabajo, entretenimiento y estilo de vida'
         )
       )
     )
   ), 30, true),
 
   ('projects', 'projects_page', jsonb_build_object(
-    'eyebrow', jsonb_build_object('en', 'Selected work', 'fr', 'Sélection'),
-    'title', jsonb_build_object('en', 'Our garages, redesigned.', 'fr', 'Nos garages, repensés.'),
-    'sub', jsonb_build_object('en', 'Custom transformations. Tap any project for the full story.', 'fr', 'Transformations sur-mesure. Cliquez pour l''histoire complète.')
+    'eyebrow', jsonb_build_object('en', 'Selected work', 'fr', 'Selección'),
+    'title', jsonb_build_object('en', 'Our garages, redesigned.', 'fr', 'Nuestros garajes, repensados.'),
+    'sub', jsonb_build_object('en', 'Custom transformations. Tap any project for the full story.', 'fr', 'Transformaciones a medida. Haz clic para conocer la historia completa.')
   ), 10, true),
   ('contact', 'contact_page', jsonb_build_object(
-    'eyebrow', jsonb_build_object('en', 'Get in touch', 'fr', 'Contact'),
-    'title', jsonb_build_object('en', 'Let''s design your garage.', 'fr', 'Imaginons votre garage.'),
-    'sub', jsonb_build_object('en', 'Tell us about your space and your vision. We''ll come back to you within 48 hours with a free estimate and clear next steps.', 'fr', 'Parlez-nous de votre espace et de votre vision. Nous revenons vers vous sous 48h avec un devis gratuit et des étapes claires.'),
-    'info_title', jsonb_build_object('en', 'Direct line', 'fr', 'Contact direct'),
+    'eyebrow', jsonb_build_object('en', 'Get in touch', 'fr', 'Contacto'),
+    'title', jsonb_build_object('en', 'Let''s design your garage.', 'fr', 'Diseñemos tu garaje.'),
+    'sub', jsonb_build_object('en', 'Tell us about your space and your vision. We''ll come back to you within 48 hours with a free estimate and clear next steps.', 'fr', 'Cuéntanos sobre tu espacio y tu visión. Te responderemos en 48 h con un presupuesto gratuito y los próximos pasos claros.'),
+    'info_title', jsonb_build_object('en', 'Direct line', 'fr', 'Contacto directo'),
     'form', jsonb_build_object(
-      'name', jsonb_build_object('en', 'Your name', 'fr', 'Votre nom'),
+      'name', jsonb_build_object('en', 'Your name', 'fr', 'Tu nombre'),
       'email', jsonb_build_object('en', 'Email', 'fr', 'Email'),
-      'phone', jsonb_build_object('en', 'Phone (optional)', 'fr', 'Téléphone (optionnel)'),
-      'service', jsonb_build_object('en', 'Service interested in', 'fr', 'Service souhaité'),
-      'message', jsonb_build_object('en', 'Tell us about your project', 'fr', 'Parlez-nous de votre projet'),
-      'submit', jsonb_build_object('en', 'Send my request', 'fr', 'Envoyer ma demande'),
-      'consent', jsonb_build_object('en', 'I have read and agree to the', 'fr', 'J''ai lu et j''accepte les'),
-      'consent_link', jsonb_build_object('en', 'project conditions', 'fr', 'conditions du projet')
+      'phone', jsonb_build_object('en', 'Phone (optional)', 'fr', 'Teléfono (opcional)'),
+      'service', jsonb_build_object('en', 'Service interested in', 'fr', 'Servicio de interés'),
+      'message', jsonb_build_object('en', 'Tell us about your project', 'fr', 'Cuéntanos sobre tu proyecto'),
+      'submit', jsonb_build_object('en', 'Send my request', 'fr', 'Enviar mi solicitud'),
+      'consent', jsonb_build_object('en', 'I have read and agreed to the', 'fr', 'He leído y acepto las'),
+      'consent_link', jsonb_build_object('en', 'project conditions', 'fr', 'condiciones del proyecto')
     )
   ), 10, true),
   ('global', 'popup', jsonb_build_object(
-    'title', jsonb_build_object('en', 'Before you go —', 'fr', 'Avant de partir —'),
-    'sub', jsonb_build_object('en', 'Get our free guide: 5 mistakes to avoid before transforming your garage.', 'fr', 'Recevez notre guide gratuit : 5 erreurs à éviter avant de transformer votre garage.'),
-    'placeholder', jsonb_build_object('en', 'Your email', 'fr', 'Votre email'),
-    'cta', jsonb_build_object('en', 'Send me the guide', 'fr', 'M''envoyer le guide'),
-    'decline', jsonb_build_object('en', 'No thanks', 'fr', 'Non merci'),
-    'success', jsonb_build_object('en', 'Thanks — check your inbox.', 'fr', 'Merci — surveillez votre boîte mail.')
+    'title', jsonb_build_object('en', 'Before you go —', 'fr', 'Antes de irte —'),
+    'sub', jsonb_build_object('en', 'Get our free guide: 5 mistakes to avoid before transforming your garage.', 'fr', 'Recibe nuestra guía gratuita: 5 errores que evitar antes de transformar tu garaje.'),
+    'placeholder', jsonb_build_object('en', 'Your email', 'fr', 'Tu email'),
+    'cta', jsonb_build_object('en', 'Send me the guide', 'fr', 'Enviarme la guía'),
+    'decline', jsonb_build_object('en', 'No thanks', 'fr', 'No, gracias'),
+    'success', jsonb_build_object('en', 'Thanks — check your inbox.', 'fr', 'Gracias — revisa tu bandeja de entrada.')
   ), 20, true)
 on conflict (section_key) do update
 set page_key = excluded.page_key,
@@ -178,8 +177,8 @@ set page_key = excluded.page_key,
 insert into public.contact_channels (channel_key, channel_type, label, value, href, display_order, is_active)
 values
   ('main_email', 'email', jsonb_build_object('en', 'Email', 'fr', 'Email'), 'hello@garagealacarte.com', 'mailto:hello@garagealacarte.com', 10, true),
-  ('main_phone', 'phone', jsonb_build_object('en', 'Phone', 'fr', 'Téléphone'), '+1 (407) 555-0142', 'tel:+14075550142', 20, true),
-  ('address', 'address', jsonb_build_object('en', 'Address', 'fr', 'Adresse'), 'Orlando, FL · service area within 20 miles', null, 30, true)
+  ('main_phone', 'phone', jsonb_build_object('en', 'Phone', 'fr', 'Teléfono'), '+1 (407) 555-0142', 'tel:+14075550142', 20, true),
+  ('address', 'address', jsonb_build_object('en', 'Address', 'fr', 'Dirección'), 'Orlando, FL · service area within 20 miles', null, 30, true)
 on conflict (channel_key) do update
 set channel_type = excluded.channel_type,
     label = excluded.label,
@@ -189,28 +188,71 @@ set channel_type = excluded.channel_type,
     is_active = excluded.is_active,
     updated_at = now();
 
-insert into public.team_members (slug, name, role, bio, email, phone, website, display_order, is_active)
+insert into public.team_members (slug, name, role, bio, long_bio, email, phone, website, display_order, is_active)
 values
   ('guillaume', 'Guillaume',
-    jsonb_build_object('en', 'Garage Transformation & Build Lead', 'fr', 'Lead Transformation & Construction de Garage'),
-    jsonb_build_object('en', 'Based in Orlando, Guillaume brings real-world construction experience and ensures every project is grounded, feasible, and built right.', 'fr', 'Basé à Orlando, Guillaume apporte une expérience terrain solide et garantit que chaque projet est faisable, ancré, et bien exécuté.'),
-    null, null, 'https://www.ecuafranceelectric.com/', 10, true),
-  ('aymeric', 'Aymeric',
-    jsonb_build_object('en', '3D Space Planning & Technical Design Lead', 'fr', 'Lead Plans 3D & Design Technique'),
-    jsonb_build_object('en', 'Specialised in European space efficiency, custom layouts, and 3D planning. Aymeric turns ideas into precise, build-ready designs.', 'fr', 'Spécialisé en efficacité spatiale européenne, plans sur-mesure et 3D. Aymeric transforme les idées en plans prêts à construire.'),
-    'aymeric.vanelle@gmail.com', '+33 6 72 54 54 51', null, 20, true),
+    jsonb_build_object('en', 'Garage Transformation & Build Lead', 'fr', 'Responsable de Transformación y Construcción de Garaje'),
+    jsonb_build_object('en', 'Based in Orlando, Guillaume brings real-world construction experience and ensures every project is grounded, feasible, and built right.', 'fr', 'Con sede en Orlando, Guillaume aporta una sólida experiencia en obra y garantiza que cada proyecto sea realista, viable y bien ejecutado.'),
+    null,
+    null, '+917 353 4950', 'https://www.ecuafranceelectric.com/', 10, true),
+  ('aymeric', 'Aymeric Vanelle',
+    jsonb_build_object('en', '3D Space Planning & Technical Design Lead', 'fr', 'Responsable de planificación espacial 3D y diseño técnico'),
+    jsonb_build_object('en', 'Industrial designer specializing in 3D design and custom space planning, with a Paris-trained background in fine woodworking, industrial design, and applied arts.', 'fr', 'Diseñador industrial especializado en diseño 3D y planificación de espacios a medida, con formación parisina en ebanistería fina, diseño industrial y artes aplicadas.'),
+    jsonb_build_object(
+      'en', $$I am Aymeric Vanelle, an industrial designer specializing in 3D design and custom space planning. My background includes fine woodworking, industrial design, and applied arts, all earned in Paris, France.
+
+My experience spans high-end cabinetry, luxury residential projects, the French film industry, and the creation of luxury presentation boxes for watchmaking and cigar brands.
+
+This background has shaped my approach, combining technical precision, craftsmanship, and meticulous attention to detail.
+
+At Garage a la Carte, I contribute expertise in technical design and space optimization, transforming ideas into functional and well-planned environments. By creating detailed 3D floor plans and applying thoughtful space planning, I ensure every project is practical, efficient, and tailored to the client's specific needs.
+
+Working with Juliette and Guillaume, we design smart, functional, and personalized garages that enhance everyday living and integrate naturally into each family's lifestyle.$$,
+      'fr', $$Soy Aymeric Vanelle, diseñador industrial especializado en diseño 3D y planificación de espacios a medida. Mi formación incluye ebanistería fina, diseño industrial y artes aplicadas, todo ello en París, Francia.
+
+Mi experiencia abarca mobiliario de alta gama, proyectos residenciales de lujo, la industria cinematográfica francesa y la creación de cajas de presentación de lujo para marcas de relojería y cigarros.
+
+Este recorrido ha dado forma a mi enfoque, combinando precisión técnica, artesanía y una atención minuciosa al detalle.
+
+En Garage a la Carte, aporto experiencia en diseño técnico y optimización del espacio, transformando ideas en entornos funcionales y bien planificados. Mediante planos 3D detallados y una planificación espacial cuidada, me aseguro de que cada proyecto sea práctico, eficiente y adaptado a las necesidades específicas del cliente.
+
+Junto a Juliette y Guillaume, diseñamos garajes inteligentes, funcionales y personalizados que mejoran la vida diaria y se integran de forma natural en el estilo de vida de cada familia.$$
+    ),
+    null, null, null, 20, true),
   ('juliette', 'Juliette',
-    jsonb_build_object('en', 'Mood-Visual & Advanced Color, Material & Finish (CMF) Design Lead', 'fr', 'Lead Design Mood-Visual & Couleur, Matière & Finition (CMF) avancée'),
-    jsonb_build_object('en', 'Combines American precision with European creativity and space-saving design — turning ideas into immersive visuals so you see your future space before it''s built.', 'fr', 'Allie précision américaine et créativité européenne. Juliette crée des visuels immersifs pour que vous voyiez votre espace avant même qu''il existe.'),
-    'juliette.bergougnoux@icloud.com', '+33 7 44 81 52 22', null, 30, true),
+    jsonb_build_object('en', 'Mood-Visual & Advanced Color, Material & Finish (CMF) Design Lead', 'fr', 'Responsable de Diseño Mood-Visual y Color, Material y Acabado (CMF) avanzado'),
+    jsonb_build_object('en', 'Combines American precision with European creativity and space-saving design — turning ideas into immersive visuals so you see your future space before it''s built.', 'fr', 'Combina la precisión americana con la creatividad europea. Juliette crea imágenes inmersivas para que veas tu espacio antes incluso de que exista.'),
+    jsonb_build_object(
+      'en', $$I am Juliette Bergougnoux, an American-French designer born in New York City, with a creative background shaped by both American innovation and European design culture.
+
+I hold a Master's degree in Interior Transportation Design with a specialization in Color, Material & Finish (CMF), completed in Paris, France.
+
+My experience includes collaborations with major automotive brands such as Citroën and Dacia, where I developed CMF concepts for transportation interiors, focusing on material selection, color integration, visual identity, and user experience.
+
+My design approach combines functionality, atmosphere, and refined material storytelling to create spaces that feel both distinctive and purposeful.
+
+Today, I bring this expertise to Garage a la Carte alongside Aymeric and Guillaume, helping to design personalized garage environments that reflect each client's lifestyle through thoughtful space planning, materials, colors, and functionality.$$,
+      'fr', $$Soy Juliette Bergougnoux, diseñadora franco-americana nacida en Nueva York, con un recorrido creativo moldeado por la innovación americana y la cultura del diseño europeo.
+
+Soy Máster en Interior Transportation Design con especialización en Color, Material y Acabado (CMF), obtenido en París.
+
+Mi experiencia incluye colaboraciones con grandes marcas del automóvil como Citroën y Dacia, donde desarrollé conceptos CMF para interiores de vehículos, trabajando la selección de materiales, la integración del color, la identidad visual y la experiencia de usuario.
+
+Mi enfoque del diseño combina funcionalidad, atmósfera y un relato cuidado de los materiales para crear espacios distintivos y llenos de sentido.
+
+Hoy aporto esta experiencia a Garage a la Carte junto a Aymeric y Guillaume, diseñando garajes personalizados que reflejan el estilo de vida de cada cliente a través de una cuidada planificación del espacio, los materiales, los colores y la funcionalidad.$$
+    ),
+    null, null, null, 30, true),
   ('nelly', 'Nelly',
-    jsonb_build_object('en', 'Project Coordination Lead', 'fr', 'Lead Coordination de Projet'),
-    jsonb_build_object('en', 'Nelly keeps every project on track — coordinating schedules, suppliers, and your peace of mind from kickoff to handover.', 'fr', 'Nelly garde chaque projet sur les rails — coordonne plannings, fournisseurs et votre tranquillité d''esprit, du lancement à la livraison.'),
-    'loucie@icloud.com', null, null, 40, true)
+    jsonb_build_object('en', 'Project Coordination Lead', 'fr', 'Responsable de Coordinación de Proyecto'),
+    jsonb_build_object('en', 'Nelly keeps every project on track — coordinating schedules, suppliers, and your peace of mind from kickoff to handover.', 'fr', 'Nelly mantiene cada proyecto en marcha — coordina agendas, proveedores y tu tranquilidad, desde el inicio hasta la entrega.'),
+    null,
+    null, null, null, 40, true)
 on conflict (slug) do update
 set name = excluded.name,
     role = excluded.role,
     bio = excluded.bio,
+    long_bio = excluded.long_bio,
     email = excluded.email,
     phone = excluded.phone,
     website = excluded.website,
@@ -229,80 +271,80 @@ insert into public.services (
 values
   ('blueprint', '01',
     jsonb_build_object('en', 'Design Blueprint', 'fr', 'Design Blueprint'),
-    jsonb_build_object('en', 'Plan it right. Build it your way.', 'fr', 'Planifiez bien. Construisez à votre façon.'),
-    jsonb_build_object('en', 'You want to plan your garage with confidence before making decisions. See your future garage before you build anything — with a custom layout, two realistic views, and expert guidance to avoid costly mistakes. Most clients start here, then move forward once they see their design.', 'fr', 'Vous voulez planifier votre garage en toute confiance avant de décider. Visualisez votre futur garage avant de construire — avec un agencement sur-mesure, deux vues réalistes et des conseils experts pour éviter les erreurs coûteuses. La plupart de nos clients commencent ici, puis poursuivent une fois leur design validé.'),
-    jsonb_build_object('en', 'starts at $950', 'fr', 'à partir de 950 $'),
+    jsonb_build_object('en', 'Plan it right. Build it your way.', 'fr', 'Planifica bien. Construye a tu manera.'),
+    jsonb_build_object('en', 'You want to plan your garage with confidence before making decisions. See your future garage before you build anything — with a custom layout, two realistic views, and expert guidance to avoid costly mistakes. Most clients start here, then move forward once they see their design.', 'fr', 'Quieres planificar tu garaje con seguridad antes de tomar decisiones. Visualiza tu futuro garaje antes de construir nada — con una distribución a medida, dos vistas realistas y asesoramiento experto para evitar errores costosos. La mayoría de nuestros clientes empieza aquí y avanza una vez validado el diseño.'),
+    jsonb_build_object('en', 'starts at $950', 'fr', 'desde 950 $'),
     null,
-    jsonb_build_object('en', 'Ideal for getting started', 'fr', 'Idéal pour démarrer'),
-    jsonb_build_object('en', jsonb_build_array('1 optimized layout', '2 realistic views', '1 round of minor adjustments', 'Expert design guidance'), 'fr', jsonb_build_array('1 agencement optimisé', '2 vues réalistes', '1 série d''ajustements mineurs', 'Conseil expert')),
-    jsonb_build_object('en', 'No product purchasing, no delivery, no installation.', 'fr', 'Pas d''achat de produits, pas de livraison, pas d''installation.'),
+    jsonb_build_object('en', 'Ideal for getting started', 'fr', 'Ideal para empezar'),
+    jsonb_build_object('en', jsonb_build_array('1 optimized layout', '2 realistic views', '1 round of minor adjustments', 'Expert design guidance'), 'fr', jsonb_build_array('1 distribución optimizada', '2 vistas realistas', '1 ronda de ajustes menores', 'Asesoramiento experto')),
+    jsonb_build_object('en', 'No product purchasing, no delivery, no installation.', 'fr', 'Sin compra de productos, sin entrega, sin instalación.'),
     null,
-    jsonb_build_object('en', 'Design Blueprint + On-Site Assessment starts at $1,350', 'fr', 'Design Blueprint + évaluation sur site à partir de 1 350 $'),
+    jsonb_build_object('en', 'Design Blueprint + On-Site Assessment starts at $1,350', 'fr', 'Design Blueprint + evaluación in situ desde 1 350 $'),
     $$[
-      {"title":{"en":"Choose your level","fr":"Choisissez votre niveau"},"items":{"en":["Design Blueprint (Remote) starts at $950","Design Blueprint + On-Site Assessment starts at $1,350"],"fr":["Design Blueprint à distance à partir de 950 $","Design Blueprint + évaluation sur site à partir de 1 350 $"]}},
-      {"title":{"en":"How it works","fr":"Comment ça marche"},"items":{"en":["Free consultation to define your project","Fixed price, no surprises","Delivered digitally","Every detail is captured remotely or on-site when needed"],"fr":["Consultation gratuite pour définir le projet","Prix fixe, sans surprise","Livraison digitale","Chaque détail est relevé à distance ou sur site si nécessaire"]}},
-      {"title":{"en":"Revisions","fr":"Révisions"},"body":{"en":"Requests for extra views, major changes, or a new direction after approval are quoted separately.","fr":"Les vues supplémentaires, changements majeurs ou nouvelles directions après validation sont chiffrés séparément."}},
-      {"title":{"en":"Continue your project","fr":"Poursuivre votre projet"},"body":{"en":"Move forward anytime with setup support or a full transformation once your design is validated.","fr":"Vous pouvez poursuivre à tout moment avec l'accompagnement setup ou une transformation complète une fois le design validé."}},
-      {"title":{"en":"Delivery area","fr":"Zone de service"},"body":{"en":"On-site visits are available throughout the Orlando area. Visits beyond our standard zone are quoted based on location.","fr":"Les visites sur site sont disponibles dans la région d'Orlando. Au-delà de la zone standard, elles sont chiffrées selon la localisation."}}
+      {"title":{"en":"Choose your level","fr":"Elige tu nivel"},"items":{"en":["Design Blueprint (Remote) starts at $950","Design Blueprint + On-Site Assessment starts at $1,350"],"fr":["Design Blueprint a distancia desde 950 $","Design Blueprint + evaluación in situ desde 1 350 $"]}},
+      {"title":{"en":"How it works","fr":"Cómo funciona"},"items":{"en":["Free consultation to define your project","Fixed price, no surprises","Delivered digitally","Every detail is captured remotely or on-site when needed"],"fr":["Consulta gratuita para definir el proyecto","Precio fijo, sin sorpresas","Entrega digital","Cada detalle se captura a distancia o in situ si es necesario"]}},
+      {"title":{"en":"Revisions","fr":"Revisiones"},"body":{"en":"Requests for extra views, major changes, or a new direction after approval are quoted separately.","fr":"Las vistas adicionales, los cambios mayores o un nuevo enfoque tras la aprobación se presupuestan por separado."}},
+      {"title":{"en":"Continue your project","fr":"Continúa tu proyecto"},"body":{"en":"Move forward anytime with setup support or a full transformation once your design is validated.","fr":"Puedes continuar cuando quieras con el acompañamiento setup o una transformación completa una vez validado el diseño."}},
+      {"title":{"en":"Delivery area","fr":"Zona de servicio"},"body":{"en":"On-site visits are available throughout the Orlando area. Visits beyond our standard zone are quoted based on location.","fr":"Las visitas in situ están disponibles en toda la zona de Orlando. Más allá de la zona estándar, se presupuestan según la ubicación."}}
     ]$$::jsonb,
     10, true),
   ('delivery', '02',
     jsonb_build_object('en', 'Design & Setup', 'fr', 'Design & Setup'),
-    jsonb_build_object('en', 'Plan it right. Prepare it with confidence.', 'fr', 'Planifiez bien. Préparez avec confiance.'),
-    jsonb_build_object('en', 'You want more than a design — you want the right products, materials, and a clear setup plan. Move from vision to execution without the sourcing headache. Most clients move forward with full transformation once everything is planned and ready.', 'fr', 'Vous voulez plus qu''un design — vous voulez les bons produits, les bons matériaux et un plan de mise en place clair. Passez de la vision à l''exécution sans la charge du sourcing. La plupart de nos clients enchaînent vers la transformation complète une fois tout planifié et prêt.'),
-    jsonb_build_object('en', 'starts at $1,500', 'fr', 'à partir de 1 500 $'),
-    jsonb_build_object('en', 'Most popular', 'fr', 'Le plus choisi'), null,
-    jsonb_build_object('en', jsonb_build_array('1 optimized layout', '2 realistic views', 'Product selection guidance', 'Sourcing coordination', 'Setup planning for installation', '1 round of minor adjustments'), 'fr', jsonb_build_array('1 agencement optimisé', '2 vues réalistes', 'Sélection des produits', 'Coordination du sourcing', 'Planification de l''installation', '1 série d''ajustements mineurs')),
-    jsonb_build_object('en', 'No final installation or contractor labor unless upgraded to Full Transformation.', 'fr', 'Pas d''installation finale ni de main-d''oeuvre entrepreneur sauf évolution vers Transformation Complète.'),
+    jsonb_build_object('en', 'Plan it right. Prepare it with confidence.', 'fr', 'Planifica bien. Prepáralo con confianza.'),
+    jsonb_build_object('en', 'You want more than a design — you want the right products, materials, and a clear setup plan. Move from vision to execution without the sourcing headache. Most clients move forward with full transformation once everything is planned and ready.', 'fr', 'Quieres algo más que un diseño — quieres los productos adecuados, los materiales correctos y un plan claro de instalación. Pasa de la visión a la ejecución sin la carga del sourcing. La mayoría de nuestros clientes pasa a la transformación completa una vez todo está planificado y listo.'),
+    jsonb_build_object('en', 'starts at $1,500', 'fr', 'desde 1 500 $'),
+    jsonb_build_object('en', 'Most popular', 'fr', 'El más elegido'), null,
+    jsonb_build_object('en', jsonb_build_array('1 optimized layout', '2 realistic views', 'Product selection guidance', 'Sourcing coordination', 'Setup planning for installation', '1 round of minor adjustments'), 'fr', jsonb_build_array('1 distribución optimizada', '2 vistas realistas', 'Selección de productos', 'Coordinación del sourcing', 'Planificación de la instalación', '1 ronda de ajustes menores')),
+    jsonb_build_object('en', 'No final installation or contractor labor unless upgraded to Full Transformation.', 'fr', 'Sin instalación final ni mano de obra del contratista, salvo al pasar a Transformación Completa.'),
     jsonb_build_object('en', '50% / 25% / 25%', 'fr', '50 % / 25 % / 25 %'),
     null,
     $$[
-      {"title":{"en":"Service fee credit","fr":"Crédit des honoraires"},"body":{"en":"The service fee is fully credited when you move forward with a signed project contract.","fr":"Les honoraires sont entièrement crédités si vous poursuivez avec un contrat de projet signé."}},
-      {"title":{"en":"How it works","fr":"Comment ça marche"},"items":{"en":["Free consultation to define your project","Clear scope before commitment","Fixed starting price; final pricing depends on size, complexity, and sourcing needs","Delivered digitally with setup guidance"],"fr":["Consultation gratuite pour définir votre projet","Périmètre clair avant engagement","Prix de départ fixe ; le prix final dépend de la taille, de la complexité et des besoins de sourcing","Livraison digitale avec guide de setup"]}},
-      {"title":{"en":"Deposit structure","fr":"Structure de paiement"},"items":{"en":["50% to secure your project and begin design","25% after design validation during materials and sourcing","25% upon completion and final walkthrough"],"fr":["50 % pour sécuriser le projet et démarrer le design","25 % après validation du design, pendant la phase matériaux et sourcing","25 % à la fin, lors de la visite finale"]}},
-      {"title":{"en":"Use of designs","fr":"Utilisation des designs"},"body":{"en":"Plans and visual designs remain the property of Garage à la Carte and are provided for your personal project use only. If you build independently or work with another contractor, a separate usage or release agreement may be required.","fr":"Les plans et visuels restent la propriété de Garage à la Carte et sont fournis uniquement pour votre projet personnel. Si vous construisez seul ou avec un autre entrepreneur, un accord d'utilisation ou de cession peut être requis."}},
-      {"title":{"en":"Continue your project","fr":"Poursuivre votre projet"},"body":{"en":"Move forward anytime with full transformation. Everything is planned, selected, and ready for execution.","fr":"Vous pouvez passer à la transformation complète à tout moment. Tout est planifié, sélectionné et prêt pour l'exécution."}},
-      {"title":{"en":"Delivery area","fr":"Zone de service"},"body":{"en":"Delivery and setup coordination are included within 20 miles of Orlando. Extended zones are available with a mileage fee, and statewide projects may be available upon request.","fr":"La coordination livraison et setup est incluse dans un rayon de 20 miles autour d'Orlando. Les zones étendues sont possibles avec frais kilométriques, et certains projets dans tout l'État peuvent être étudiés sur demande."}}
+      {"title":{"en":"Service fee credit","fr":"Crédito de honorarios"},"body":{"en":"The service fee is fully credited when you move forward with a signed project contract.","fr":"Los honorarios se acreditan íntegramente si continúas con un contrato de proyecto firmado."}},
+      {"title":{"en":"How it works","fr":"Cómo funciona"},"items":{"en":["Free consultation to define your project","Clear scope before commitment","Fixed starting price; final pricing depends on size, complexity, and sourcing needs","Delivered digitally with setup guidance"],"fr":["Consulta gratuita para definir tu proyecto","Alcance claro antes del compromiso","Precio inicial fijo; el precio final depende del tamaño, la complejidad y las necesidades de sourcing","Entrega digital con guía de instalación"]}},
+      {"title":{"en":"Deposit structure","fr":"Estructura de pago"},"items":{"en":["50% to secure your project and begin design","25% after design validation during materials and sourcing","25% upon completion and final walkthrough"],"fr":["50 % para asegurar el proyecto e iniciar el diseño","25 % tras la validación del diseño, durante la fase de materiales y sourcing","25 % al finalizar, en la visita final"]}},
+      {"title":{"en":"Use of designs","fr":"Uso de los diseños"},"body":{"en":"Plans and visual designs remain the property of Garage a la Carte and are provided for your personal project use only. If you build independently or work with another contractor, a separate usage or release agreement may be required.","fr":"Los planos y diseños visuales son propiedad de Garage a la Carte y se entregan exclusivamente para tu proyecto personal. Si construyes por tu cuenta o con otro contratista, puede requerirse un acuerdo de uso o cesión."}},
+      {"title":{"en":"Continue your project","fr":"Continúa tu proyecto"},"body":{"en":"Move forward anytime with full transformation. Everything is planned, selected, and ready for execution.","fr":"Puedes pasar a la transformación completa cuando quieras. Todo está planificado, seleccionado y listo para ejecutarse."}},
+      {"title":{"en":"Delivery area","fr":"Zona de servicio"},"body":{"en":"Delivery and setup coordination are included within 20 miles of Orlando. Extended zones are available with a mileage fee, and statewide projects may be available upon request.","fr":"La coordinación de entrega e instalación está incluida en un radio de 20 millas alrededor de Orlando. Las zonas ampliadas son posibles con gastos kilométricos, y ciertos proyectos en todo el estado pueden estudiarse bajo petición."}}
     ]$$::jsonb,
     20, true),
   ('transform', '03',
-    jsonb_build_object('en', 'Full Transformation', 'fr', 'Transformation Complète'),
-    jsonb_build_object('en', 'From concept to completion — we handle everything.', 'fr', 'Du concept à la livraison — nous gérons tout.'),
-    jsonb_build_object('en', 'You want a complete, worry-free transformation — fully designed, fully managed, fully delivered. A turnkey solution where we design, plan, and coordinate your full garage transformation. Most clients enhance it with integrated upgrades — lighting, electrical, climate control, and smart features designed to work seamlessly together.', 'fr', 'Vous voulez une transformation complète et sans souci — entièrement conçue, gérée et livrée. Une solution clé en main : nous concevons, planifions et coordonnons votre transformation. La plupart de nos clients la complètent avec des intégrations — éclairage, électricité, climatisation et smart features pensés pour fonctionner ensemble.'),
-    jsonb_build_object('en', 'starts at $2,750', 'fr', 'à partir de 2 750 $'),
-    jsonb_build_object('en', 'Premium Experience', 'fr', 'Expérience premium'), null,
-    jsonb_build_object('en', jsonb_build_array('Custom optimized layout', '3D design with 4-6 realistic views', 'Full space planning', 'Complete material & equipment selection', 'Sourcing and logistics coordination', 'Project management and execution oversight', 'Final walkthrough'), 'fr', jsonb_build_array('Agencement optimisé sur-mesure', 'Design 3D avec 4 à 6 vues réalistes', 'Planification complète de l''espace', 'Sélection complète matériaux & équipements', 'Coordination sourcing & logistique', 'Gestion de projet et suivi d''exécution', 'Visite finale')),
+    jsonb_build_object('en', 'Full Transformation', 'fr', 'Transformación Completa'),
+    jsonb_build_object('en', 'From concept to completion — we handle everything.', 'fr', 'Del concepto a la entrega — nos encargamos de todo.'),
+    jsonb_build_object('en', 'You want a complete, worry-free transformation — fully designed, fully managed, fully delivered. A turnkey solution where we design, plan, and coordinate your full garage transformation. Most clients enhance it with integrated upgrades — lighting, electrical, climate control, and smart features designed to work seamlessly together.', 'fr', 'Quieres una transformación completa y sin preocupaciones — totalmente diseñada, gestionada y entregada. Una solución llave en mano: diseñamos, planificamos y coordinamos toda tu transformación. La mayoría de nuestros clientes la completa con integraciones — iluminación, electricidad, climatización y funciones inteligentes pensadas para funcionar en conjunto.'),
+    jsonb_build_object('en', 'starts at $2,750', 'fr', 'desde 2 750 $'),
+    jsonb_build_object('en', 'Premium Experience', 'fr', 'Experiencia premium'), null,
+    jsonb_build_object('en', jsonb_build_array('Custom optimized layout', '3D design with 4-6 realistic views', 'Full space planning', 'Complete material & equipment selection', 'Sourcing and logistics coordination', 'Project management and execution oversight', 'Final walkthrough'), 'fr', jsonb_build_array('Distribución optimizada a medida', 'Diseño 3D con 4 a 6 vistas realistas', 'Planificación completa del espacio', 'Selección completa de materiales y equipamiento', 'Coordinación de sourcing y logística', 'Gestión del proyecto y supervisión de la ejecución', 'Visita final')),
     null,
     jsonb_build_object('en', '50% / 25% / 25%', 'fr', '50 % / 25 % / 25 %'),
     null,
     $$[
-      {"title":{"en":"Service fee credit","fr":"Crédit des honoraires"},"body":{"en":"The service fee is fully credited when you move forward with a signed project contract.","fr":"Les honoraires sont entièrement crédités si vous poursuivez avec un contrat de projet signé."}},
-      {"title":{"en":"How it works","fr":"Comment ça marche"},"items":{"en":["Dedicated consultation to define your vision","Clear scope, budget, and timeline","Structured phases from design to completion","One expert guiding your project throughout"],"fr":["Consultation dédiée pour définir votre vision","Périmètre, budget et calendrier clairs","Phases structurées du design à la livraison","Un expert qui guide votre projet tout au long du processus"]}},
-      {"title":{"en":"Deposit structure","fr":"Structure de paiement"},"items":{"en":["50% to secure your project and begin design","25% after design validation during materials and sourcing","25% upon completion and final walkthrough"],"fr":["50 % pour sécuriser le projet et démarrer le design","25 % après validation du design, pendant la phase matériaux et sourcing","25 % à la fin, lors de la visite finale"]}},
-      {"title":{"en":"Project investment","fr":"Investissement projet"},"body":{"en":"Typical project investment depends on layout, finishes, and customization level. This investment elevates daily living and adds lasting value to your property.","fr":"L'investissement final dépend de l'agencement, des finitions et du niveau de personnalisation. Il améliore votre quotidien et ajoute une valeur durable à votre bien."}},
-      {"title":{"en":"Use of designs","fr":"Utilisation des designs"},"body":{"en":"Plans and visual designs remain the property of Garage à la Carte and are provided for your personal project use only. If you build independently or work with another contractor, a separate usage or release agreement may be required.","fr":"Les plans et visuels restent la propriété de Garage à la Carte et sont fournis uniquement pour votre projet personnel. Si vous construisez seul ou avec un autre entrepreneur, un accord d'utilisation ou de cession peut être requis."}},
-      {"title":{"en":"Continue your project","fr":"Poursuivre votre projet"},"body":{"en":"Upgrade your space with integrated systems such as plumbing, electrical, climate control, and smart features designed to work seamlessly together.","fr":"Améliorez votre espace avec des systèmes intégrés comme la plomberie, l'électricité, le contrôle climatique et les fonctions connectées, pensés pour fonctionner ensemble."}},
-      {"title":{"en":"Delivery area","fr":"Zone de service"},"body":{"en":"Included within 20 miles of Orlando. Extended zones are available with a mileage fee, and statewide projects may be available upon request.","fr":"Inclus dans un rayon de 20 miles autour d'Orlando. Les zones étendues sont possibles avec frais kilométriques, et certains projets dans tout l'État peuvent être étudiés sur demande."}}
+      {"title":{"en":"Service fee credit","fr":"Crédito de honorarios"},"body":{"en":"The service fee is fully credited when you move forward with a signed project contract.","fr":"Los honorarios se acreditan íntegramente si continúas con un contrato de proyecto firmado."}},
+      {"title":{"en":"How it works","fr":"Cómo funciona"},"items":{"en":["Dedicated consultation to define your vision","Clear scope, budget, and timeline","Structured phases from design to completion","One expert guiding your project throughout"],"fr":["Consulta dedicada para definir tu visión","Alcance, presupuesto y plazos claros","Fases estructuradas del diseño a la entrega","Un experto que acompaña tu proyecto durante todo el proceso"]}},
+      {"title":{"en":"Deposit structure","fr":"Estructura de pago"},"items":{"en":["50% to secure your project and begin design","25% after design validation during materials and sourcing","25% upon completion and final walkthrough"],"fr":["50 % para asegurar el proyecto e iniciar el diseño","25 % tras la validación del diseño, durante la fase de materiales y sourcing","25 % al finalizar, en la visita final"]}},
+      {"title":{"en":"Project investment","fr":"Inversión del proyecto"},"body":{"en":"Typical project investment depends on layout, finishes, and customization level. This investment elevates daily living and adds lasting value to your property.","fr":"La inversión final depende de la distribución, los acabados y el nivel de personalización. Esta inversión mejora la vida diaria y aporta un valor duradero a tu propiedad."}},
+      {"title":{"en":"Use of designs","fr":"Uso de los diseños"},"body":{"en":"Plans and visual designs remain the property of Garage a la Carte and are provided for your personal project use only. If you build independently or work with another contractor, a separate usage or release agreement may be required.","fr":"Los planos y diseños visuales son propiedad de Garage a la Carte y se entregan exclusivamente para tu proyecto personal. Si construyes por tu cuenta o con otro contratista, puede requerirse un acuerdo de uso o cesión."}},
+      {"title":{"en":"Continue your project","fr":"Continúa tu proyecto"},"body":{"en":"Upgrade your space with integrated systems such as plumbing, electrical, climate control, and smart features designed to work seamlessly together.","fr":"Mejora tu espacio con sistemas integrados como fontanería, electricidad, climatización y funciones inteligentes, pensados para funcionar en conjunto."}},
+      {"title":{"en":"Delivery area","fr":"Zona de servicio"},"body":{"en":"Included within 20 miles of Orlando. Extended zones are available with a mileage fee, and statewide projects may be available upon request.","fr":"Incluido en un radio de 20 millas alrededor de Orlando. Las zonas ampliadas son posibles con gastos kilométricos, y ciertos proyectos en todo el estado pueden estudiarse bajo petición."}}
     ]$$::jsonb,
     30, true),
   ('smart', '04',
     jsonb_build_object('en', 'Smart Integration', 'fr', 'Smart Integration'),
-    jsonb_build_object('en', 'Designed for daily performance — not just visual appeal.', 'fr', 'Pensé pour la performance au quotidien — pas seulement pour l''esthétique.'),
-    jsonb_build_object('en', 'You want more than a beautiful space — you want a garage that works seamlessly every day. We integrate the systems that bring your space to life: technical planning for plumbing, electrical, HVAC, ventilation, media, smart features, and built-in systems — typically integrated within Design & Setup or Full Transformation.', 'fr', 'Vous voulez plus qu''un bel espace — vous voulez un garage qui fonctionne parfaitement au quotidien. Nous intégrons les systèmes qui donnent vie à votre espace : plomberie, électricité, HVAC, ventilation, média, smart features et systèmes intégrés — typiquement combinés avec Design & Setup ou Transformation Complète.'),
-    jsonb_build_object('en', 'starts at $3,500', 'fr', 'à partir de 3 500 $'),
+    jsonb_build_object('en', 'Designed for daily performance — not just visual appeal.', 'fr', 'Pensado para el rendimiento diario — no solo para la estética.'),
+    jsonb_build_object('en', 'You want more than a beautiful space — you want a garage that works seamlessly every day. We integrate the systems that bring your space to life: technical planning for plumbing, electrical, HVAC, ventilation, media, smart features, and built-in systems — typically integrated within Design & Setup or Full Transformation.', 'fr', 'Quieres algo más que un espacio bonito — quieres un garaje que funcione perfectamente cada día. Integramos los sistemas que dan vida a tu espacio: fontanería, electricidad, HVAC, ventilación, multimedia, funciones inteligentes y sistemas integrados — generalmente combinados con Design & Setup o Transformación Completa.'),
+    jsonb_build_object('en', 'starts at $3,500', 'fr', 'desde 3 500 $'),
     null, jsonb_build_object('en', 'Add-on', 'fr', 'Add-on'),
-    jsonb_build_object('en', jsonb_build_array('Technical integration aligned with your design', 'Planning of plumbing, electrical, HVAC, and ventilation', 'Built-in storage, media setup, and smart features', 'Coordination with qualified professionals', 'Technical layouts prepared for implementation'), 'fr', jsonb_build_array('Intégration technique alignée avec le design', 'Planification plomberie, électricité, HVAC et ventilation', 'Rangements intégrés, média et smart features', 'Coordination avec des professionnels qualifiés', 'Plans techniques prêts pour l''exécution')),
+    jsonb_build_object('en', jsonb_build_array('Technical integration aligned with your design', 'Planning of plumbing, electrical, HVAC, and ventilation', 'Built-in storage, media setup, and smart features', 'Coordination with qualified professionals', 'Technical layouts prepared for implementation'), 'fr', jsonb_build_array('Integración técnica alineada con el diseño', 'Planificación de fontanería, electricidad, HVAC y ventilación', 'Almacenamiento integrado, multimedia y funciones inteligentes', 'Coordinación con profesionales cualificados', 'Planos técnicos listos para la ejecución')),
     null,
-    jsonb_build_object('en', 'Included within your main project deposit structure.', 'fr', 'Inclus dans la structure d''acompte du projet principal.'),
+    jsonb_build_object('en', 'Included within your main project deposit structure.', 'fr', 'Incluido en la estructura de pago del proyecto principal.'),
     null,
     $$[
-      {"title":{"en":"How it works","fr":"Comment ça marche"},"items":{"en":["Systems are planned during the design phase","Integration is coordinated before any work begins","All components are designed to function seamlessly together"],"fr":["Les systèmes sont planifiés pendant la phase design","L'intégration est coordonnée avant le démarrage des travaux","Tous les composants sont pensés pour fonctionner ensemble"]}},
-      {"title":{"en":"Investment","fr":"Investissement"},"body":{"en":"Custom add-on based on your systems and integration needs. Typically included within Design & Setup or Full Transformation.","fr":"Add-on sur-mesure selon vos systèmes et besoins d'intégration. Généralement inclus dans Design & Setup ou Transformation Complète."},"items":{"en":["Can be added as a standalone upgrade if needed","Technical feasibility validated before implementation","Clear scope and system requirements defined upfront","Coordination planned prior to execution"],"fr":["Peut être ajouté comme upgrade autonome si nécessaire","Faisabilité technique validée avant mise en oeuvre","Périmètre et exigences systèmes définis à l'avance","Coordination prévue avant l'exécution"]}},
-      {"title":{"en":"Service fee credit","fr":"Crédit des honoraires"},"body":{"en":"The service fee starts at $3,500 and is fully credited when you move forward with a signed project contract.","fr":"Les honoraires démarrent à 3 500 $ et sont entièrement crédités si vous poursuivez avec un contrat de projet signé."}},
-      {"title":{"en":"Additional work","fr":"Travaux additionnels"},"body":{"en":"Any additional systems, upgrades, or scope changes are clearly defined and quoted separately.","fr":"Tout système supplémentaire, upgrade ou changement de périmètre est clairement défini et chiffré séparément."}},
-      {"title":{"en":"Use of designs","fr":"Utilisation des plans"},"body":{"en":"Technical layouts and integration plans remain the property of Garage à la Carte and are provided for your personal project use only. If you work with another contractor, a separate usage or release agreement may be required.","fr":"Les plans techniques et plans d'intégration restent la propriété de Garage à la Carte et sont fournis uniquement pour votre projet personnel. Si vous travaillez avec un autre entrepreneur, un accord d'utilisation ou de cession peut être requis."}},
-      {"title":{"en":"Permits & regulations","fr":"Permis & réglementation"},"body":{"en":"Some systems may require city or county permits depending on the scope. We guide you through requirements and coordinate with the appropriate professionals when needed.","fr":"Certains systèmes peuvent nécessiter des permis municipaux ou county selon le périmètre. Nous vous guidons sur les exigences et coordonnons avec les professionnels adaptés si nécessaire."}},
-      {"title":{"en":"Delivery area","fr":"Zone de service"},"body":{"en":"Included within 20 miles of Orlando. Extended zones are available with a mileage fee, and statewide projects may be available upon request.","fr":"Inclus dans un rayon de 20 miles autour d'Orlando. Les zones étendues sont possibles avec frais kilométriques, et certains projets dans tout l'État peuvent être étudiés sur demande."}}
+      {"title":{"en":"How it works","fr":"Cómo funciona"},"items":{"en":["Systems are planned during the design phase","Integration is coordinated before any work begins","All components are designed to function seamlessly together"],"fr":["Los sistemas se planifican durante la fase de diseño","La integración se coordina antes de iniciar los trabajos","Todos los componentes están pensados para funcionar en conjunto"]}},
+      {"title":{"en":"Investment","fr":"Inversión"},"body":{"en":"Custom add-on based on your systems and integration needs. Typically included within Design & Setup or Full Transformation.","fr":"Add-on a medida según tus sistemas y necesidades de integración. Generalmente incluido en Design & Setup o Transformación Completa."},"items":{"en":["Can be added as a standalone upgrade if needed","Technical feasibility validated before implementation","Clear scope and system requirements defined upfront","Coordination planned prior to execution"],"fr":["Puede añadirse como upgrade independiente si es necesario","Viabilidad técnica validada antes de la ejecución","Alcance y requisitos de los sistemas definidos por adelantado","Coordinación prevista antes de la ejecución"]}},
+      {"title":{"en":"Service fee credit","fr":"Crédito de honorarios"},"body":{"en":"The service fee starts at $3,500 and is fully credited when you move forward with a signed project contract.","fr":"Los honorarios comienzan en 3 500 $ y se acreditan íntegramente si continúas con un contrato de proyecto firmado."}},
+      {"title":{"en":"Additional work","fr":"Trabajos adicionales"},"body":{"en":"Any additional systems, upgrades, or scope changes are clearly defined and quoted separately.","fr":"Cualquier sistema adicional, upgrade o cambio de alcance se define claramente y se presupuesta por separado."}},
+      {"title":{"en":"Use of designs","fr":"Uso de los planos"},"body":{"en":"Technical layouts and integration plans remain the property of Garage a la Carte and are provided for your personal project use only. If you work with another contractor, a separate usage or release agreement may be required.","fr":"Los planos técnicos y planos de integración son propiedad de Garage a la Carte y se entregan exclusivamente para tu proyecto personal. Si trabajas con otro contratista, puede requerirse un acuerdo de uso o cesión."}},
+      {"title":{"en":"Permits & regulations","fr":"Permisos y normativa"},"body":{"en":"Some systems may require city or county permits depending on the scope. We guide you through requirements and coordinate with the appropriate professionals when needed.","fr":"Algunos sistemas pueden requerir permisos municipales o del condado según el alcance. Te guiamos sobre los requisitos y coordinamos con los profesionales adecuados cuando es necesario."}},
+      {"title":{"en":"Delivery area","fr":"Zona de servicio"},"body":{"en":"Included within 20 miles of Orlando. Extended zones are available with a mileage fee, and statewide projects may be available upon request.","fr":"Incluido en un radio de 20 millas alrededor de Orlando. Las zonas ampliadas son posibles con gastos kilométricos, y ciertos proyectos en todo el estado pueden estudiarse bajo petición."}}
     ]$$::jsonb,
     40, true)
 on conflict (slug) do update
@@ -342,10 +384,10 @@ where step_number in (1, 2, 3, 4);
 
 insert into public.process_steps (step_number, title, description, display_order, is_active)
 values
-  (1, jsonb_build_object('en', 'Tell us your vision', 'fr', 'Dites-nous votre vision'), jsonb_build_object('en', 'Free 30-minute consultation.', 'fr', 'Consultation gratuite de 30 minutes.'), 10, true),
-  (2, jsonb_build_object('en', 'Choose your level', 'fr', 'Choisissez votre formule'), jsonb_build_object('en', 'Four à la carte tiers.', 'fr', 'Quatre formules à la carte.'), 20, true),
-  (3, jsonb_build_object('en', 'Plan before spending', 'fr', 'Planifiez avant de dépenser'), jsonb_build_object('en', 'See it in 3D first.', 'fr', 'Voyez votre garage en 3D.'), 30, true),
-  (4, jsonb_build_object('en', 'Bring it to life', 'fr', 'Donnez-lui vie'), jsonb_build_object('en', 'DIY, supported, or turnkey.', 'fr', 'Vous-même, accompagné ou clé en main.'), 40, true);
+  (1, jsonb_build_object('en', 'Tell us your vision', 'fr', 'Cuéntanos tu visión'), jsonb_build_object('en', 'Free 30-minute consultation.', 'fr', 'Consulta gratuita de 30 minutos.'), 10, true),
+  (2, jsonb_build_object('en', 'Choose your level', 'fr', 'Elige tu fórmula'), jsonb_build_object('en', 'Four à la carte tiers.', 'fr', 'Cuatro fórmulas à la carte.'), 20, true),
+  (3, jsonb_build_object('en', 'Plan before spending', 'fr', 'Planifica antes de gastar'), jsonb_build_object('en', 'See it in 3D first.', 'fr', 'Visualiza tu garaje en 3D.'), 30, true),
+  (4, jsonb_build_object('en', 'Bring it to life', 'fr', 'Dale vida'), jsonb_build_object('en', 'DIY, supported, or turnkey.', 'fr', 'Tú mismo, acompañado o llave en mano.'), 40, true);
 
 -- Keep only the portfolio projects currently used on the website.
 delete from public.projects
@@ -353,52 +395,60 @@ where slug not in ('the-social-hub', 'the-daily-living-garage', 'smart-living-ga
 
 insert into public.projects (
   slug, service_id, name, tagline, project_type, size_label, duration_label, year,
-  description, includes, value_points, status, is_featured, is_large, display_order
+  description, includes, value_points, project_range, closing_line, status, is_featured, is_large, display_order
 )
 values
   ('the-social-hub', (select id from public.services where slug = 'transform'),
-    jsonb_build_object('en', 'The Social Hub', 'fr', 'Le Social Hub'),
-    jsonb_build_object('en', 'Turn your garage into the centerpiece of your home.', 'fr', 'Transformez votre garage en pièce maîtresse de la maison.'),
-    jsonb_build_object('en', 'Entertainment / Bar', 'fr', 'Divertissement / Bar'),
-    jsonb_build_object('en', '2–3 car garage', 'fr', 'Garage 2–3 voitures'),
-    jsonb_build_object('en', '8 weeks', 'fr', '8 semaines'),
+    jsonb_build_object('en', 'The Social Hub', 'fr', 'El Social Hub'),
+    jsonb_build_object('en', 'A Garage Designed for Entertainment and Lifestyle', 'fr', 'Un garaje diseñado para el entretenimiento y el estilo de vida'),
+    jsonb_build_object('en', 'Entertainment / Bar', 'fr', 'Entretenimiento / Bar'),
+    jsonb_build_object('en', '2–3 car garage', 'fr', 'Garaje para 2–3 coches'),
+    jsonb_build_object('en', '8 weeks', 'fr', '8 semanas'),
     '2025',
-    jsonb_build_object('en', 'A complete transformation that turns your garage into a social, functional, and high-impact living space — built for entertaining, relaxing, and everyday enjoyment.', 'fr', 'Une transformation complète qui transforme votre garage en lieu social, fonctionnel et marquant — pensé pour recevoir, se détendre et profiter au quotidien.'),
-    jsonb_build_object('en', jsonb_build_array('Wet bar', 'Custom cabinetry', 'Built-in appliances', 'Decorative wood wall panels', 'Pool table'), 'fr', jsonb_build_array('Bar avec point d''eau', 'Mobilier sur-mesure', 'Appareils encastrés', 'Panneaux muraux bois décoratifs', 'Billard')),
-    jsonb_build_object('en', jsonb_build_array('Dedicated space for entertaining and relaxing', 'Comfort and functionality without expanding your home', 'High-impact upgrade that increases property value', 'A modern alternative to a traditional home addition'), 'fr', jsonb_build_array('Un espace dédié à recevoir et se détendre', 'Confort et fonctionnalité sans agrandir la maison', 'Une plus-value forte sur votre bien', 'Une alternative moderne à une extension traditionnelle')),
+    jsonb_build_object('en', 'A complete transformation that turns your garage into a social, functional, and high-impact living space. Turn your garage into the centerpiece of your home — built for entertaining, relaxing, and everyday enjoyment. A modern, time- and cost-saving alternative to traditional home additions — a value-packed solution that outshines conventional builds.', 'fr', 'Una transformación completa que convierte tu garaje en un espacio social, funcional y de gran impacto. Convierte tu garaje en el corazón de tu casa — pensado para recibir, relajarse y disfrutar a diario. Una alternativa moderna que ahorra tiempo y dinero frente a una ampliación tradicional — una solución de gran valor que supera las ampliaciones convencionales.'),
+    jsonb_build_object('en', jsonb_build_array('Wet bar', 'Custom cabinetry', 'Built-in appliances', 'Decorative wood wall panels', 'Pool table'), 'fr', jsonb_build_array('Bar con punto de agua', 'Mobiliario a medida', 'Electrodomésticos integrados', 'Paneles de madera decorativos', 'Mesa de billar')),
+    jsonb_build_object('en', jsonb_build_array('Create a dedicated space for entertaining and relaxing', 'Add comfort and functionality without expanding your home', 'Increase your property value with a high-impact upgrade'), 'fr', jsonb_build_array('Crea un espacio dedicado para recibir y relajarse', 'Añade confort y funcionalidad sin ampliar tu casa', 'Aumenta el valor de tu propiedad con una mejora de gran impacto')),
+    jsonb_build_object('en', 'Depending on how far you want to go. Each garage is fully customized, and final pricing is based on your space, layout, and level of transformation.', 'fr', 'Según hasta dónde quieras llegar. Cada garaje se personaliza por completo y el precio final depende de tu espacio, distribución y nivel de transformación.'),
+    jsonb_build_object('en', 'Start with a design — and turn your garage into a space built around your lifestyle.', 'fr', 'Empieza por el diseño — y convierte tu garaje en un espacio diseñado en torno a tu estilo de vida.'),
     'live', true, true, 10),
   ('the-daily-living-garage', (select id from public.services where slug = 'transform'),
-    jsonb_build_object('en', 'The Daily Living Garage', 'fr', 'Le Garage du Quotidien'),
-    jsonb_build_object('en', 'A multi-functional garage for work, fitness, and relaxation.', 'fr', 'Un garage multi-fonctions pour travailler, bouger et se détendre.'),
-    jsonb_build_object('en', 'Multi-functional / Lifestyle', 'fr', 'Multi-fonctions / Lifestyle'),
-    jsonb_build_object('en', '2 car garage', 'fr', 'Garage 2 voitures'),
-    jsonb_build_object('en', '6 weeks', 'fr', '6 semaines'),
+    jsonb_build_object('en', 'The Daily Living Garage', 'fr', 'El Garaje del Día a Día'),
+    jsonb_build_object('en', 'A Multi-Functional Garage for Work, Fitness, and Relaxation', 'fr', 'Un garaje multifuncional para el trabajo, el fitness y la relajación'),
+    jsonb_build_object('en', 'Multi-functional / Lifestyle', 'fr', 'Multifuncional / Lifestyle'),
+    jsonb_build_object('en', '2 car garage', 'fr', 'Garaje para 2 coches'),
+    jsonb_build_object('en', '6 weeks', 'fr', '6 semanas'),
     '2025',
-    jsonb_build_object('en', 'A complete transformation that turns your garage into a flexible, everyday living space designed to support your routine — from movement to focus to relaxation.', 'fr', 'Une transformation complète qui fait du garage un espace de vie flexible, pensé pour accompagner votre routine — du mouvement à la concentration jusqu''à la détente.'),
-    jsonb_build_object('en', jsonb_build_array('Home fitness area with cardio equipment, floor space, and mirror', 'Lounge zone with sofa, TV, and relaxation area', 'Compact workspace or home office', 'Coffee / utility corner with storage', 'Integrated lighting and layout for daily use'), 'fr', jsonb_build_array('Zone fitness avec cardio, espace au sol et miroir', 'Lounge avec canapé, TV et espace détente', 'Bureau compact ou home office', 'Coin café / utilitaire avec rangement', 'Éclairage et agencement intégrés pour le quotidien')),
-    jsonb_build_object('en', jsonb_build_array('Combine multiple functions in one optimised space', 'Improve daily comfort without expanding your home', 'Create a practical, organised environment for work and lifestyle', 'Increase your property value with a smart transformation'), 'fr', jsonb_build_array('Plusieurs fonctions dans un espace optimisé', 'Confort au quotidien sans extension', 'Un environnement pratique et organisé pour le travail et le lifestyle', 'Une transformation intelligente qui valorise le bien')),
+    jsonb_build_object('en', 'A complete transformation that turns your garage into a flexible, everyday living space designed to support your routine. A space designed to support your daily routine — from movement to focus to relaxation.', 'fr', 'Una transformación completa que convierte tu garaje en un espacio de vida flexible y cotidiano, diseñado para acompañar tu rutina. Un espacio pensado para apoyar tu día a día — del movimiento a la concentración y la relajación.'),
+    jsonb_build_object('en', jsonb_build_array('Home fitness area (cardio equipment, floor space, mirror)', 'Lounge zone (sofa, TV, relaxation area)', 'Compact workspace or home office', 'Coffee / utility corner with storage', 'Integrated lighting and layout for daily use'), 'fr', jsonb_build_array('Zona fitness (equipo de cardio, espacio libre, espejo)', 'Lounge (sofá, TV, zona de descanso)', 'Despacho compacto u home office', 'Rincón de café / utilitario con almacenamiento', 'Iluminación y distribución integradas para el uso diario')),
+    jsonb_build_object('en', jsonb_build_array('Combine multiple functions in one optimized space', 'Improve daily comfort without expanding your home', 'Create a practical, organized environment for work and lifestyle', 'Increase your property value with a smart transformation'), 'fr', jsonb_build_array('Combina varias funciones en un espacio optimizado', 'Mejora el confort diario sin ampliar tu casa', 'Crea un entorno práctico y organizado para el trabajo y el lifestyle', 'Aumenta el valor de tu propiedad con una transformación inteligente')),
+    jsonb_build_object('en', 'Depending on how far you want to go. Each garage is fully customized, and final pricing is based on your space, layout, and level of transformation.', 'fr', 'Según hasta dónde quieras llegar. Cada garaje se personaliza por completo y el precio final depende de tu espacio, distribución y nivel de transformación.'),
+    jsonb_build_object('en', 'Start with a design — and turn your garage into a space that truly supports your everyday life.', 'fr', 'Empieza por el diseño — y convierte tu garaje en un espacio que realmente acompañe tu día a día.'),
     'live', true, false, 20),
   ('smart-living-garage', (select id from public.services where slug = 'transform'),
     jsonb_build_object('en', 'Smart Living Garage', 'fr', 'Smart Living Garage'),
-    jsonb_build_object('en', 'Where game day meets everyday.', 'fr', 'L''esprit jour de match, au quotidien.'),
-    jsonb_build_object('en', 'Sports bar / Lifestyle', 'fr', 'Bar sportif / Lifestyle'),
-    jsonb_build_object('en', '2 car garage', 'fr', 'Garage 2 voitures'),
-    jsonb_build_object('en', '5 weeks', 'fr', '5 semaines'),
+    jsonb_build_object('en', 'A Garage Designed for Daily Living', 'fr', 'Un garaje diseñado para el día a día'),
+    jsonb_build_object('en', 'Sports bar / Lifestyle', 'fr', 'Bar deportivo / Lifestyle'),
+    jsonb_build_object('en', '2 car garage', 'fr', 'Garaje para 2 coches'),
+    jsonb_build_object('en', '5 weeks', 'fr', '5 semanas'),
     '2025',
-    jsonb_build_object('en', 'A full transformation that turns a standard two-car garage into an industrial-chic sports bar and lounge — without sacrificing everyday utility. A butcher-block bar faces a big-screen media wall framed by open shelving, glassware, and team memorabilia, while exposed brick, track lighting, and custom neon set a warm game-day mood. Deep leather seating and a bean bag shape the lounge, and a fully integrated laundry and wet-bar corner keeps the space genuinely practical for daily life.', 'fr', 'Une transformation complète qui métamorphose un garage 2 voitures standard en bar sportif et lounge au style industriel — sans renoncer à l''utilité du quotidien. Un bar en bois massif fait face à un mur média grand écran encadré d''étagères ouvertes, de verrerie et de souvenirs sportifs, tandis que la brique apparente, l''éclairage sur rail et les néons sur-mesure installent une ambiance chaleureuse « jour de match ». Des assises en cuir et un pouf composent le lounge, et un coin buanderie et point d''eau entièrement intégré garde l''espace réellement pratique au quotidien.'),
-    jsonb_build_object('en', jsonb_build_array('Custom butcher-block bar with stool seating', 'Big-screen media wall with open shelving and glassware', 'Exposed brick feature wall and industrial track lighting', 'Custom neon signage and framed racing-poster gallery', 'Leather lounge seating with coffee table', 'Fully integrated laundry and wet-bar utility corner'), 'fr', jsonb_build_array('Bar sur-mesure en bois massif avec assises hautes', 'Mur média grand écran avec étagères ouvertes et verrerie', 'Mur en brique apparente et éclairage sur rail industriel', 'Néons sur-mesure et galerie d''affiches de course encadrées', 'Lounge en cuir avec table basse', 'Coin buanderie et point d''eau entièrement intégré')),
-    jsonb_build_object('en', jsonb_build_array('A dedicated space to host game days and unwind', 'Entertaining and everyday utility combined in one room', 'Frees up space inside the rest of your home', 'A high-impact upgrade that adds lasting property value'), 'fr', jsonb_build_array('Un espace dédié pour recevoir les soirs de match et se détendre', 'Réception et utilité quotidienne réunies dans une seule pièce', 'Libère de l''espace dans le reste de la maison', 'Une transformation forte qui valorise durablement le bien')),
+    jsonb_build_object('en', 'A complete transformation that turns your garage into a functional, comfortable extension of your home. A space that combines utility, comfort, and style — designed to simplify your daily life and elevate your home.', 'fr', 'Una transformación completa que convierte tu garaje en una extensión funcional y cómoda de tu hogar. Un espacio que combina utilidad, confort y estilo, diseñado para simplificar tu día a día y realzar tu hogar.'),
+    jsonb_build_object('en', jsonb_build_array('Integrated laundry and utility area', 'Comfortable lounge space (TV, relaxation, daily use)', 'Smart storage solutions to keep everything organized', 'A clean, functional environment ready for everyday living'), 'fr', jsonb_build_array('Zona de lavandería y utilitarios integrada', 'Espacio lounge cómodo (TV, relajación, uso diario)', 'Soluciones de almacenamiento inteligentes para mantener todo organizado', 'Un entorno limpio y funcional listo para la vida cotidiana')),
+    jsonb_build_object('en', jsonb_build_array('Free up space in the rest of your home', 'Simplify your daily routines and reduce clutter', 'Improve comfort while increasing your property value'), 'fr', jsonb_build_array('Libera espacio en el resto de tu casa', 'Simplifica tu rutina diaria y reduce el desorden', 'Mejora el confort y aumenta el valor de tu propiedad')),
+    jsonb_build_object('en', 'Depending on how far you want to go. Each garage is fully customized, and final pricing is based on your space, layout, and level of transformation.', 'fr', 'Según hasta dónde quieras llegar. Cada garaje se personaliza por completo y el precio final depende de tu espacio, distribución y nivel de transformación.'),
+    jsonb_build_object('en', 'Start with a design — and turn your garage into a space that truly works for your life.', 'fr', 'Empieza por el diseño — y convierte tu garaje en un espacio que realmente funcione para tu vida.'),
     'live', true, false, 30),
   ('modern-automotive-lounge', (select id from public.services where slug = 'transform'),
-    jsonb_build_object('en', 'Modern Automotive Lounge', 'fr', 'Lounge Automobile Moderne'),
-    jsonb_build_object('en', 'A high-end garage for cars, work, entertainment, and lifestyle.', 'fr', 'Un garage haut de gamme pour la voiture, le travail, le divertissement et l''art de vivre.'),
-    jsonb_build_object('en', 'Automotive lounge / Multi-use', 'fr', 'Lounge automobile / Multi-usage'),
-    jsonb_build_object('en', '2 car garage', 'fr', 'Garage 2 voitures'),
-    jsonb_build_object('en', '7 weeks', 'fr', '7 semaines'),
+    jsonb_build_object('en', 'The Modern Automotive Lounge', 'fr', 'El Lounge Automovilístico Moderno'),
+    jsonb_build_object('en', 'A High-End Garage for Cars, Work, Entertainment, and Lifestyle', 'fr', 'Un garaje de alta gama para coches, trabajo, entretenimiento y estilo de vida'),
+    jsonb_build_object('en', 'Automotive lounge / Multi-use', 'fr', 'Lounge automovilístico / Multi-uso'),
+    jsonb_build_object('en', '3 car garage', 'fr', 'Garaje para 3 coches'),
+    jsonb_build_object('en', '7 weeks', 'fr', '7 semanas'),
     '2025',
-    jsonb_build_object('en', 'A high-end transformation that lets you keep the car and gain a true lifestyle space around it. One bay still holds the vehicle on a sleek dark floor, while the rest of the garage becomes a multi-use retreat: a dedicated home-office and gaming workstation with a custom PC, a cinematic big-screen lounge with a deep velvet sofa and fur rug, and a retro-styled coffee and beverage bar set against a graphic feature wall. Track lighting, warm accents, and curated décor tie work, play, and automotive passion together in one refined room.', 'fr', 'Une transformation haut de gamme qui vous permet de garder la voiture tout en gagnant un véritable espace de vie autour d''elle. Une place accueille toujours le véhicule sur un sol sombre épuré, tandis que le reste du garage devient un lieu multi-usage : un poste home-office et gaming avec PC sur-mesure, un lounge home-cinéma avec canapé en velours et tapis en fourrure, et un coin café et bar au style rétro adossé à un mur graphique. Éclairage sur rail, touches chaleureuses et déco soignée réunissent travail, détente et passion automobile dans une seule pièce raffinée.'),
-    jsonb_build_object('en', jsonb_build_array('Dedicated car display bay with finished flooring', 'Home-office and gaming workstation with custom PC', 'Cinematic big-screen lounge with velvet sofa and fur rug', 'Retro coffee and beverage bar with mini-fridge', 'Graphic feature wall and curated styling', 'Track lighting and warm ambient accents'), 'fr', jsonb_build_array('Place dédiée à la voiture avec sol fini', 'Poste home-office et gaming avec PC sur-mesure', 'Lounge home-cinéma avec canapé velours et tapis fourrure', 'Coin café et bar rétro avec mini-frigo', 'Mur graphique et décoration soignée', 'Éclairage sur rail et touches d''ambiance chaleureuses')),
-    jsonb_build_object('en', jsonb_build_array('Keep your car and still gain a living space', 'Work, game, and relax without leaving home', 'A premium, multi-use upgrade for car lovers', 'Adds standout character and value to your property'), 'fr', jsonb_build_array('Gardez votre voiture tout en gagnant un espace de vie', 'Travailler, jouer et se détendre sans quitter la maison', 'Une transformation premium multi-usage pour passionnés', 'Ajoute du caractère et de la valeur au bien')),
+    jsonb_build_object('en', 'Transform your garage into a modern automotive lounge designed for relaxation, focus, and everyday living. Inspired by luxury car showrooms and premium lounge spaces, this transformation combines vehicle display, entertainment, workspace, and comfort into one fully integrated environment. A garage designed to become part showroom, part man cave, and part modern living space.', 'fr', 'Convierte tu garaje en un lounge automovilístico moderno diseñado para la relajación, la concentración y la vida diaria. Inspirado en los showrooms de coches de lujo y los lounges premium, esta transformación combina exposición del vehículo, entretenimiento, espacio de trabajo y confort en un único entorno totalmente integrado. Un garaje pensado para ser en parte showroom, en parte refugio personal y en parte espacio de vida moderno.'),
+    jsonb_build_object('en', jsonb_build_array('Premium vehicle display area', 'Lounge zone with sofa and oversized screen', 'Modern workspace or gaming setup', 'Beverage / coffee corner with storage', 'Integrated lighting and upscale finishes', 'Functional layout designed for everyday use'), 'fr', jsonb_build_array('Zona de exposición premium del vehículo', 'Espacio lounge con sofá y pantalla de gran tamaño', 'Espacio de trabajo moderno o setup de gaming', 'Rincón de café / bebidas con almacenamiento', 'Iluminación integrada y acabados de alta gama', 'Distribución funcional pensada para el uso diario')),
+    jsonb_build_object('en', jsonb_build_array('Turn underused garage space into a lifestyle destination', 'Combine entertainment, work, and relaxation in one environment', 'Create a clean, organized, high-end atmosphere', 'Increase comfort, functionality, and property appeal', 'Enjoy a garage designed to impress and be lived in'), 'fr', jsonb_build_array('Convierte un espacio de garaje infrautilizado en un destino de estilo de vida', 'Combina entretenimiento, trabajo y relajación en un único entorno', 'Crea una atmósfera limpia, organizada y de alta gama', 'Aumenta el confort, la funcionalidad y el atractivo de tu propiedad', 'Disfruta de un garaje diseñado para impresionar y para vivirlo')),
+    jsonb_build_object('en', 'Depending on how far you want to go. Each garage is fully customized. Final pricing is based on your space, layout, and level of transformation — finishes, technology integration, and level of customization.', 'fr', 'Según hasta dónde quieras llegar. Cada garaje se personaliza por completo. El precio final depende de tu espacio, distribución y nivel de transformación — acabados, integración tecnológica y nivel de personalización.'),
+    jsonb_build_object('en', 'Start with a design — and transform your garage into a modern lifestyle experience.', 'fr', 'Empieza por el diseño — y transforma tu garaje en una experiencia de estilo de vida moderno.'),
     'live', true, false, 40)
 on conflict (slug) do update
 set service_id = excluded.service_id,
@@ -411,6 +461,8 @@ set service_id = excluded.service_id,
     description = excluded.description,
     includes = excluded.includes,
     value_points = excluded.value_points,
+    project_range = excluded.project_range,
+    closing_line = excluded.closing_line,
     status = excluded.status,
     is_featured = excluded.is_featured,
     is_large = excluded.is_large,
@@ -446,10 +498,10 @@ set label = excluded.label,
 insert into public.legal_documents (document_key, title, intro, is_active)
 values (
   'project_conditions',
-  jsonb_build_object('en', 'Website Project Details & Conditions.', 'fr', 'Conditions et engagements du projet.'),
+  jsonb_build_object('en', 'Website Project Details & Conditions.', 'fr', 'Condiciones y compromisos del proyecto.'),
   jsonb_build_object(
-    'en', 'We set clear expectations from day one, plan carefully, and guide your project from idea to completion. By engaging with Garage à la Carte, you agree to these guidelines unless otherwise defined in a written agreement.',
-    'fr', 'Nous fixons des attentes claires dès le départ et accompagnons votre projet de l''idée à la livraison. En vous engageant avec Garage à la Carte, vous acceptez ces conditions sauf accord écrit contraire.'
+    'en', 'We set clear expectations from day one, plan carefully, and guide your project from idea to completion. By engaging with Garage a la Carte, you agree to these guidelines unless otherwise defined in a written agreement.',
+    'fr', 'Definimos expectativas claras desde el primer día y acompañamos tu proyecto desde la idea hasta la entrega. Al trabajar con Garage a la Carte, aceptas estas condiciones salvo acuerdo escrito en sentido contrario.'
   ),
   true
 )
@@ -464,17 +516,17 @@ select d.id, x.section_number, x.title, x.body, x.display_order, true
 from public.legal_documents d
 join (
   values
-    (1, jsonb_build_object('en', 'Free Estimate', 'fr', 'Devis Gratuit'), jsonb_build_object('en', 'We begin with a consultation to understand your space, your goals, and the level of service that best fits your project. Your estimate is an initial evaluation and may evolve based on final selections, site conditions, and project details. Estimates are typically valid for a limited period due to potential changes in material costs and availability.', 'fr', 'Nous commençons par une consultation pour comprendre votre espace, vos objectifs et le niveau de service adapté. Le devis est une évaluation initiale qui peut évoluer selon les choix finaux, conditions du site et détails du projet. Les devis sont valables pour une durée limitée en raison de variations potentielles des coûts et de la disponibilité des matériaux.'), 10),
-    (2, jsonb_build_object('en', 'Project Validation', 'fr', 'Validation du Projet'), jsonb_build_object('en', 'A project is considered ready once the following are clearly defined: selected service level, confirmed layout and design direction, estimated budget and main components. Once validated, we move into planning and execution.', 'fr', 'Un projet est prêt lorsque les éléments suivants sont définis : niveau de service choisi, plan et direction de design confirmés, budget estimatif et composants principaux. Une fois validé, nous passons à la planification et à l''exécution.'), 20),
-    (3, jsonb_build_object('en', 'Scope of Work & Service Levels', 'fr', 'Périmètre & Niveaux de Service'), jsonb_build_object('en', 'Each service includes only what is clearly defined within the selected level: Design Blueprint, Design + Setup, Full Transformation, or Smart Integration. Any request outside the selected service is handled as a project adjustment.', 'fr', 'Chaque service inclut uniquement ce qui est clairement défini : Design Blueprint, Design + Setup, Transformation Complète ou Smart Integration. Toute demande hors périmètre est traitée comme un ajustement.'), 30),
-    (4, jsonb_build_object('en', 'Design Visuals & Approval', 'fr', 'Visuels & Approbation'), jsonb_build_object('en', 'Our 3D visuals represent the overall design intent, layout, and atmosphere. Small variations may occur in the final result due to materials, lighting, or product availability. Before moving forward, you review and approve your design.', 'fr', 'Nos visuels 3D représentent l''intention de design, le plan et l''atmosphère. De petites variations peuvent survenir selon les matériaux, l''éclairage ou la disponibilité. Avant de continuer, vous validez votre design.'), 40),
-    (5, jsonb_build_object('en', 'Client Responsibilities', 'fr', 'Responsabilités du Client'), jsonb_build_object('en', 'You agree to provide accurate information about your space and needs, review and approve designs in a timely manner, ensure access to the property, and obtain any required approvals. The garage must be prepared before delivery.', 'fr', 'Vous vous engagez à fournir des informations précises, valider les designs rapidement, assurer l''accès à la propriété et obtenir les autorisations nécessaires. Le garage doit être préparé avant la livraison.'), 50),
-    (6, jsonb_build_object('en', 'Site Documentation', 'fr', 'Documentation du Site'), jsonb_build_object('en', 'We may take photos or short videos during on-site visits for internal use only. They are never used for marketing without your prior approval.', 'fr', 'Nous pouvons prendre des photos ou vidéos lors des visites pour usage interne uniquement. Elles ne sont jamais utilisées en marketing sans votre accord.'), 60),
-    (7, jsonb_build_object('en', 'Permits & Licensed Trades', 'fr', 'Permis & Pros Agréés'), jsonb_build_object('en', 'Some projects may require permits depending on the scope and local regulations. The client is responsible unless otherwise included. We coordinate with qualified, licensed professionals when required.', 'fr', 'Certains projets peuvent nécessiter des permis selon le périmètre et la réglementation locale. Le client en est responsable sauf indication contraire. Nous coordonnons avec des professionnels agréés.'), 70),
-    (8, jsonb_build_object('en', 'Timeline & Payment', 'fr', 'Délais & Paiement'), jsonb_build_object('en', 'Timelines are estimated and may be influenced by material availability, supplier delays, weather, permits, and site readiness. A deposit is required to secure your project. No work begins without confirmed payment.', 'fr', 'Les délais sont estimatifs et peuvent dépendre de la disponibilité des matériaux, fournisseurs, météo, permis et préparation du site. Un acompte est requis pour sécuriser le projet. Aucun travail ne démarre sans paiement confirmé.'), 80),
-    (9, jsonb_build_object('en', 'Adjustments & Cancellation', 'fr', 'Ajustements & Annulation'), jsonb_build_object('en', 'Any change after approval is a project adjustment and may impact pricing and timeline. Custom work and orders may not be canceled once initiated; work completed up to cancellation remains payable.', 'fr', 'Tout changement après validation est un ajustement et peut impacter prix et délais. Les travaux et commandes personnalisés ne peuvent pas être annulés une fois lancés ; le travail réalisé reste dû.'), 90),
-    (10, jsonb_build_object('en', 'Warranty & Portfolio Use', 'fr', 'Garantie & Portfolio'), jsonb_build_object('en', 'Manufacturer warranties apply to products. Installation warranty applies when installation is handled by our team or partners. We may use project photos for portfolio purposes unless you request otherwise in writing.', 'fr', 'Les garanties fabricant s''appliquent aux produits. La garantie d''installation s''applique quand celle-ci est gérée par notre équipe. Nous pouvons utiliser les photos pour notre portfolio sauf demande écrite contraire.'), 100),
-    (11, jsonb_build_object('en', 'Delivery Area', 'fr', 'Zone de Service'), jsonb_build_object('en', 'Services are included within a standard local service area, typically within 20 miles of Orlando. Projects outside this area are available upon request and may include additional fees.', 'fr', 'Les services sont inclus dans une zone standard, généralement 20 miles autour d''Orlando. Les projets hors zone sont possibles sur demande, avec frais supplémentaires.'), 110)
+    (1, jsonb_build_object('en', 'Free Estimate', 'fr', 'Presupuesto Gratuito'), jsonb_build_object('en', 'We begin with a consultation to understand your space, your goals, and the level of service that best fits your project. Your estimate is an initial evaluation and may evolve based on final selections, site conditions, and project details. Estimates are typically valid for a limited period due to potential changes in material costs and availability.', 'fr', 'Empezamos con una consulta para entender tu espacio, tus objetivos y el nivel de servicio que mejor se adapta a tu proyecto. El presupuesto es una evaluación inicial que puede evolucionar según las elecciones finales, las condiciones del sitio y los detalles del proyecto. Los presupuestos suelen ser válidos durante un periodo limitado debido a posibles variaciones en los costes y la disponibilidad de los materiales.'), 10),
+    (2, jsonb_build_object('en', 'Project Validation', 'fr', 'Validación del Proyecto'), jsonb_build_object('en', 'A project is considered ready once the following are clearly defined: selected service level, confirmed layout and design direction, estimated budget and main components. Once validated, we move into planning and execution.', 'fr', 'Un proyecto está listo cuando los siguientes elementos están claramente definidos: nivel de servicio elegido, distribución y dirección de diseño confirmadas, presupuesto estimado y componentes principales. Una vez validado, pasamos a la planificación y la ejecución.'), 20),
+    (3, jsonb_build_object('en', 'Scope of Work & Service Levels', 'fr', 'Alcance y Niveles de Servicio'), jsonb_build_object('en', 'Each service includes only what is clearly defined within the selected level: Design Blueprint, Design + Setup, Full Transformation, or Smart Integration. Any request outside the selected service is handled as a project adjustment.', 'fr', 'Cada servicio incluye únicamente lo que está claramente definido en el nivel elegido: Design Blueprint, Design + Setup, Transformación Completa o Smart Integration. Cualquier solicitud fuera del alcance se trata como un ajuste de proyecto.'), 30),
+    (4, jsonb_build_object('en', 'Design Visuals & Approval', 'fr', 'Visuales y Aprobación'), jsonb_build_object('en', 'Our 3D visuals represent the overall design intent, layout, and atmosphere. Small variations may occur in the final result due to materials, lighting, or product availability. Before moving forward, you review and approve your design.', 'fr', 'Nuestras imágenes 3D representan la intención de diseño, la distribución y la atmósfera. Pueden producirse pequeñas variaciones según los materiales, la iluminación o la disponibilidad. Antes de avanzar, revisas y validas tu diseño.'), 40),
+    (5, jsonb_build_object('en', 'Client Responsibilities', 'fr', 'Responsabilidades del Cliente'), jsonb_build_object('en', 'You agree to provide accurate information about your space and needs, review and approve designs in a timely manner, ensure access to the property, and obtain any required approvals. The garage must be prepared before delivery.', 'fr', 'Te comprometes a facilitar información precisa, validar los diseños con rapidez, garantizar el acceso a la propiedad y obtener las autorizaciones necesarias. El garaje debe estar preparado antes de la entrega.'), 50),
+    (6, jsonb_build_object('en', 'Site Documentation', 'fr', 'Documentación del Sitio'), jsonb_build_object('en', 'We may take photos or short videos during on-site visits for internal use only. They are never used for marketing without your prior approval.', 'fr', 'Podemos tomar fotos o vídeos cortos durante las visitas, únicamente para uso interno. Nunca se utilizan con fines de marketing sin tu autorización previa.'), 60),
+    (7, jsonb_build_object('en', 'Permits & Licensed Trades', 'fr', 'Permisos y Profesionales Acreditados'), jsonb_build_object('en', 'Some projects may require permits depending on the scope and local regulations. The client is responsible unless otherwise included. We coordinate with qualified, licensed professionals when required.', 'fr', 'Algunos proyectos pueden requerir permisos según el alcance y la normativa local. El cliente es responsable salvo que se indique lo contrario. Coordinamos con profesionales cualificados y acreditados cuando es necesario.'), 70),
+    (8, jsonb_build_object('en', 'Timeline & Payment', 'fr', 'Plazos y Pagos'), jsonb_build_object('en', 'Timelines are estimated and may be influenced by material availability, supplier delays, weather, permits, and site readiness. A deposit is required to secure your project. No work begins without confirmed payment.', 'fr', 'Los plazos son estimativos y pueden verse afectados por la disponibilidad de materiales, los proveedores, la meteorología, los permisos y la preparación del sitio. Se requiere un anticipo para asegurar el proyecto. Ningún trabajo se inicia sin pago confirmado.'), 80),
+    (9, jsonb_build_object('en', 'Adjustments & Cancellation', 'fr', 'Ajustes y Cancelación'), jsonb_build_object('en', 'Any change after approval is a project adjustment and may impact pricing and timeline. Custom work and orders may not be canceled once initiated; work completed up to cancellation remains payable.', 'fr', 'Cualquier cambio tras la validación es un ajuste y puede afectar al precio y a los plazos. Los trabajos y pedidos personalizados no pueden cancelarse una vez iniciados; el trabajo realizado hasta la cancelación sigue siendo facturable.'), 90),
+    (10, jsonb_build_object('en', 'Warranty & Portfolio Use', 'fr', 'Garantía y Portfolio'), jsonb_build_object('en', 'Manufacturer warranties apply to products. Installation warranty applies when installation is handled by our team or partners. We may use project photos for portfolio purposes unless you request otherwise in writing.', 'fr', 'Las garantías del fabricante se aplican a los productos. La garantía de instalación se aplica cuando esta es gestionada por nuestro equipo o socios. Podemos usar las fotos del proyecto para nuestro portfolio salvo solicitud escrita en sentido contrario.'), 100),
+    (11, jsonb_build_object('en', 'Delivery Area', 'fr', 'Zona de Servicio'), jsonb_build_object('en', 'Services are included within a standard local service area, typically within 20 miles of Orlando. Projects outside this area are available upon request and may include additional fees.', 'fr', 'Los servicios se incluyen dentro de una zona estándar, habitualmente 20 millas alrededor de Orlando. Los proyectos fuera de zona son posibles bajo petición, con gastos adicionales.'), 110)
 ) as x(section_number, title, body, display_order) on true
 where d.document_key = 'project_conditions'
 on conflict (document_id, section_number) do update

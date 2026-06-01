@@ -24,10 +24,10 @@ export function ProjectsPage({ lang, onNav }) {
       <section className="projects-v2-head">
         <div className="projects-v2-head__inner">
           <Reveal as="div" className="projects-v2-head__eyebrow" {...cmsAttr("projects_page", "eyebrow")}>
-            {text(C.eyebrow, lang, lang === "en" ? "Selected work" : "Sélection")}
+            {text(C.eyebrow, lang, lang === "en" ? "Selected work" : "Selección")}
           </Reveal>
           <Reveal as="h1" className="projects-v2-head__title" {...cmsAttr("projects_page", "title")}>
-            {text(C.title, lang, lang === "en" ? "Our garages, redesigned." : "Nos garages, repensés.")}
+            {text(C.title, lang, lang === "en" ? "Our garages, redesigned." : "Nuestros garajes, repensados.")}
           </Reveal>
           {C.sub && (
             <Reveal as="p" className="projects-v2-head__sub" delay={0.1} {...cmsAttr("projects_page", "sub")}>
@@ -54,7 +54,7 @@ export function ProjectsPage({ lang, onNav }) {
             <div className="projects-v2-empty">
               {lang === "en"
                 ? "Projects coming soon — upload one via the admin."
-                : "Réalisations à venir — ajoutez-en une via l'admin."}
+                : "Proyectos próximamente — añade uno desde el admin."}
             </div>
           )}
         </div>
@@ -69,7 +69,7 @@ function ProjectTile({ project, lang, index, featured, onClick }) {
   const ref = useReveal();
   const isPh = project.placeholder;
   const heroImage = project.images?.[0] || null;
-  const projectName = text(project.name, lang, lang === "en" ? "Untitled project" : "Projet sans titre");
+  const projectName = text(project.name, lang, lang === "en" ? "Untitled project" : "Proyecto sin título");
   const tagline = text(project.tagline, lang, "");
   const service = text(project.service, lang, "");
 
@@ -86,7 +86,7 @@ function ProjectTile({ project, lang, index, featured, onClick }) {
     >
       <div className="project-v2-tile__media">
         <ImagePlaceholder
-          label={isPh ? (lang === "en" ? "COMING SOON" : "BIENTÔT") : heroImage?.label}
+          label={isPh ? (lang === "en" ? "COMING SOON" : "PRÓXIMAMENTE") : heroImage?.label}
           color={heroImage?.color || "#70675d"}
           src={heroImage?.url}
           alt={text(heroImage?.alt, lang, projectName)}
@@ -98,13 +98,13 @@ function ProjectTile({ project, lang, index, featured, onClick }) {
       <div className="project-v2-tile__body">
         <div className="project-v2-tile__meta-row">
           {service && !isPh && <span className="project-v2-tile__service">{service}</span>}
-          <span className="project-v2-tile__year">{isPh ? (lang === "en" ? "Coming" : "À venir") : (project.year || "—")}</span>
+          <span className="project-v2-tile__year">{isPh ? (lang === "en" ? "Coming" : "Próximamente") : (project.year || "—")}</span>
         </div>
         <h3 className="project-v2-tile__name">{projectName}</h3>
         {tagline && !isPh && <p className="project-v2-tile__tagline">{tagline}</p>}
         {!isPh && (
           <span className="project-v2-tile__cta">
-            {lang === "en" ? "View case" : "Voir le cas"} <span aria-hidden="true">→</span>
+            {lang === "en" ? "View case" : "Ver caso"} <span aria-hidden="true">→</span>
           </span>
         )}
       </div>
@@ -114,11 +114,15 @@ function ProjectTile({ project, lang, index, featured, onClick }) {
 
 function ProjectModal({ project, lang, onClose, onNav }) {
 
-  const projectName = text(project.name, lang, lang === "en" ? "Untitled project" : "Projet sans titre");
+  const projectName = text(project.name, lang, lang === "en" ? "Untitled project" : "Proyecto sin título");
   const tagline = text(project.tagline, lang, "");
   const service = text(project.service, lang, "");
   const description = text(project.description, lang, "");
   const includes = list(project.includes, lang);
+  const why = list(project.why, lang);
+  const projectRange = text(project.project_range, lang, "");
+  const closingLine = text(project.closing_line, lang, "");
+  const sizeLabel = text(project.size, lang, "");
   const images = project.images || [];
 
   const [slide, setSlide] = useState(0);
@@ -164,13 +168,13 @@ function ProjectModal({ project, lang, onClose, onNav }) {
                 type="button"
                 className="project-v2-modal__nav project-v2-modal__nav--prev"
                 onClick={(e) => { e.stopPropagation(); prevSlide(); }}
-                aria-label={lang === "en" ? "Previous image" : "Image précédente"}
+                aria-label={lang === "en" ? "Previous image" : "Imagen anterior"}
               >‹</button>
               <button
                 type="button"
                 className="project-v2-modal__nav project-v2-modal__nav--next"
                 onClick={(e) => { e.stopPropagation(); nextSlide(); }}
-                aria-label={lang === "en" ? "Next image" : "Image suivante"}
+                aria-label={lang === "en" ? "Next image" : "Imagen siguiente"}
               >›</button>
               <div className="project-v2-modal__counter" aria-live="polite">
                 {safeSlide + 1} / {total}
@@ -182,7 +186,7 @@ function ProjectModal({ project, lang, onClose, onNav }) {
                     type="button"
                     role="tab"
                     aria-selected={i === safeSlide}
-                    aria-label={`${lang === "en" ? "Image" : "Image"} ${i + 1}`}
+                    aria-label={`${lang === "en" ? "Image" : "Imagen"} ${i + 1}`}
                     className={`project-v2-modal__dot${i === safeSlide ? " is-active" : ""}`}
                     onClick={(e) => { e.stopPropagation(); setSlide(i); }}
                   />
@@ -201,10 +205,10 @@ function ProjectModal({ project, lang, onClose, onNav }) {
 
         <div className="project-v2-modal__content">
           <div className="project-v2-modal__meta">
-            <Meta label={lang === "en" ? "Type" : "Type"} value={text(project.type, lang)} />
-            <Meta label={lang === "en" ? "Size" : "Taille"} value={text(project.size, lang)} />
-            <Meta label={lang === "en" ? "Duration" : "Durée"} value={text(project.duration, lang)} />
-            <Meta label={lang === "en" ? "Year" : "Année"} value={project.year || "—"} />
+            <Meta label={lang === "en" ? "Type" : "Tipo"} value={text(project.type, lang)} />
+            <Meta label={lang === "en" ? "Size" : "Tamaño"} value={text(project.size, lang)} />
+            <Meta label={lang === "en" ? "Duration" : "Duración"} value={text(project.duration, lang)} />
+            <Meta label={lang === "en" ? "Year" : "Año"} value={project.year || "—"} />
           </div>
 
           {description && <p className="project-v2-modal__lead">{description}</p>}
@@ -212,7 +216,7 @@ function ProjectModal({ project, lang, onClose, onNav }) {
           {includes.length > 0 && (
             <div className="project-v2-modal__includes">
               <div className="project-v2-modal__includes-label">
-                {lang === "en" ? "What's included" : "Inclus"}
+                {lang === "en" ? "What's included" : "Incluido"}
               </div>
               <ul>
                 {includes.map((it, i) => (
@@ -225,13 +229,42 @@ function ProjectModal({ project, lang, onClose, onNav }) {
             </div>
           )}
 
+          {why.length > 0 && (
+            <div className="project-v2-modal__includes">
+              <div className="project-v2-modal__includes-label">
+                {lang === "en" ? "Why this matters" : "Por qué importa"}
+              </div>
+              <ul>
+                {why.map((it, i) => (
+                  <li key={i}>
+                    <span className="project-v2-modal__includes-num">0{i + 1}</span>
+                    <span>{it}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {projectRange && (
+            <div className="project-v2-modal__range">
+              <div className="project-v2-modal__includes-label">
+                {lang === "en" ? "Typical project range" : "Rango típico del proyecto"}
+                {sizeLabel ? ` (${sizeLabel})` : ""}
+              </div>
+              <p className="project-v2-modal__range-body">{projectRange}</p>
+            </div>
+          )}
+
+          {closingLine && (
+            <p className="project-v2-modal__closing">{closingLine}</p>
+          )}
 
           <div className="project-v2-modal__footer">
             <button className="btn" onClick={() => { onClose(); onNav("contact"); }}>
-              {lang === "en" ? "Start a similar project" : "Démarrer un projet similaire"} <span className="arrow">↗</span>
+              {lang === "en" ? "Start a similar project" : "Iniciar un proyecto similar"} <span className="arrow">↗</span>
             </button>
             <button className="btn btn-ghost" onClick={onClose}>
-              {lang === "en" ? "Close" : "Fermer"}
+              {lang === "en" ? "Close" : "Cerrar"}
             </button>
           </div>
         </div>

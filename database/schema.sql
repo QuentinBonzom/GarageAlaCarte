@@ -1,4 +1,4 @@
--- Garage à la Carte target schema
+-- Garage a la Carte target schema
 -- PostgreSQL / Supabase compatible.
 --
 -- This is the cleaned schema for the current React project. It replaces the
@@ -58,6 +58,7 @@ create table if not exists public.team_members (
   name text not null,
   role jsonb not null,
   bio jsonb not null,
+  long_bio jsonb,
   email text,
   phone text,
   website text,
@@ -67,7 +68,8 @@ create table if not exists public.team_members (
   updated_at timestamptz not null default now(),
   created_at timestamptz not null default now(),
   constraint team_members_role_langs check (role ? 'en' and role ? 'fr'),
-  constraint team_members_bio_langs check (bio ? 'en' and bio ? 'fr')
+  constraint team_members_bio_langs check (bio ? 'en' and bio ? 'fr'),
+  constraint team_members_long_bio_langs check (long_bio is null or (long_bio ? 'en' and long_bio ? 'fr'))
 );
 
 create table if not exists public.services (
@@ -121,6 +123,8 @@ create table if not exists public.projects (
   description jsonb,
   includes jsonb not null default '{"en": [], "fr": []}'::jsonb,
   value_points jsonb not null default '{"en": [], "fr": []}'::jsonb,
+  project_range jsonb,
+  closing_line jsonb,
   status text not null default 'live' check (status in ('live', 'draft', 'upcoming', 'archived')),
   is_featured boolean not null default false,
   is_large boolean not null default false,
@@ -134,7 +138,9 @@ create table if not exists public.projects (
   constraint projects_duration_langs check (duration_label is null or (duration_label ? 'en' and duration_label ? 'fr')),
   constraint projects_description_langs check (description is null or (description ? 'en' and description ? 'fr')),
   constraint projects_includes_langs check (includes ? 'en' and includes ? 'fr'),
-  constraint projects_value_points_langs check (value_points ? 'en' and value_points ? 'fr')
+  constraint projects_value_points_langs check (value_points ? 'en' and value_points ? 'fr'),
+  constraint projects_project_range_langs check (project_range is null or (project_range ? 'en' and project_range ? 'fr')),
+  constraint projects_closing_line_langs check (closing_line is null or (closing_line ? 'en' and closing_line ? 'fr'))
 );
 
 create table if not exists public.project_images (

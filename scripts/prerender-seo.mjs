@@ -1,6 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
 import {
+  PRIMARY_SEO_KEYWORDS,
+  SERVICE_AREA_PLACES,
+  SERVICE_SEO,
   SEO_ROUTES,
   buildBusinessJsonLd,
   buildPageJsonLd,
@@ -34,7 +37,7 @@ function replaceOrInsert(html, regex, replacement) {
 
 function setMeta(html, attr, key, content) {
   const selector = escapeRegExp(key);
-  const regex = new RegExp(`<meta\\s+${attr}="${selector}"\\s+content="[^"]*"\\s*/?>`, "i");
+  const regex = new RegExp(`<meta\\b(?=[^>]*\\b${attr}="${selector}")[^>]*>`, "i");
   return replaceOrInsert(html, regex, `<meta ${attr}="${key}" content="${escapeHtml(content)}" />`);
 }
 
@@ -50,6 +53,96 @@ function setJsonLd(html, id, data) {
   return replaceOrInsert(html, regex, replacement);
 }
 
+function getServiceSeoByRoute(route) {
+  return Object.values(SERVICE_SEO).find((service) => service.route === route);
+}
+
+function serviceLinksHtml() {
+  return Object.values(SERVICE_SEO)
+    .map((service) => `<li><a href="${escapeHtml(service.path)}">${escapeHtml(service.title.en)}</a></li>`)
+    .join("");
+}
+
+function keywordListHtml(keywords = PRIMARY_SEO_KEYWORDS) {
+  return keywords.map((keyword) => `<li>${escapeHtml(keyword)}</li>`).join("");
+}
+
+function buildStaticFallback(route, page) {
+  const service = getServiceSeoByRoute(route);
+  const areaList = SERVICE_AREA_PLACES.map((place) => `<li>${escapeHtml(place)}</li>`).join("");
+
+  if (service) {
+    return `
+      <article class="seo-fallback">
+        <p>Garage services in Orlando, FL</p>
+        <h1>${escapeHtml(service.title.en)}</h1>
+        <p>${escapeHtml(service.description.en)}</p>
+        <h2>Project goals</h2>
+        <ul>${keywordListHtml(service.keywords)}</ul>
+        <p>Garage a la Carte serves Orlando and nearby Central Florida communities with custom garage design, garage remodeling, storage planning, 3D plans, and smart garage integration.</p>
+        <h2>Service area</h2>
+        <ul>${areaList}</ul>
+        <p><a href="/contact/">Request a free garage estimate in Orlando</a></p>
+      </article>`;
+  }
+
+  if (route === "projects") {
+    return `
+      <article class="seo-fallback">
+        <h1>${escapeHtml(page.title)}</h1>
+        <p>${escapeHtml(page.description)}</p>
+        <h2>Popular searches</h2>
+        <ul>${keywordListHtml(page.keywords)}</ul>
+        <p>View custom garage remodeling ideas for lounges, home gyms, offices, entertainment rooms, automotive spaces, and smart storage in the Orlando area.</p>
+      </article>`;
+  }
+
+  if (route === "contact") {
+    return `
+      <article class="seo-fallback">
+        <h1>${escapeHtml(page.title)}</h1>
+        <p>${escapeHtml(page.description)}</p>
+        <h2>Estimate requests</h2>
+        <ul>${keywordListHtml(page.keywords)}</ul>
+        <p>Email Garage a la Carte at <a href="mailto:hello@garagealacarte.com">hello@garagealacarte.com</a> to plan a custom garage design, remodel, or transformation in Orlando, Florida.</p>
+      </article>`;
+  }
+
+  if (route === "conditions") {
+    return `
+      <article class="seo-fallback">
+        <h1>${escapeHtml(page.title)}</h1>
+        <p>${escapeHtml(page.description)}</p>
+      </article>`;
+  }
+
+  if (route === "admin") {
+    return `
+      <article class="seo-fallback">
+        <h1>${escapeHtml(page.title)}</h1>
+        <p>${escapeHtml(page.description)}</p>
+      </article>`;
+  }
+
+  return `
+    <article class="seo-fallback">
+      <h1>${escapeHtml(page.title)}</h1>
+      <p>${escapeHtml(page.description)}</p>
+      <h2>Orlando garage services</h2>
+      <ul>${keywordListHtml()}</ul>
+      <h2>Garage remodeling services in Orlando</h2>
+      <ul>${serviceLinksHtml()}</ul>
+      <h2>Service area</h2>
+      <ul>${areaList}</ul>
+      <p><a href="/contact/">Request a free garage transformation estimate</a></p>
+    </article>`;
+}
+
+function setRootFallback(html, fallback) {
+  const rootRegex = /<div id="root">[\s\S]*?<\/div>/i;
+  return html.replace(rootRegex, `<div id="root">${fallback}</div>`);
+}
+
 function renderPage(html, route) {
   const page = getPageSeo(route, "en");
   let next = html;
@@ -60,17 +153,22 @@ function renderPage(html, route) {
   next = setMeta(next, "name", "robots", page.noindex ? "noindex, nofollow" : "index, follow, max-image-preview:large");
   next = setLink(next, "canonical", page.canonical);
 
+  next = setMeta(next, "property", "og:type", "website");
+  next = setMeta(next, "property", "og:site_name", "Garage a la Carte");
   next = setMeta(next, "property", "og:title", page.title);
   next = setMeta(next, "property", "og:description", page.description);
   next = setMeta(next, "property", "og:url", page.canonical);
   next = setMeta(next, "property", "og:image", page.image);
+  next = setMeta(next, "property", "og:image:alt", `${page.title} - Garage a la Carte Orlando`);
   next = setMeta(next, "property", "og:locale", page.locale);
   next = setMeta(next, "name", "twitter:title", page.title);
   next = setMeta(next, "name", "twitter:description", page.description);
   next = setMeta(next, "name", "twitter:image", page.image);
+  next = setMeta(next, "name", "twitter:image:alt", `${page.title} - Garage a la Carte Orlando`);
 
   next = setJsonLd(next, "seo-business-jsonld", buildBusinessJsonLd());
   next = setJsonLd(next, "seo-page-jsonld", buildPageJsonLd(page));
+  next = setRootFallback(next, buildStaticFallback(route, page));
 
   return next;
 }

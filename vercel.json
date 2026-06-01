@@ -19,6 +19,26 @@
       "source": "/admin",
       "destination": "/admin/",
       "permanent": true
+    },
+    {
+      "source": "/services/garage-design-blueprint-orlando",
+      "destination": "/services/garage-design-blueprint-orlando/",
+      "permanent": true
+    },
+    {
+      "source": "/services/garage-design-setup-orlando",
+      "destination": "/services/garage-design-setup-orlando/",
+      "permanent": true
+    },
+    {
+      "source": "/services/full-garage-transformation-orlando",
+      "destination": "/services/full-garage-transformation-orlando/",
+      "permanent": true
+    },
+    {
+      "source": "/services/smart-garage-integration-orlando",
+      "destination": "/services/smart-garage-integration-orlando/",
+      "permanent": true
     }
   ],
   "rewrites": [

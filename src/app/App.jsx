@@ -23,6 +23,7 @@ import {
 import { ConditionsPage, ContactPage } from "../pages/ContactPage";
 import { HomePage } from "../pages/HomePage";
 import { ProjectsPage } from "../pages/ProjectsPage";
+import { ServiceLandingPage } from "../pages/ServiceLandingPage";
 
 const AdminPage = lazy(() => import("../pages/AdminPage"));
 
@@ -176,6 +177,7 @@ export function App() {
       <main>
         {route === "home" && <HomePage lang={lang} onNav={onNav} />}
         {route === "projects" && <ProjectsPage lang={lang} onNav={onNav} />}
+        {route.startsWith("service") && <ServiceLandingPage route={route} lang={lang} onNav={onNav} />}
         {route === "contact" && <ContactPage lang={lang} onNav={onNav} />}
         {route === "conditions" && <ConditionsPage lang={lang} />}
         {route === "admin" && (
