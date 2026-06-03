@@ -12,6 +12,7 @@ import { CONTENT } from "../data/content";
 import { applyThemeColors, expandThemeColors } from "../data/theme";
 import { isCmsEditMode, enableCmsInlineEdit, isCmsColorMode, enableCmsColorPick } from "../lib/cmsEdit";
 import { applyPageSeo, routeFromLocation, routeToPath } from "../lib/seo";
+import { initAnalytics, trackPageView } from "../lib/analytics";
 import {
   TweakColor,
   TweakRadio,
@@ -112,8 +113,13 @@ export function App() {
   }, []);
 
   useEffect(() => {
+    initAnalytics();
+  }, []);
+
+  useEffect(() => {
     applyPageSeo({ route, lang });
     window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    trackPageView(routeToPath(route));
   }, [route, lang, contentVersion]);
 
   useEffect(() => {
