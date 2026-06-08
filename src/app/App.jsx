@@ -3,6 +3,7 @@ import {
   EmailPopup,
   Footer,
   Header,
+  Preloader,
 } from "../components/common";
 import {
   createEmailLead,
@@ -39,16 +40,70 @@ function getInitialRoute() {
   return routeFromLocation(window.location);
 }
 
+// Réunit les URLs d'images de la page d'accueil pour le préchargement (splash).
+function collectPreloadUrls() {
+  const urls = new Set();
+  const add = (u) => { if (u && typeof u === "string") urls.add(u); };
+
+  const cap = CONTENT.hero_caption || {};
+  (Array.isArray(cap.images) ? cap.images : []).forEach((img) =>
+    add(typeof img === "string" ? img : img?.image || img?.url)
+  );
+  add(cap.image);
+  add(cap.after_image);
+
+  const ba = CONTENT.before_after || {};
+  add(ba.before_image);
+  add(ba.after_image);
+
+  (CONTENT.use_cases?.items || []).forEach((it) => add(it.image));
+  (CONTENT.team?.members || []).forEach((m) => add(m.image || m.photo));
+
+  return [...urls];
+}
+
+function preloadImages(urls) {
+  if (!urls.length) return Promise.resolve();
+  return Promise.all(
+    urls.map(
+      (src) =>
+        new Promise((resolve) => {
+          const img = new Image();
+          img.onload = resolve;
+          img.onerror = resolve;
+          img.src = src;
+        })
+    )
+  );
+}
+
 export function App() {
   const [route, setRoute] = useState(getInitialRoute);
   const [lang, setLang] = useState(() => localStorage.getItem("galc_lang") || "en");
   const [popupShown, setPopupShown] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [contentVersion, setContentVersion] = useState(0);
+  const [booting, setBooting] = useState(true);
   const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
 
+  // Boot : on hydrate le contenu depuis Supabase, puis on précharge les images
+  // de la page d'accueil avant de masquer le splash. Garde-fous : durée minimale
+  // (évite un flash) et timeout maximal (ne bloque jamais l'affichage).
   useEffect(() => {
     let cancelled = false;
+    const startedAt = Date.now();
+    const MIN_MS = 700;
+    const MAX_MS = 5000;
+
+    const finishBoot = () => {
+      if (cancelled) return;
+      const wait = Math.max(0, MIN_MS - (Date.now() - startedAt));
+      window.setTimeout(() => {
+        if (!cancelled) setBooting(false);
+      }, wait);
+    };
+
+    const safety = window.setTimeout(finishBoot, MAX_MS);
 
     hydrateContentFromSupabase()
       .then(() => {
@@ -56,10 +111,18 @@ export function App() {
       })
       .catch((error) => {
         console.warn("Supabase content fallback:", error.message);
+      })
+      .finally(() => {
+        if (cancelled) return;
+        preloadImages(collectPreloadUrls()).then(() => {
+          window.clearTimeout(safety);
+          finishBoot();
+        });
       });
 
     return () => {
       cancelled = true;
+      window.clearTimeout(safety);
     };
   }, []);
 
@@ -174,8 +237,13 @@ export function App() {
     await createEmailLead({ email, locale: lang });
   };
 
+  const showPreloader =
+    route !== "admin" && !isCmsEditMode() && !isCmsColorMode();
+
   return (
     <>
+      {showPreloader && <Preloader done={!booting} />}
+
       {route !== "admin" && (
         <Header route={route} onNav={onNav} lang={lang} onLang={setLang} />
       )}

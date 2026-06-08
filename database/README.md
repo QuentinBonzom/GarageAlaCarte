@@ -2,21 +2,31 @@
 
 Schéma cible PostgreSQL/Supabase pour l'application React actuelle.
 
-## Fichiers
+## Installation d'une base neuve
 
-```bash
-database/schema.sql
-database/seed.sql
-```
-
-Ordre d'exécution:
+Quatre scripts, **à exécuter dans cet ordre** :
 
 ```sql
-\i database/schema.sql
-\i database/seed.sql
+\i database/schema.sql      -- 1. Tables + RLS du site public
+\i database/seed.sql        -- 2. Contenu initial (EN + ES, équipe, services, projets…)
+\i database/crm_phase1.sql  -- 3. CRM : crm_contacts + crm_activities (+ triggers)
+\i database/crm_phase2.sql  -- 4. CRM : crm_deals (pipeline / Kanban admin)
 ```
 
-Sur Supabase, colle d'abord `schema.sql` dans le SQL Editor, puis `seed.sql`.
+Sur Supabase, colle chaque fichier dans le SQL Editor, dans l'ordre ci-dessus.
+
+> ⚠️ `crm_phase1.sql` et `crm_phase2.sql` sont **obligatoires** : l'espace admin (CRM /
+> pipeline) interroge `crm_contacts`, `crm_activities` et `crm_deals`. Sans eux, l'admin
+> plante au chargement. Tous les scripts sont idempotents (relançables sans casse).
+
+## Scripts d'archive (`_archive/`)
+
+Migrations ponctuelles **déjà appliquées** à la base de production et **déjà intégrées**
+dans `seed.sql`. Inutiles pour une installation neuve — conservées pour l'historique :
+
+- `migrate_fr_to_spanish.sql` — conversion FR → ES (le `seed.sql` est déjà en espagnol).
+- `update_aymeric_profile.sql` — profil d'Aymeric (déjà présent dans `seed.sql`).
+- `cleanup_orphan_sections.sql` — désactivation de sections CMS non affichées (maintenance).
 
 ## Tables Conservées Ou Remplacées
 

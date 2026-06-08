@@ -10,6 +10,23 @@ function teamText(value, lang, fallback = "") {
   return value[lang] || value.en || value.fr || fallback;
 }
 
+// ---------- Preloader / splash screen ----------
+// Écran de chargement plein écran avec le logo, affiché au boot pendant que les
+// images de la page d'accueil se préchargent. `done` déclenche le fondu de sortie.
+export function Preloader({ done = false }) {
+  return (
+    <div
+      className={`preloader${done ? " is-done" : ""}`}
+      role="status"
+      aria-live="polite"
+      aria-hidden={done}
+    >
+      <img src="/logo.png" alt="Garage a la Carte" className="preloader__logo" />
+      <span className="preloader__spinner" aria-hidden="true" />
+    </div>
+  );
+}
+
 // ---------- Reveal on scroll ----------
 export function useReveal() {
   const ref = useRef(null);

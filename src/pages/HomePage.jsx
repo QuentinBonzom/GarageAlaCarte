@@ -71,11 +71,6 @@ function Hero({ lang, onNav }) {
       <div className="hero-v2__scrim" aria-hidden="true" />
 
       <div className="hero-v2__inner">
-        <Reveal as="div" className="hero-v2__locale hero-v2__locale--top">
-          <span className="hero-v2__locale-dot" aria-hidden="true" />
-          Orlando, FL
-        </Reveal>
-
         <Reveal as="h1" className="hero-v2__title" {...cmsAttr("hero", "title", "lines")}>
 
           {titleLines.map((line, i) => {

@@ -5,3 +5,10 @@ dist
 .env
 .env.local
 .env.*.local
+
+# Supabase CLI local state (project refs, pooler url)
+supabase/.temp/
+
+# Dev material — not served by the app, not part of the deliverable
+uploads/
+scraps/

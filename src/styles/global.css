@@ -450,6 +450,54 @@ body[data-card="outline"] .card {
    Hero v2 — "Your garage, reimagined." (Orlando premium refonte)
    Mobile-first. Photo fullscreen, headline overlay, terracotta CTA.
    ========================================================================== */
+/* ==========================================================================
+   Preloader — splash screen au boot (logo + spinner), fondu de sortie.
+   ========================================================================== */
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  background: var(--cream);
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.6s ease, visibility 0s linear 0s;
+}
+.preloader.is-done {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.6s ease, visibility 0s linear 0.6s;
+}
+.preloader__logo {
+  width: clamp(200px, 40vw, 320px);
+  height: auto;
+  animation: preloaderPulse 1.7s ease-in-out infinite;
+}
+.preloader__spinner {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid var(--line-strong);
+  border-top-color: var(--accent);
+  animation: preloaderSpin 0.8s linear infinite;
+}
+@keyframes preloaderSpin {
+  to { transform: rotate(360deg); }
+}
+@keyframes preloaderPulse {
+  0%, 100% { opacity: 0.7; transform: scale(0.97); }
+  50% { opacity: 1; transform: scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .preloader__logo,
+  .preloader__spinner { animation: none; }
+}
+
 .hero-v2 {
   position: relative;
   min-height: 88vh;
