@@ -1,4 +1,5 @@
 import { isSupabaseConfigured, supabase } from "../lib/supabase";
+import { compressImageFile } from "../lib/imageOptimize";
 import {
   PROJECT_IMAGE_BUCKET,
   getProjectImagePublicUrl,
@@ -237,6 +238,7 @@ export async function createProjectImage(projectId, displayOrder = 0) {
 
 export async function uploadProjectImageFile({ file, projectSlug, imageId }) {
   requireSupabase();
+  file = await compressImageFile(file);
   const safeProject = slugifyProjectImagePart(projectSlug || "project");
   const ext = (file.name || "").split(".").pop().toLowerCase();
   const safeName = slugifyProjectImagePart((file.name || "image").replace(/\.[^.]+$/, "")) + (ext ? `.${ext}` : "");
@@ -268,6 +270,7 @@ export async function uploadProjectImageFile({ file, projectSlug, imageId }) {
 
 export async function uploadCmsImage({ file, sectionKey, fieldKey }) {
   requireSupabase();
+  file = await compressImageFile(file);
   const safeSection = slugifyProjectImagePart(sectionKey || "section");
   const safeField = slugifyProjectImagePart(fieldKey || "image");
   const ext = (file.name || "").split(".").pop().toLowerCase();

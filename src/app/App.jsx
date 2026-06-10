@@ -40,7 +40,9 @@ function getInitialRoute() {
   return routeFromLocation(window.location);
 }
 
-// Réunit les URLs d'images de la page d'accueil pour le préchargement (splash).
+// Réunit les URLs d'images à précharger. On se limite au hero (above-the-fold) :
+// les autres sections sont en `loading="lazy"` et n'ont pas à se disputer la
+// bande passante avec l'image principale au démarrage.
 function collectPreloadUrls() {
   const urls = new Set();
   const add = (u) => { if (u && typeof u === "string") urls.add(u); };
@@ -51,13 +53,6 @@ function collectPreloadUrls() {
   );
   add(cap.image);
   add(cap.after_image);
-
-  const ba = CONTENT.before_after || {};
-  add(ba.before_image);
-  add(ba.after_image);
-
-  (CONTENT.use_cases?.items || []).forEach((it) => add(it.image));
-  (CONTENT.team?.members || []).forEach((m) => add(m.image || m.photo));
 
   return [...urls];
 }

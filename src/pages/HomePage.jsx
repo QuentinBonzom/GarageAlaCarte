@@ -62,6 +62,7 @@ function Hero({ lang, onNav }) {
               className={`hero-v2__slide${i === activeIdx ? " is-active" : ""}`}
               loading={i === 0 ? "eager" : "lazy"}
               fetchpriority={i === 0 ? "high" : "auto"}
+              decoding="async"
             />
           ))
         ) : (
