@@ -4238,3 +4238,8 @@ body[data-card="outline"] .card {
   .header__mobile-nav a { font-size: 28px; padding: 12px 0; }
   .contact-hero__promises { grid-template-columns: 1fr; }
 }
+
+/* Contenu de secours SEO prérendu dans #root : reste dans le HTML source pour
+   les crawlers, mais masqué visuellement pour éviter le flash de HTML brut
+   avant que React ne prenne le relais. */
+.seo-fallback { display: none; }
