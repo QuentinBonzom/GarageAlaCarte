@@ -237,8 +237,9 @@ export function App() {
     await createEmailLead({ email, locale: lang });
   };
 
+  // TEMP: preloader désactivé. Pour le réactiver, supprimer `false &&` ci-dessous.
   const showPreloader =
-    route !== "admin" && !isCmsEditMode() && !isCmsColorMode();
+    false && route !== "admin" && !isCmsEditMode() && !isCmsColorMode();
 
   return (
     <>

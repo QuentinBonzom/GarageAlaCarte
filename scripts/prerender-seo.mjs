@@ -5,6 +5,7 @@ import {
   SERVICE_AREA_PLACES,
   SERVICE_SEO,
   SEO_ROUTES,
+  SITE_URL,
   buildBusinessJsonLd,
   buildPageJsonLd,
   getPageSeo,
@@ -173,6 +174,46 @@ function renderPage(html, route) {
   return next;
 }
 
+// Per-route sitemap hints. Routes not listed here are skipped, as are noindex
+// routes (e.g. admin). changefreq/priority mirror the previous static sitemap.
+const SITEMAP_META = {
+  home: { changefreq: "weekly", priority: "1.0" },
+  projects: { changefreq: "weekly", priority: "0.9" },
+  serviceBlueprint: { changefreq: "monthly", priority: "0.85" },
+  serviceSetup: { changefreq: "monthly", priority: "0.85" },
+  serviceTransformation: { changefreq: "monthly", priority: "0.85" },
+  serviceSmart: { changefreq: "monthly", priority: "0.8" },
+  contact: { changefreq: "monthly", priority: "0.8" },
+  conditions: { changefreq: "yearly", priority: "0.3" },
+};
+
+function writeSitemap() {
+  const lastmod = new Date().toISOString().slice(0, 10);
+  const entries = Object.keys(SEO_ROUTES)
+    .filter((route) => SITEMAP_META[route] && !SEO_ROUTES[route].noindex)
+    .map((route) => {
+      const { changefreq, priority } = SITEMAP_META[route];
+      const loc = `${SITE_URL}${SEO_ROUTES[route].path}`;
+      return [
+        "  <url>",
+        `    <loc>${loc}</loc>`,
+        `    <lastmod>${lastmod}</lastmod>`,
+        `    <changefreq>${changefreq}</changefreq>`,
+        `    <priority>${priority}</priority>`,
+        "  </url>",
+      ].join("\n");
+    });
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${entries.join("\n")}
+</urlset>
+`;
+
+  fs.writeFileSync(path.join(distDir, "sitemap.xml"), xml);
+  return lastmod;
+}
+
 if (!fs.existsSync(baseIndexPath)) {
   throw new Error("dist/index.html not found. Run vite build first.");
 }
@@ -191,4 +232,7 @@ for (const route of Object.keys(SEO_ROUTES)) {
   fs.writeFileSync(outputPath, html);
 }
 
+const sitemapDate = writeSitemap();
+
 console.log("SEO prerendered routes:", Object.keys(SEO_ROUTES).map((route) => SEO_ROUTES[route].path).join(", "));
+console.log("Sitemap generated with lastmod:", sitemapDate);

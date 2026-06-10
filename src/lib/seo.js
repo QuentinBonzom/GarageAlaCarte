@@ -18,6 +18,7 @@ export const SERVICE_AREA_PLACES = [
   "Kissimmee, FL",
   "Maitland, FL",
   "Doctor Phillips, FL",
+  "Orange County, FL",
   "Central Florida",
 ];
 
@@ -32,6 +33,10 @@ export const PRIMARY_SEO_KEYWORDS = [
   "luxury garage design",
   "garage man cave",
   "garage transformation Orlando",
+  "Orlando",
+  "Orlando FL",
+  "Central Florida",
+  "Orange County",
 ];
 
 export const SERVICE_SEO = {
