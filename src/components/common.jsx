@@ -150,11 +150,11 @@ export function Header({ route, onNav, lang, onLang }) {
 export function Footer({ onNav, lang }) {
   const t = CONTENT.nav[lang];
   const c = CONTENT.contact || {};
-  const email = c.main_email || "hello@garagealacarte.com";
-  const phone = c.main_phone || "+1 (407) 555-0142";
+  const email = c.main_email || "garagealacarte@gmail.com";
+  const phone = c.main_phone || "+1 (917) 353-4950";
   const address = c.address?.[lang] || c.address?.en || "Orlando, FL · USA";
   const serviceLinks = [
-    { id: "blueprint", label: "Design Blueprint" },
+    { id: "blueprint", label: "Garage Design & Build Plan" },
     { id: "delivery", label: "Design + Setup" },
     { id: "transform", label: lang === "en" ? "Full Transformation" : "Transformación Completa" },
     { id: "smart", label: "Smart Integration" },

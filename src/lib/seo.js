@@ -43,7 +43,7 @@ export const SERVICE_SEO = {
   blueprint: {
     route: "serviceBlueprint",
     path: "/services/garage-design-blueprint-orlando/",
-    label: "Design Blueprint",
+    label: "Garage Design & Build Plan",
     title: {
       en: "Custom Garage Design Orlando | 3D Garage Plans",
       fr: "Plan de diseño de garaje en Orlando, FL | Planos 3D",
@@ -311,8 +311,8 @@ export function buildBusinessJsonLd() {
     image: [DEFAULT_IMAGE, `${SITE_URL}/logo.png`],
     description:
       "Custom garage design, garage remodeling, 3D space planning, storage, and smart garage transformation services based in Orlando, Florida.",
-    email: "hello@garagealacarte.com",
-    telephone: "+1-407-555-0142",
+    email: "garagealacarte@gmail.com",
+    telephone: "+1-917-353-4950",
     slogan: "American precision, European design.",
     priceRange: "$$",
     address: {
@@ -351,8 +351,8 @@ export function buildBusinessJsonLd() {
     makesOffer: serviceOffers,
     contactPoint: {
       "@type": "ContactPoint",
-      email: "hello@garagealacarte.com",
-      telephone: "+1-407-555-0142",
+      email: "garagealacarte@gmail.com",
+      telephone: "+1-917-353-4950",
       contactType: "customer service",
       areaServed: "US-FL",
       availableLanguage: ["English", "Spanish"],

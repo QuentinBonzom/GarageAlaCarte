@@ -1,0 +1,111 @@
+============================================================
+NOTES POUR LA CLIENTE — Points à clarifier / incohérences
+Garage à la Carte — mise à jour des services + conditions
+============================================================
+
+Bonjour,
+
+J'ai intégré tout le contenu fourni (services 1 à 3 + page Conditions).
+Pendant l'intégration, j'ai relevé quelques points qui ne sont pas
+cohérents d'un document à l'autre. J'ai fait des choix par défaut pour
+avancer (indiqués ci-dessous), mais merci de confirmer ou corriger.
+
+
+1) NOM DES SERVICES — incohérent entre les documents
+------------------------------------------------------------
+- Le service 1 est appelé "Design Blueprint" dans le doc Conditions,
+  mais "Garage Design & Build Plan" dans sa propre fiche.
+- Le service 2 est appelé tantôt "Design & Setup", tantôt
+  "Design + Delivery", tantôt "Design + Setup".
+
+→ Choix appliqué : "Garage Design & Build Plan" (service 1) et
+  "Design & Setup" (service 2), partout.
+→ À confirmer : le nom définitif de chaque service.
+
+
+2) ZONE DE SERVICE — contradiction
+------------------------------------------------------------
+- Les fiches services disent : "throughout the Orlando area"
+  (toute la zone d'Orlando, sans distance).
+- Le doc Conditions (§14) dit : "within 20 miles of Orlando"
+  (dans un rayon de 20 miles).
+
+→ Choix appliqué : "throughout the Orlando area" partout (on a
+  retiré la mention "20 miles").
+→ À confirmer : gardez-vous une limite chiffrée (ex. 20 miles) ou
+  la formulation plus souple "zone d'Orlando" ?
+
+
+3) NOMBRE DE VUES RÉALISTES — à uniformiser
+------------------------------------------------------------
+- Les nouveaux textes indiquent "3 initial realistic views" (3 vues).
+- L'ancien site indiquait selon les services "2 vues" ou "4 à 6 vues".
+
+→ Choix appliqué : "3 vues" partout (conforme à vos nouveaux PDF).
+→ À confirmer : est-ce bien 3 vues pour tous les services concernés ?
+
+
+4) STRUCTURE DE DÉPÔT — différente selon les services
+------------------------------------------------------------
+- Service 2 (Design & Setup) : 50 % / 50 %
+- Service 3 (Full Transformation) : 50 % / 25 % / 25 %
+- Le doc Conditions (§9 Paiement) reste générique (acompte initial,
+  paiements intermédiaires, solde final).
+
+→ Rien à corriger côté technique, mais à vérifier que ces deux
+  structures différentes sont bien voulues.
+
+
+5) INSTALLATION (Conditions §5) — Smart Integration absent
+------------------------------------------------------------
+La section "Installation & Responsibility" ne liste que 3 services :
+Garage Design & Build Plan, Design & Setup, Full Transformation.
+Le service 4 "Smart Integration" n'y figure pas.
+
+→ À confirmer : est-ce volontaire (Smart Integration = add-on) ou
+  faut-il l'ajouter à cette liste ?
+
+
+6) ASTÉRISQUES "**" dans la section 3 du doc Conditions
+------------------------------------------------------------
+Les noms de services étaient suivis de "**" (Design Blueprint**, etc.)
+sans note de bas de page correspondante.
+
+→ Choix appliqué : astérisques retirés.
+→ À confirmer : y avait-il une note de bas de page prévue ?
+
+
+7) CTA & ACCROCHES par service — pas encore intégrés
+------------------------------------------------------------
+Vos PDF prévoient des boutons et phrases spécifiques :
+- "Start My Full Transformation", "Start Your Setup Project",
+  "Start Your Design Project"
+- "Free estimate • No obligation • Clear answers from day one"
+- "Best for : ..."
+
+Ces éléments n'ont pas encore d'emplacement prévu sur le site.
+
+→ À décider : souhaitez-vous qu'on les ajoute (bouton + accroche
+  personnalisés par service) ?
+
+
+8) COORDONNÉES — à confirmer
+------------------------------------------------------------
+- Téléphone "SEO" du site = numéro de Guillaume (indicatif 917 =
+  New York). Juliette = indicatif 689 (Orlando).
+  → Confirmer que le numéro principal affiché doit être celui de NY.
+- Email : garagealacarte@gmail.com (adresse Gmail).
+  → Une adresse pro type contact@garagealacarte.com est-elle prévue ?
+
+
+9) ADRESSE URL du service 1 (point technique, info)
+------------------------------------------------------------
+Le nom affiché devient "Garage Design & Build Plan", mais l'adresse
+de la page reste .../garage-design-blueprint-orlando/.
+C'est volontaire : changer l'adresse ferait perdre le référencement
+Google déjà acquis. Aucune action nécessaire de votre part.
+
+
+------------------------------------------------------------
+Merci de relire les points 1 à 8 et de me dire vos préférences.
+------------------------------------------------------------

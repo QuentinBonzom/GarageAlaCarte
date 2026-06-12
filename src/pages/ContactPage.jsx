@@ -86,7 +86,7 @@ export function ContactPage({ lang, onNav }) {
                       <label {...cmsAttr("contact_page", "form.service")}>{C.form.service[lang]}</label>
 
                       <select value={form.service} onChange={(e) => setForm({...form, service: e.target.value})}>
-                        <option value="blueprint">Design Blueprint</option>
+                        <option value="blueprint">Garage Design & Build Plan</option>
                         <option value="delivery">Design & Setup</option>
                         <option value="transform">Full Transformation</option>
                         <option value="smart">Smart Integration</option>
@@ -163,8 +163,8 @@ export function ConditionsPage({ lang }) {
         : "Un proyecto está listo cuando los siguientes elementos están claramente definidos: nivel de servicio elegido, distribución y dirección de diseño confirmadas, presupuesto estimado y componentes principales. Una vez validado, pasamos a la planificación y la ejecución." },
     { num:"03", title: lang==="en"?"Scope of Work & Service Levels":"Alcance y Niveles de Servicio",
       body: lang==="en"
-        ? "Each service includes only what is clearly defined within the selected level: Design Blueprint (planning & visual design), Design + Delivery (design, sourcing & preparation), Full Transformation (full coordination & execution), Smart Integration (technical systems & upgrades). Any request outside the selected service is handled as a project adjustment."
-        : "Cada servicio incluye únicamente lo que está claramente definido en el nivel elegido: Design Blueprint (planificación y diseño), Design + Setup (diseño, sourcing y preparación), Transformación Completa (coordinación y ejecución), Smart Integration (sistemas técnicos). Cualquier solicitud fuera del alcance se trata como un ajuste de proyecto." },
+        ? "Each service includes only what is clearly defined within the selected level: Garage Design & Build Plan (planning & visual design), Design & Setup (design, sourcing & preparation), Full Transformation (full coordination & execution), Smart Integration (technical systems & upgrades). Any request outside the selected service is handled as a project adjustment."
+        : "Cada servicio incluye únicamente lo que está claramente definido en el nivel elegido: Garage Design & Build Plan (planificación y diseño), Design & Setup (diseño, sourcing y preparación), Transformación Completa (coordinación y ejecución), Smart Integration (sistemas técnicos). Cualquier solicitud fuera del alcance se trata como un ajuste de proyecto." },
     { num:"04", title: lang==="en"?"Design Visuals & Approval":"Visuales y Aprobación",
       body: lang==="en"
         ? "Our 3D visuals represent the overall design intent, layout, and atmosphere. As every garage is unique, small variations may occur in the final result due to materials, lighting, or product availability. Before moving forward, you'll review and approve your design — this is your opportunity to make sure everything feels right."
@@ -195,8 +195,8 @@ export function ConditionsPage({ lang }) {
         : "Las garantías del fabricante se aplican a los productos. La garantía de instalación se aplica cuando esta es gestionada por nuestro equipo o socios. Podemos usar las fotos del proyecto para nuestro portfolio salvo solicitud escrita en sentido contrario." },
     { num:"11", title: lang==="en"?"Delivery Area":"Zona de Servicio",
       body: lang==="en"
-        ? "Services are included within a standard local service area (typically within 20 miles of Orlando). Projects outside this area are available upon request and may include additional fees."
-        : "Los servicios se incluyen dentro de una zona estándar (habitualmente 20 millas alrededor de Orlando). Los proyectos fuera de zona son posibles bajo petición, con gastos adicionales." }
+        ? "On-site visits are available throughout the Orlando area. Visits beyond our standard zone are quoted based on location."
+        : "Las visitas in situ están disponibles en toda la zona de Orlando. Las visitas fuera de nuestra zona estándar se presupuestan según la ubicación." }
   ];
   const sections = legal?.sections?.length
     ? legal.sections.map((section) => ({

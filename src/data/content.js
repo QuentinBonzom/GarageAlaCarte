@@ -81,48 +81,55 @@ export const CONTENT = {
       {
         id: "blueprint",
         num: "01",
-        title: { en: "Design Blueprint", fr: "Design Blueprint" },
-        sub: { en: "Plan it right. Build it your way.", fr: "Planifica bien. Construye a tu manera." },
+        title: { en: "Garage Design & Build Plan", fr: "Garage Design & Build Plan" },
+        sub: { en: "Plan It Right. Build It Your Way.", fr: "Hazlo bien desde el principio. Construye a tu manera." },
         tag: { en: "Ideal for getting started", fr: "Ideal para empezar" },
         description: {
-          en: "You want to plan your garage with confidence before making decisions. See your future garage before you build anything — with a custom layout, two realistic views, and expert guidance to avoid costly mistakes. Most clients start here, then move forward once they see their design.",
-          fr: "Quieres planificar tu garaje con seguridad antes de tomar decisiones. Visualiza tu futuro garaje antes de construir nada — con una distribución a medida, dos vistas realistas y asesoramiento experto para evitar errores costosos. La mayoría de nuestros clientes empieza aquí y avanza una vez validado el diseño."
+          en: "You want to plan your garage with confidence before making decisions. See your future garage before you build anything — with a custom layout and 3D design, three realistic views, and expert guidance to avoid costly mistakes. Most clients start here, then move forward once they see their design.",
+          fr: "Quieres planificar tu garaje con seguridad antes de tomar decisiones. Visualiza tu futuro garaje antes de construir nada — con una distribución a medida y diseño 3D, tres vistas realistas y asesoramiento experto para evitar errores costosos. La mayoría de los clientes empieza aquí y avanza una vez que ve su diseño."
         },
         price: { en: "starts at $950", fr: "desde 950 $" },
         led_by: ["Aymeric", "Juliette", "Guillaume"],
         includes: {
-          en: ["1 optimized layout", "2 realistic views", "1 round of minor adjustments", "Expert design guidance"],
-          fr: ["1 distribución optimizada", "2 vistas realistas", "1 ronda de ajustes menores", "Asesoramiento experto"]
+          en: ["Custom layouts and technical planning", "3 initial realistic views", "Expert design guidance from our team"],
+          fr: ["Distribuciones a medida y planificación técnica", "3 vistas realistas iniciales", "Asesoramiento de diseño experto de nuestro equipo"]
         },
         not_included: { en: "No product purchasing, no delivery, no installation.", fr: "Sin compra de productos, sin entrega, sin instalación." },
-        on_site: { en: "Design Blueprint + On-Site Assessment starts at $1,350", fr: "Design Blueprint + evaluación in situ desde 1 350 $" },
+        on_site: { en: "Garage Design & Build Plan + On-Site Assessment starts at $1,350", fr: "Garage Design & Build Plan + evaluación in situ desde 1 350 $" },
         details: [
           {
             title: { en: "Choose your level", fr: "Elige tu nivel" },
             items: {
-              en: ["Design Blueprint (Remote) starts at $950", "Design Blueprint + On-Site Assessment starts at $1,350"],
-              fr: ["Design Blueprint a distancia desde 950 $", "Design Blueprint + evaluación in situ desde 1 350 $"]
+              en: ["Garage Design & Build Plan (Remote) starts at $950", "Garage Design & Build Plan + On-Site Assessment starts at $1,350"],
+              fr: ["Garage Design & Build Plan a distancia desde 950 $", "Garage Design & Build Plan + evaluación in situ desde 1 350 $"]
+            }
+          },
+          {
+            title: { en: "Design Review Period", fr: "Periodo de revisión del diseño" },
+            body: {
+              en: "After receiving your design package, you'll have up to 7 days to review the proposed concept with our team. During this review period, additional visual perspectives and minor design refinements may be provided as needed. Our goal is to ensure you have a clear vision of your future garage before any purchasing, delivery, or installation decisions are made. Some projects may require custom pricing depending on garage size, level of customization, requested visuals, revisions, or technical complexity.",
+              fr: "Tras recibir tu paquete de diseño, dispondrás de hasta 7 días para revisar la propuesta con nuestro equipo. Durante este periodo de revisión se pueden aportar perspectivas visuales adicionales y pequeños ajustes de diseño, según sea necesario. Nuestro objetivo es que tengas una visión clara de tu futuro garaje antes de tomar cualquier decisión de compra, entrega o instalación. Algunos proyectos pueden requerir un precio personalizado según el tamaño del garaje, el nivel de personalización, las vistas solicitadas, las revisiones o la complejidad técnica."
             }
           },
           {
             title: { en: "How it works", fr: "Cómo funciona" },
             items: {
-              en: ["Free consultation to define your project", "Fixed price, no surprises", "Delivered digitally", "Every detail is captured remotely or on-site when needed"],
-              fr: ["Consulta gratuita para definir el proyecto", "Precio fijo, sin sorpresas", "Entrega digital", "Cada detalle se captura a distancia o in situ si es necesario"]
-            }
-          },
-          {
-            title: { en: "Revisions", fr: "Revisiones" },
-            body: {
-              en: "Requests for extra views, major changes, or a new direction after approval are quoted separately.",
-              fr: "Las vistas adicionales, los cambios mayores o un nuevo enfoque tras la aprobación se presupuestan por separado."
+              en: ["Initial project discussion to understand your vision", "Custom design package with clear deliverables and fixed pricing", "Delivered digitally, with optional on-site assessment when needed"],
+              fr: ["Conversación inicial para entender tu visión", "Paquete de diseño a medida con entregables claros y precio fijo", "Entrega digital, con evaluación in situ opcional cuando es necesario"]
             }
           },
           {
             title: { en: "Continue your project", fr: "Continúa tu proyecto" },
             body: {
-              en: "Move forward anytime with setup support or a full transformation once your design is validated.",
-              fr: "Puedes continuar cuando quieras con el acompañamiento setup o una transformación completa una vez validado el diseño."
+              en: "Move forward at any time with setup or a full transformation.",
+              fr: "Avanza en cualquier momento con el setup o una transformación completa."
+            }
+          },
+          {
+            title: { en: "Design Ownership", fr: "Propiedad del diseño" },
+            body: {
+              en: "All layouts, plans, and visual designs remain the property of Garage à la Carte and are provided for your personal project use. Independent use or third-party execution may require a separate usage agreement.",
+              fr: "Todos los planos, diseños y visuales siguen siendo propiedad de Garage à la Carte y se proporcionan para uso personal de tu proyecto. El uso independiente o la ejecución por terceros puede requerir un acuerdo de uso por separado."
             }
           },
           {
@@ -138,20 +145,20 @@ export const CONTENT = {
         id: "delivery",
         num: "02",
         title: { en: "Design & Setup", fr: "Design & Setup" },
-        sub: { en: "Plan it right. Prepare it with confidence.", fr: "Planifica bien. Prepáralo con confianza." },
+        sub: { en: "Plan It Right. Prepare It With Confidence.", fr: "Hazlo bien desde el principio. Prepáralo con confianza." },
         description: {
-          en: "You want more than a design — you want the right products, materials, and a clear setup plan. Move from vision to execution without the sourcing headache. Most clients move forward with full transformation once everything is planned and ready.",
-          fr: "Quieres algo más que un diseño — quieres los productos adecuados, los materiales correctos y un plan claro de instalación. Pasa de la visión a la ejecución sin la carga del sourcing. La mayoría de nuestros clientes pasa a la transformación completa una vez todo está planificado y listo."
+          en: "You want more than a design — you want the right products, materials, and a clear setup plan. Move from vision to execution without the sourcing headache. We take your project beyond design, ensuring every detail is addressed before purchasing, delivery, or installation begins. Most clients move forward with a full transformation once everything is planned and ready.",
+          fr: "Quieres algo más que un diseño — quieres los productos adecuados, los materiales correctos y un plan de instalación claro. Pasa de la visión a la ejecución sin la carga del sourcing. Llevamos tu proyecto más allá del diseño, asegurándonos de que cada detalle esté resuelto antes de iniciar compras, entrega o instalación. La mayoría de los clientes pasa a la transformación completa una vez que todo está planificado y listo."
         },
         price: { en: "starts at $1,500", fr: "desde 1 500 $" },
         badge: { en: "Most popular", fr: "El más elegido" },
         led_by: ["Aymeric", "Juliette", "Guillaume"],
         includes: {
-          en: ["1 optimized layout", "2 realistic views", "Product selection guidance", "Sourcing coordination", "Setup planning for installation", "1 round of minor adjustments"],
-          fr: ["1 distribución optimizada", "2 vistas realistas", "Selección de productos", "Coordinación del sourcing", "Planificación de la instalación", "1 ronda de ajustes menores"]
+          en: ["Custom layouts and technical planning", "3 initial realistic views", "Product selection guidance", "Sourcing coordination", "Delivery and assembly of selected components", "Expert design guidance from our team"],
+          fr: ["Distribuciones a medida y planificación técnica", "3 vistas realistas iniciales", "Asesoramiento en la selección de productos", "Coordinación del sourcing", "Entrega y montaje de los componentes seleccionados", "Asesoramiento de diseño experto de nuestro equipo"]
         },
         not_included: { en: "No final installation or contractor labor unless upgraded to Full Transformation.", fr: "Sin instalación final ni mano de obra del contratista, salvo al pasar a Transformación Completa." },
-        deposit: { en: "50% / 25% / 25%", fr: "50 % / 25 % / 25 %" },
+        deposit: { en: "50% / 50%", fr: "50 % / 50 %" },
         details: [
           {
             title: { en: "Service fee credit", fr: "Crédito de honorarios" },
@@ -161,38 +168,49 @@ export const CONTENT = {
             }
           },
           {
+            title: { en: "Design Review Period", fr: "Periodo de revisión del diseño" },
+            body: {
+              en: "After receiving your design package, you'll have up to 7 days to review the proposed concept with our team. During this review period, additional visual perspectives and minor design refinements may be provided as needed to help you confidently validate your project before moving forward. Our goal is to ensure every product, material, and design decision is fully aligned before purchasing, delivery, or installation begins.",
+              fr: "Tras recibir tu paquete de diseño, dispondrás de hasta 7 días para revisar la propuesta con nuestro equipo. Durante este periodo de revisión se pueden aportar perspectivas visuales adicionales y pequeños ajustes de diseño, según sea necesario, para ayudarte a validar tu proyecto con total confianza antes de avanzar. Nuestro objetivo es que cada decisión de producto, material y diseño esté plenamente alineada antes de iniciar compras, entrega o instalación."
+            }
+          },
+          {
             title: { en: "How it works", fr: "Cómo funciona" },
             items: {
-              en: ["Free consultation to define your project", "Clear scope before commitment", "Fixed starting price; final pricing depends on size, complexity, and sourcing needs", "Delivered digitally with setup guidance"],
-              fr: ["Consulta gratuita para definir tu proyecto", "Alcance claro antes del compromiso", "Precio inicial fijo; el precio final depende del tamaño, la complejidad y las necesidades de sourcing", "Entrega digital con guía de instalación"]
+              en: ["Free consultation to define your project", "Clear scope before commitment", "Fixed starting price — final pricing depends on size, complexity, and sourcing needs", "Design package delivered digitally", "Product sourcing, delivery, and assembly coordinated by our team"],
+              fr: ["Consulta gratuita para definir tu proyecto", "Alcance claro antes del compromiso", "Precio inicial fijo — el precio final depende del tamaño, la complejidad y las necesidades de sourcing", "Paquete de diseño entregado digitalmente", "Sourcing de productos, entrega y montaje coordinados por nuestro equipo"]
             }
           },
           {
             title: { en: "Deposit structure", fr: "Estructura de pago" },
+            body: {
+              en: "This ensures your entire project is fully prepared before execution. After the 7-day review period and final approval, any major redesign, significant scope change, or change in project direction may require additional design services and will be quoted separately.",
+              fr: "Así nos aseguramos de que todo tu proyecto esté completamente preparado antes de la ejecución. Tras los 7 días de revisión y la aprobación final, cualquier rediseño importante, cambio significativo de alcance o cambio de dirección del proyecto puede requerir servicios de diseño adicionales y se presupuestará por separado."
+            },
             items: {
-              en: ["50% to secure your project and begin design", "25% after design validation during materials and sourcing", "25% upon completion and final walkthrough"],
-              fr: ["50 % para asegurar el proyecto e iniciar el diseño", "25 % tras la validación del diseño, durante la fase de materiales y sourcing", "25 % al finalizar, en la visita final"]
+              en: ["50% to secure your project and begin design", "50% upon completion and final walkthrough"],
+              fr: ["50 % para asegurar tu proyecto e iniciar el diseño", "50 % al finalizar, en la visita final"]
             }
           },
           {
-            title: { en: "Use of designs", fr: "Uso de los diseños" },
+            title: { en: "Design Ownership", fr: "Propiedad del diseño" },
             body: {
-              en: "Plans and visual designs remain the property of Garage a la Carte and are provided for your personal project use only. If you build independently or work with another contractor, a separate usage or release agreement may be required.",
-              fr: "Los planos y diseños visuales son propiedad de Garage a la Carte y se entregan exclusivamente para tu proyecto personal. Si construyes por tu cuenta o con otro contratista, puede requerirse un acuerdo de uso o cesión."
+              en: "All layouts, plans, and visual designs remain the property of Garage à la Carte and are provided for your personal project use. Independent use or third-party execution may require a separate usage agreement.",
+              fr: "Todos los planos, diseños y visuales siguen siendo propiedad de Garage à la Carte y se proporcionan para uso personal de tu proyecto. El uso independiente o la ejecución por terceros puede requerir un acuerdo de uso por separado."
             }
           },
           {
             title: { en: "Continue your project", fr: "Continúa tu proyecto" },
             body: {
-              en: "Move forward anytime with full transformation. Everything is planned, selected, and ready for execution.",
-              fr: "Puedes pasar a la transformación completa cuando quieras. Todo está planificado, seleccionado y listo para ejecutarse."
+              en: "Move forward anytime with Full Transformation.",
+              fr: "Pasa a la transformación completa cuando quieras."
             }
           },
           {
             title: { en: "Delivery area", fr: "Zona de servicio" },
             body: {
-              en: "Delivery and setup coordination are included within 20 miles of Orlando. Extended zones are available with a mileage fee, and statewide projects may be available upon request.",
-              fr: "La coordinación de entrega e instalación está incluida en un radio de 20 millas alrededor de Orlando. Las zonas ampliadas son posibles con gastos kilométricos, y ciertos proyectos en todo el estado pueden estudiarse bajo petición."
+              en: "On-site visits are available throughout the Orlando area. Visits beyond our standard zone are quoted based on location. Everything is prepared so you can move forward with confidence.",
+              fr: "Las visitas in situ están disponibles en toda la zona de Orlando. Las visitas fuera de nuestra zona estándar se presupuestan según la ubicación. Todo queda preparado para que puedas avanzar con confianza."
             }
           }
         ]
@@ -201,67 +219,78 @@ export const CONTENT = {
         id: "transform",
         num: "03",
         title: { en: "Full Transformation", fr: "Transformación Completa" },
-        sub: { en: "From concept to completion — we handle everything.", fr: "Del concepto a la entrega — nos encargamos de todo." },
+        sub: { en: "From Concept to Completion — We Handle Everything", fr: "Del concepto a la entrega — nos encargamos de todo" },
         description: {
-          en: "You want a complete, worry-free transformation — fully designed, fully managed, fully delivered. A turnkey solution where we design, plan, and coordinate your full garage transformation. Most clients enhance it with integrated upgrades — lighting, electrical, climate control, and smart features designed to work seamlessly together.",
-          fr: "Quieres una transformación completa y sin preocupaciones — totalmente diseñada, gestionada y entregada. Una solución llave en mano: diseñamos, planificamos y coordinamos toda tu transformación. La mayoría de nuestros clientes la completa con integraciones — iluminación, electricidad, climatización y funciones inteligentes pensadas para funcionar en conjunto."
+          en: "Experience our most comprehensive service. You want a complete, worry-free transformation — fully designed, fully managed, fully delivered. A complete, turnkey solution where we design, plan, and coordinate your full garage transformation, handling scheduling and coordination so your project runs smoothly. Most clients enhance their transformation with integrated upgrades, such as lighting, electrical, climate control, and smart features, designed to work seamlessly together. We don't just design your garage — we manage the entire transformation, from initial concept to final walkthrough.",
+          fr: "Vive nuestro servicio más completo. Quieres una transformación completa y sin preocupaciones — totalmente diseñada, gestionada y entregada. Una solución llave en mano donde diseñamos, planificamos y coordinamos toda la transformación de tu garaje, encargándonos de la planificación y la coordinación para que tu proyecto avance sin contratiempos. La mayoría de los clientes complementa su transformación con integraciones, como iluminación, electricidad, climatización y funciones inteligentes, pensadas para funcionar en conjunto. No solo diseñamos tu garaje — gestionamos toda la transformación, desde el concepto inicial hasta la visita final."
         },
         price: { en: "starts at $2,750", fr: "desde 2 750 $" },
         badge: { en: "Premium Experience", fr: "Experiencia premium" },
         led_by: ["Guillaume", "Aymeric", "Juliette"],
         includes: {
-          en: ["Custom optimized layout", "3D design with 4-6 realistic views", "Full space planning", "Complete material & equipment selection", "Sourcing and logistics coordination", "Project management and execution oversight", "Final walkthrough"],
-          fr: ["Distribución optimizada a medida", "Diseño 3D con 4 a 6 vistas realistas", "Planificación completa del espacio", "Selección completa de materiales y equipamiento", "Coordinación de sourcing y logística", "Gestión del proyecto y supervisión de la ejecución", "Visita final"]
+          en: ["Custom layouts and technical planning", "3 initial realistic views", "Full space planning (storage, living, utility, entertainment, and lifestyle zones)", "Complete material and equipment selection", "Sourcing and logistics coordination", "Complete transformation management from design to final walkthrough", "Final walkthrough of your completed space", "Expert design guidance from our team"],
+          fr: ["Distribuciones a medida y planificación técnica", "3 vistas realistas iniciales", "Planificación completa del espacio (almacenamiento, estancia, servicios, ocio y zonas de estilo de vida)", "Selección completa de materiales y equipamiento", "Coordinación de sourcing y logística", "Gestión completa de la transformación, del diseño a la visita final", "Visita final de tu espacio terminado", "Asesoramiento de diseño experto de nuestro equipo"]
         },
         deposit: { en: "50% / 25% / 25%", fr: "50 % / 25 % / 25 %" },
         details: [
           {
             title: { en: "Service fee credit", fr: "Crédito de honorarios" },
             body: {
-              en: "The service fee is fully credited when you move forward with a signed project contract.",
-              fr: "Los honorarios se acreditan íntegramente si continúas con un contrato de proyecto firmado."
+              en: "Fully credited toward your signed Full Transformation project contract.",
+              fr: "Se acredita íntegramente sobre tu contrato de proyecto Full Transformation firmado."
+            }
+          },
+          {
+            title: { en: "Design Review Period", fr: "Periodo de revisión del diseño" },
+            body: {
+              en: "After receiving your design package, you'll have up to 7 days to review the proposed concept with our team. During this review period, additional visual perspectives and minor design refinements may be provided as needed to help you confidently validate your project before moving forward. Our goal is to ensure every design, material, and project decision is fully aligned before purchasing, scheduling, delivery, or installation begins. After the 7-day review period and final approval, any major redesign, significant scope change, or change in project direction may require additional design services and will be quoted separately.",
+              fr: "Tras recibir tu paquete de diseño, dispondrás de hasta 7 días para revisar la propuesta con nuestro equipo. Durante este periodo de revisión se pueden aportar perspectivas visuales adicionales y pequeños ajustes de diseño, según sea necesario, para ayudarte a validar tu proyecto con total confianza antes de avanzar. Nuestro objetivo es que cada decisión de diseño, material y proyecto esté plenamente alineada antes de iniciar compras, planificación, entrega o instalación. Tras los 7 días de revisión y la aprobación final, cualquier rediseño importante, cambio significativo de alcance o cambio de dirección del proyecto puede requerir servicios de diseño adicionales y se presupuestará por separado."
             }
           },
           {
             title: { en: "How it works", fr: "Cómo funciona" },
             items: {
-              en: ["Dedicated consultation to define your vision", "Clear scope, budget, and timeline", "Structured phases from design to completion", "One expert guiding your project throughout"],
-              fr: ["Consulta dedicada para definir tu visión", "Alcance, presupuesto y plazos claros", "Fases estructuradas del diseño a la entrega", "Un experto que acompaña tu proyecto durante todo el proceso"]
+              en: ["Personalized project consultation to define your vision", "Clear scope, budget, and timeline", "Structured phases from design to completion", "One expert guiding your project throughout"],
+              fr: ["Consulta personalizada del proyecto para definir tu visión", "Alcance, presupuesto y plazos claros", "Fases estructuradas del diseño a la entrega", "Un experto que acompaña tu proyecto durante todo el proceso"]
             }
           },
           {
             title: { en: "Deposit structure", fr: "Estructura de pago" },
+            body: {
+              en: "This ensures your entire project is fully prepared before execution.",
+              fr: "Así nos aseguramos de que todo tu proyecto esté completamente preparado antes de la ejecución."
+            },
             items: {
-              en: ["50% to secure your project and begin design", "25% after design validation during materials and sourcing", "25% upon completion and final walkthrough"],
-              fr: ["50 % para asegurar el proyecto e iniciar el diseño", "25 % tras la validación del diseño, durante la fase de materiales y sourcing", "25 % al finalizar, en la visita final"]
+              en: ["50% to secure your project and begin design", "25% after design validation (materials & sourcing phase)", "25% upon completion and final walkthrough"],
+              fr: ["50 % para asegurar tu proyecto e iniciar el diseño", "25 % tras la validación del diseño (fase de materiales y sourcing)", "25 % al finalizar, en la visita final"]
             }
           },
           {
             title: { en: "Project investment", fr: "Inversión del proyecto" },
             body: {
-              en: "Typical project investment depends on layout, finishes, and customization level. This investment elevates daily living and adds lasting value to your property.",
-              fr: "La inversión final depende de la distribución, los acabados y el nivel de personalización. Esta inversión mejora la vida diaria y aporta un valor duradero a tu propiedad."
+              en: "Final project investment varies depending on garage size, finishes, customization level, and integrated features.",
+              fr: "La inversión final del proyecto varía según el tamaño del garaje, los acabados, el nivel de personalización y las funciones integradas."
             }
           },
           {
-            title: { en: "Use of designs", fr: "Uso de los diseños" },
+            title: { en: "Design Ownership", fr: "Propiedad del diseño" },
             body: {
-              en: "Plans and visual designs remain the property of Garage a la Carte and are provided for your personal project use only. If you build independently or work with another contractor, a separate usage or release agreement may be required.",
-              fr: "Los planos y diseños visuales son propiedad de Garage a la Carte y se entregan exclusivamente para tu proyecto personal. Si construyes por tu cuenta o con otro contratista, puede requerirse un acuerdo de uso o cesión."
+              en: "All layouts, plans, and visual designs remain the property of Garage à la Carte and are provided for your personal project use. Independent use or third-party execution may require a separate usage agreement.",
+              fr: "Todos los planos, diseños y visuales siguen siendo propiedad de Garage à la Carte y se proporcionan para uso personal de tu proyecto. El uso independiente o la ejecución por terceros puede requerir un acuerdo de uso por separado."
             }
           },
           {
             title: { en: "Continue your project", fr: "Continúa tu proyecto" },
             body: {
-              en: "Upgrade your space with integrated systems such as plumbing, electrical, climate control, and smart features designed to work seamlessly together.",
-              fr: "Mejora tu espacio con sistemas integrados como fontanería, electricidad, climatización y funciones inteligentes, pensados para funcionar en conjunto."
+              en: "Ready to go further? Upgrade your space with integrated systems — plumbing, electrical, climate control, and smart features — designed to work seamlessly together. Transform your garage into a fully equipped, high-performance space.",
+              fr: "¿Quieres ir más allá? Mejora tu espacio con sistemas integrados — fontanería, electricidad, climatización y funciones inteligentes — diseñados para funcionar en conjunto. Transforma tu garaje en un espacio totalmente equipado y de alto rendimiento."
             }
           },
           {
             title: { en: "Delivery area", fr: "Zona de servicio" },
             body: {
-              en: "Included within 20 miles of Orlando. Extended zones are available with a mileage fee, and statewide projects may be available upon request.",
-              fr: "Incluido en un radio de 20 millas alrededor de Orlando. Las zonas ampliadas son posibles con gastos kilométricos, y ciertos proyectos en todo el estado pueden estudiarse bajo petición."
+              en: "On-site visits are available throughout the Orlando area. Visits beyond our standard zone are quoted based on location.",
+              fr: "Las visitas in situ están disponibles en toda la zona de Orlando. Las visitas fuera de nuestra zona estándar se presupuestan según la ubicación."
             }
           }
         ]
@@ -333,8 +362,8 @@ export const CONTENT = {
           {
             title: { en: "Delivery area", fr: "Zona de servicio" },
             body: {
-              en: "Included within 20 miles of Orlando. Extended zones are available with a mileage fee, and statewide projects may be available upon request.",
-              fr: "Incluido en un radio de 20 millas alrededor de Orlando. Las zonas ampliadas son posibles con gastos kilométricos, y ciertos proyectos en todo el estado pueden estudiarse bajo petición."
+              en: "On-site visits are available throughout the Orlando area. Visits beyond our standard zone are quoted based on location.",
+              fr: "Las visitas in situ están disponibles en toda la zona de Orlando. Las visitas fuera de nuestra zona estándar se presupuestan según la ubicación."
             }
           }
         ]
@@ -353,7 +382,8 @@ export const CONTENT = {
       {
         name: "Guillaume",
         role: { en: "Garage Transformation & Build Lead", fr: "Responsable de Transformación y Construcción de Garaje" },
-        phone: "+917 353 4950",
+        phone: "+1 (917) 353-4950",
+        email: "garagealacarte@gmail.com",
         website: "https://www.ecuafranceelectric.com/",
         bio: {
           en: "Based in Orlando, Guillaume brings real-world construction experience and ensures every project is grounded, feasible, and built right.",
@@ -375,6 +405,8 @@ export const CONTENT = {
       {
         name: "Juliette",
         role: { en: "Mood-Visual & Advanced Color, Material & Finish (CMF) Design Lead", fr: "Responsable de Diseño Mood-Visual y Color, Material y Acabado (CMF) avanzado" },
+        phone: "+1 (689) 217-4074",
+        email: "garagealacarte@gmail.com",
         bio: {
           en: "Combines American precision with European creativity and space-saving design — turning ideas into immersive visuals so you see your future space before it's built.",
           fr: "Combina la precisión americana con la creatividad europea. Juliette crea imágenes inmersivas para que veas tu espacio antes incluso de que exista."
@@ -450,10 +482,10 @@ export const CONTENT = {
       {
         image: "",
         project_slug: "modern-automotive-lounge",
-        name: { en: "Modern Automotive Lounge", fr: "Lounge Automovilístico Moderno" },
+        name: { en: "The Hybrid Lifestyle Garage", fr: "El Garaje Híbrido Lifestyle" },
         tagline: {
-          en: "A High-End Garage for Cars, Work, Entertainment, and Lifestyle",
-          fr: "Un garaje de alta gama para coches, trabajo, entretenimiento y estilo de vida"
+          en: "A Garage Designed for Cars, Work & Entertainment",
+          fr: "Un garaje diseñado para coches, trabajo y entretenimiento"
         }
       }
     ]
@@ -595,36 +627,36 @@ export const CONTENT = {
     {
       id: "modern-automotive-lounge",
       slug: "modern-automotive-lounge",
-      name: { en: "The Modern Automotive Lounge", fr: "El Lounge Automovilístico Moderno" },
+      name: { en: "The Hybrid Lifestyle Garage", fr: "El Garaje Híbrido Lifestyle" },
       tagline: {
-        en: "A High-End Garage for Cars, Work, Entertainment, and Lifestyle",
-        fr: "Un garaje de alta gama para coches, trabajo, entretenimiento y estilo de vida"
+        en: "A Garage Designed for Cars, Work & Entertainment",
+        fr: "Un garaje diseñado para coches, trabajo y entretenimiento"
       },
-      type: { en: "Automotive lounge / Multi-use", fr: "Lounge automovilístico / Multi-uso" },
+      type: { en: "Hybrid lifestyle / Multi-use", fr: "Estilo de vida híbrido / Multi-uso" },
       size: { en: "3 car garage", fr: "Garaje para 3 coches" },
       duration: { en: "7 weeks", fr: "7 semanas" },
       service: { en: "Full Transformation", fr: "Transformación Completa" },
       year: "2025",
       featured: true,
       description: {
-        en: "Transform your garage into a modern automotive lounge designed for relaxation, focus, and everyday living. Inspired by luxury car showrooms and premium lounge spaces, this transformation combines vehicle display, entertainment, workspace, and comfort into one fully integrated environment. A garage designed to become part showroom, part man cave, and part modern living space.",
-        fr: "Convierte tu garaje en un lounge automovilístico moderno diseñado para la relajación, la concentración y la vida diaria. Inspirado en los showrooms de coches de lujo y los lounges premium, esta transformación combina exposición del vehículo, entretenimiento, espacio de trabajo y confort en un único entorno totalmente integrado. Un garaje pensado para ser en parte showroom, en parte refugio personal y en parte espacio de vida moderno."
+        en: "Transform your garage into the ultimate hybrid lifestyle space — designed for the way you live. This complete transformation blends premium vehicle display, a productive workspace, entertainment, and comfort into one beautifully designed, fully integrated environment. A garage designed to showcase your passion, support your productivity, and elevate your everyday living.",
+        fr: "Convierte tu garaje en el espacio de estilo de vida híbrido definitivo — diseñado para tu forma de vivir. Esta transformación completa combina una exposición premium del vehículo, un espacio de trabajo productivo, entretenimiento y confort en un único entorno bellamente diseñado y totalmente integrado. Un garaje pensado para mostrar tu pasión, apoyar tu productividad y elevar tu día a día."
       },
       includes: {
         en: ["Premium vehicle display area", "Lounge zone with sofa and oversized screen", "Modern workspace or gaming setup", "Beverage / coffee corner with storage", "Integrated lighting and upscale finishes", "Functional layout designed for everyday use"],
         fr: ["Zona de exposición premium del vehículo", "Espacio lounge con sofá y pantalla de gran tamaño", "Espacio de trabajo moderno o setup de gaming", "Rincón de café / bebidas con almacenamiento", "Iluminación integrada y acabados de alta gama", "Distribución funcional pensada para el uso diario"]
       },
       why: {
-        en: ["Turn underused garage space into a lifestyle destination", "Combine entertainment, work, and relaxation in one environment", "Create a clean, organized, high-end atmosphere", "Increase comfort, functionality, and property appeal", "Enjoy a garage designed to impress and be lived in"],
-        fr: ["Convierte un espacio de garaje infrautilizado en un destino de estilo de vida", "Combina entretenimiento, trabajo y relajación en un único entorno", "Crea una atmósfera limpia, organizada y de alta gama", "Aumenta el confort, la funcionalidad y el atractivo de tu propiedad", "Disfruta de un garaje diseñado para impresionar y para vivirlo"]
+        en: ["Turn underused garage space into a lifestyle destination", "Combine cars, work, entertainment, and relaxation in one environment", "Create a clean, organized, high-end atmosphere", "Increase comfort, functionality, and property appeal", "Enjoy a garage designed to impress and be lived in"],
+        fr: ["Convierte un espacio de garaje infrautilizado en un destino de estilo de vida", "Combina coches, trabajo, entretenimiento y relajación en un único entorno", "Crea una atmósfera limpia, organizada y de alta gama", "Aumenta el confort, la funcionalidad y el atractivo de tu propiedad", "Disfruta de un garaje diseñado para impresionar y para vivirlo"]
       },
       project_range: {
-        en: "Depending on how far you want to go. Each garage is fully customized. Final pricing is based on your space, layout, and level of transformation — finishes, technology integration, and level of customization.",
-        fr: "Según hasta dónde quieras llegar. Cada garaje se personaliza por completo. El precio final depende de tu espacio, distribución y nivel de transformación — acabados, integración tecnológica y nivel de personalización."
+        en: "Typical Project Range (3-Car Garage). Depending on how far you want to go. Each garage is fully customized. Final pricing is based on your space, layout, and level of transformation (finishes, technology integration, and level of customization).",
+        fr: "Rango típico del proyecto (garaje para 3 coches). Según hasta dónde quieras llegar. Cada garaje se personaliza por completo. El precio final depende de tu espacio, distribución y nivel de transformación (acabados, integración tecnológica y nivel de personalización)."
       },
       closing_line: {
-        en: "Start with a design — and transform your garage into a modern lifestyle experience.",
-        fr: "Empieza por el diseño — y transforma tu garaje en una experiencia de estilo de vida moderno."
+        en: "Start with a design — and transform your garage into a space built for cars, work, and entertainment.",
+        fr: "Empieza por el diseño — y transforma tu garaje en un espacio pensado para coches, trabajo y entretenimiento."
       },
       images: [
         { label: "Lounge & workspace · overview", color: "#2c2722" },
@@ -645,11 +677,11 @@ export const CONTENT = {
     },
     info_title: { en: "Direct line", fr: "Contacto directo" },
     address: {
-      en: "Orlando, FL · service area within 20 miles",
-      fr: "Orlando, FL · zona de servicio de 20 millas"
+      en: "Orlando, FL · on-site visits across the Orlando area",
+      fr: "Orlando, FL · visitas in situ en toda la zona de Orlando"
     },
-    main_email: "hello@garagealacarte.com",
-    main_phone: "+1 (407) 555-0142",
+    main_email: "garagealacarte@gmail.com",
+    main_phone: "+1 (917) 353-4950",
     form: {
       name: { en: "Your name", fr: "Tu nombre" },
       email: { en: "Email", fr: "Email" },
