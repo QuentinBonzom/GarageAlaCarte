@@ -3,7 +3,6 @@ import { createPortal } from "react-dom";
 import { CONTENT } from "../data/content";
 import { ImagePlaceholder, Reveal, useReveal, TeamSection } from "../components/common";
 import { cmsAttr, cmsRecordAttr } from "../lib/cmsEdit";
-import { getServiceRouteForId, routeToPath } from "../lib/seo";
 
 
 export function HomePage({ lang, onNav }) {
@@ -413,7 +412,6 @@ function ServiceCard({ svc, lang, index, onNav }) {
   const [open, setOpen] = useState(false);
   const ref = useReveal();
   const isFeatured = Boolean(svc.badge);
-  const serviceRoute = getServiceRouteForId(svc.id);
   return (
     <>
       <article
@@ -434,16 +432,6 @@ function ServiceCard({ svc, lang, index, onNav }) {
 
           {lang === "en" ? "View details" : "Ver detalles"} <span aria-hidden="true">→</span>
         </button>
-        <a
-          className="svc-card__seo-link"
-          href={routeToPath(serviceRoute)}
-          onClick={(event) => {
-            event.preventDefault();
-            onNav(serviceRoute);
-          }}
-        >
-          {lang === "en" ? "Orlando service page" : "Página del servicio en Orlando"}
-        </a>
       </article>
       {open && <ServiceModal svc={svc} lang={lang} onClose={()=>setOpen(false)} onNav={onNav} />}
     </>

@@ -8,6 +8,7 @@ const DEFAULT_LOCALE = {
   en: "en_US",
   fr: "es_ES",
 };
+export const SERVICES_SECTION_PATH = "/#services_intro";
 
 export const SERVICE_AREA_PLACES = [
   "Orlando, FL",
@@ -41,8 +42,7 @@ export const PRIMARY_SEO_KEYWORDS = [
 
 export const SERVICE_SEO = {
   blueprint: {
-    route: "serviceBlueprint",
-    path: "/services/garage-design-blueprint-orlando/",
+    path: SERVICES_SECTION_PATH,
     label: "Garage Design & Build Plan",
     title: {
       en: "Custom Garage Design Orlando | 3D Garage Plans",
@@ -60,8 +60,7 @@ export const SERVICE_SEO = {
     serviceType: "Garage design planning and 3D space planning",
   },
   delivery: {
-    route: "serviceSetup",
-    path: "/services/garage-design-setup-orlando/",
+    path: SERVICES_SECTION_PATH,
     label: "Design & Setup",
     title: {
       en: "Garage Organization Orlando | Storage Solutions & Cabinets",
@@ -80,8 +79,7 @@ export const SERVICE_SEO = {
     serviceType: "Garage design, product sourcing, setup planning, and storage coordination",
   },
   transform: {
-    route: "serviceTransformation",
-    path: "/services/full-garage-transformation-orlando/",
+    path: SERVICES_SECTION_PATH,
     label: "Full Transformation",
     title: {
       en: "Garage Remodeling Orlando | Renovation & Transformation",
@@ -101,8 +99,7 @@ export const SERVICE_SEO = {
     serviceType: "Full garage remodeling, renovation, and transformation",
   },
   smart: {
-    route: "serviceSmart",
-    path: "/services/smart-garage-integration-orlando/",
+    path: SERVICES_SECTION_PATH,
     label: "Smart Integration",
     title: {
       en: "Luxury Garage Design & Smart Integration Orlando",
@@ -120,10 +117,6 @@ export const SERVICE_SEO = {
     serviceType: "Smart garage systems, HVAC, lighting, electrical, media, and integrated technical planning",
   },
 };
-
-export const SERVICE_ROUTE_BY_ID = Object.fromEntries(
-  Object.entries(SERVICE_SEO).map(([serviceId, config]) => [serviceId, config.route]),
-);
 
 export const SEO_ROUTES = {
   home: {
@@ -204,26 +197,8 @@ export const SEO_ROUTES = {
   },
 };
 
-Object.entries(SERVICE_SEO).forEach(([serviceId, service]) => {
-  SEO_ROUTES[service.route] = {
-    path: service.path,
-    title: service.title,
-    description: service.description,
-    serviceId,
-    serviceType: service.serviceType,
-  };
-});
-
 export function routeToPath(route) {
   return SEO_ROUTES[route]?.path || "/";
-}
-
-export function getServiceRouteForId(serviceId) {
-  return SERVICE_ROUTE_BY_ID[serviceId] || "home";
-}
-
-export function getServicePathForId(serviceId) {
-  return routeToPath(getServiceRouteForId(serviceId));
 }
 
 export function routeFromLocation(location) {
@@ -289,12 +264,12 @@ function setJsonLd(id, data) {
 }
 
 export function buildBusinessJsonLd() {
-  const serviceOffers = Object.values(SERVICE_SEO).map((service) => ({
+  const serviceOffers = Object.entries(SERVICE_SEO).map(([serviceId, service]) => ({
     "@type": "Offer",
-    url: `${SITE_URL}${service.path}`,
+    url: `${SITE_URL}${SERVICES_SECTION_PATH}`,
     itemOffered: {
       "@type": "Service",
-      "@id": `${SITE_URL}${service.path}#service`,
+      "@id": `${SITE_URL}/#service-${serviceId}`,
       name: service.label,
       serviceType: service.serviceType,
       areaServed: "Orlando, FL",

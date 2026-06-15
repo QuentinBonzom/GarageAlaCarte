@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { CONTENT } from "../data/content";
-import { getServiceRouteForId, routeToPath } from "../lib/seo";
+import { routeToPath } from "../lib/seo";
 import { cmsAttr } from "../lib/cmsEdit";
 
 function teamText(value, lang, fallback = "") {
@@ -160,9 +160,12 @@ export function Footer({ onNav, lang }) {
     { id: "smart", label: "Smart Integration" },
   ];
 
-  const goService = (event, serviceId) => {
+  const goServicesSection = (event) => {
     event.preventDefault();
-    onNav(getServiceRouteForId(serviceId));
+    onNav("home");
+    window.setTimeout(() => {
+      document.getElementById("services_intro")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 80);
   };
 
   return (
@@ -212,8 +215,8 @@ export function Footer({ onNav, lang }) {
           {serviceLinks.map((service) => (
             <a
               key={service.id}
-              href={routeToPath(getServiceRouteForId(service.id))}
-              onClick={(event) => goService(event, service.id)}
+              href={`${routeToPath("home")}#services_intro`}
+              onClick={goServicesSection}
             >
               {service.label}
             </a>

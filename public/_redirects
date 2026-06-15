@@ -2,8 +2,12 @@
 /contact     /contact/     301
 /conditions  /conditions/  301
 /admin       /admin/       301
-/services/garage-design-blueprint-orlando       /services/garage-design-blueprint-orlando/       301
-/services/garage-design-setup-orlando           /services/garage-design-setup-orlando/           301
-/services/full-garage-transformation-orlando    /services/full-garage-transformation-orlando/    301
-/services/smart-garage-integration-orlando      /services/smart-garage-integration-orlando/      301
+/services/garage-design-blueprint-orlando       /       301
+/services/garage-design-blueprint-orlando/      /       301
+/services/garage-design-setup-orlando           /       301
+/services/garage-design-setup-orlando/          /       301
+/services/full-garage-transformation-orlando    /       301
+/services/full-garage-transformation-orlando/   /       301
+/services/smart-garage-integration-orlando      /       301
+/services/smart-garage-integration-orlando/     /       301
 /*    /index.html   200

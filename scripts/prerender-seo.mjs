@@ -54,10 +54,6 @@ function setJsonLd(html, id, data) {
   return replaceOrInsert(html, regex, replacement);
 }
 
-function getServiceSeoByRoute(route) {
-  return Object.values(SERVICE_SEO).find((service) => service.route === route);
-}
-
 function serviceLinksHtml() {
   return Object.values(SERVICE_SEO)
     .map((service) => `<li><a href="${escapeHtml(service.path)}">${escapeHtml(service.title.en)}</a></li>`)
@@ -69,23 +65,7 @@ function keywordListHtml(keywords = PRIMARY_SEO_KEYWORDS) {
 }
 
 function buildStaticFallback(route, page) {
-  const service = getServiceSeoByRoute(route);
   const areaList = SERVICE_AREA_PLACES.map((place) => `<li>${escapeHtml(place)}</li>`).join("");
-
-  if (service) {
-    return `
-      <article class="seo-fallback">
-        <p>Garage services in Orlando, FL</p>
-        <h1>${escapeHtml(service.title.en)}</h1>
-        <p>${escapeHtml(service.description.en)}</p>
-        <h2>Project goals</h2>
-        <ul>${keywordListHtml(service.keywords)}</ul>
-        <p>Garage a la Carte serves Orlando and nearby Central Florida communities with custom garage design, garage remodeling, storage planning, 3D plans, and smart garage integration.</p>
-        <h2>Service area</h2>
-        <ul>${areaList}</ul>
-        <p><a href="/contact/">Request a free garage estimate in Orlando</a></p>
-      </article>`;
-  }
 
   if (route === "projects") {
     return `
@@ -241,10 +221,6 @@ function renderPage(html, route, heroPreloadUrl = "") {
 const SITEMAP_META = {
   home: { changefreq: "weekly", priority: "1.0" },
   projects: { changefreq: "weekly", priority: "0.9" },
-  serviceBlueprint: { changefreq: "monthly", priority: "0.85" },
-  serviceSetup: { changefreq: "monthly", priority: "0.85" },
-  serviceTransformation: { changefreq: "monthly", priority: "0.85" },
-  serviceSmart: { changefreq: "monthly", priority: "0.8" },
   contact: { changefreq: "monthly", priority: "0.8" },
   conditions: { changefreq: "yearly", priority: "0.3" },
 };
