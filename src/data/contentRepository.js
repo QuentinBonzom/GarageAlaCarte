@@ -96,6 +96,12 @@ function mapServices(services, serviceTeams) {
       deposit: service.deposit_schedule,
       on_site: service.onsite_label,
       details: detailSections,
+      images: (Array.isArray(service.images) ? service.images : [])
+        .map((image) => ({
+          url: getProjectImagePublicUrl(image?.url),
+          alt: image?.alt ?? null,
+        }))
+        .filter((image) => image.url),
     };
   });
 }

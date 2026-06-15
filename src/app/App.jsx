@@ -25,6 +25,9 @@ import {
 import { ConditionsPage, ContactPage } from "../pages/ContactPage";
 import { HomePage } from "../pages/HomePage";
 import { ProjectsPage } from "../pages/ProjectsPage";
+import { BlogRemodelingGuide } from "../pages/BlogRemodelingGuide";
+import { BlogTransformationIdeas } from "../pages/BlogTransformationIdeas";
+import { BlogStorageSolutions } from "../pages/BlogStorageSolutions";
 
 const AdminPage = lazy(() => import("../pages/AdminPage"));
 
@@ -248,6 +251,9 @@ export function App() {
         {route === "projects" && <ProjectsPage lang={lang} onNav={onNav} />}
         {route === "contact" && <ContactPage lang={lang} onNav={onNav} />}
         {route === "conditions" && <ConditionsPage lang={lang} />}
+        {route === "blog_remodeling_guide" && <BlogRemodelingGuide lang={lang} onNav={onNav} />}
+        {route === "blog_transformation_ideas" && <BlogTransformationIdeas lang={lang} onNav={onNav} />}
+        {route === "blog_storage_solutions" && <BlogStorageSolutions lang={lang} onNav={onNav} />}
         {route === "admin" && (
           <Suspense fallback={<div style={{ padding: 80, textAlign: "center", color: "var(--muted)" }}>Loading admin…</div>}>
             <AdminPage lang={lang} onNav={onNav} />

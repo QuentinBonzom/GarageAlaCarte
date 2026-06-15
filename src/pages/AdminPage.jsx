@@ -47,6 +47,11 @@ import {
   updateTeamMember,
   uploadCmsImage,
   uploadProjectImageFile,
+  uploadServiceImageFile,
+  loadBlogArticles,
+  updateBlogArticle,
+  createBlogArticle,
+  deleteBlogArticle,
 } from "../data/adminRepository";
 import {
   AlertCircle,
@@ -90,6 +95,7 @@ import {
   Wrench,
   X,
   ZoomIn,
+  BookOpen,
 } from "lucide-react";
 import {
   DndContext,
@@ -110,6 +116,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import Cropper from "react-easy-crop";
+import { BlogArticlesPanel } from "../components/BlogArticlesPanel";
 
 /* ==========================================================================
    Constants — preserved exactly from previous implementation
@@ -160,6 +167,9 @@ const SECTION_LABELS = {
   projects_page: "Page Réalisations · En-tête",
   contact_page: "Page Contact · En-tête + formulaire",
   popup: "Popup email (sortie de page)",
+  
+  // Blog Articles
+  blog_articles: "Blog · Articles (Réforme, Transformation, Rangement)",
 };
 
 // Sections réellement rendues par le site, dans l'ordre d'apparition sur la page.
@@ -220,6 +230,20 @@ const FIELD_LABELS = {
   video_url: "URL vidéo",
   featured_label: "Eyebrow projet phare",
   featured_title: "Titre projet phare",
+  
+  // Blog articles fields
+  slug: "Slug (URL)",
+  title_en: "Titre (English)",
+  title_fr: "Titre (Español)",
+  intro_en: "Introduction (English)",
+  intro_fr: "Introduction (Español)",
+  content_en: "Contenu (English)",
+  content_fr: "Contenu (Español)",
+  cta_en: "CTA - Description (English)",
+  cta_fr: "CTA - Description (Español)",
+  cta_button_en: "CTA - Bouton (English)",
+  cta_button_fr: "CTA - Bouton (Español)",
+  is_active: "Publié",
 
 };
 
@@ -398,6 +422,7 @@ function buildNewServicePayload(existing = []) {
         },
       },
     ],
+    images: [],
     display_order: maxOrder + 10,
     is_active: true,
   };
@@ -417,6 +442,7 @@ const SERVICE_FIELDS = [
   { key: "deposit_schedule", label: "Paiement", fallback: { en: "", fr: "" }, optionalLocalized: true },
   { key: "onsite_label", label: "Option sur site", fallback: { en: "", fr: "" }, optionalLocalized: true },
   { key: "detail_sections", label: "Détails popup", fallback: [] },
+  { key: "images", label: "Images", fallback: [] },
   { key: "display_order", label: "Ordre", type: "number" },
   { key: "is_active", label: "Visible", type: "checkbox" },
 ];
@@ -5463,6 +5489,43 @@ function ServiceEditor({ record, title, meta, fields, onSave, onRefresh, onDelet
   const draft = editor.draft;
   const includes = safeLocalizedArray(draft.includes);
   const detailSections = Array.isArray(draft.detail_sections) ? draft.detail_sections : [];
+  const images = Array.isArray(draft.images) ? draft.images : [];
+
+  // ---------- helpers for images (plans, etc.) ----------
+  const setImages = (next) => setField("images", next);
+  const setImageAlt = (index, value) => {
+    setImages(images.map((img, i) =>
+      i === index ? { ...img, alt: setLocalized(img.alt, lang, value) } : img,
+    ));
+  };
+  const removeImage = (index) => setImages(images.filter((_, i) => i !== index));
+  const moveImage = (index, dir) => {
+    const target = index + dir;
+    if (target < 0 || target >= images.length) return;
+    const next = [...images];
+    const [item] = next.splice(index, 1);
+    next.splice(target, 0, item);
+    setImages(next);
+  };
+  const uploadImage = async (index, file) => {
+    if (!file) return;
+    try {
+      const uploaded = await uploadServiceImageFile({
+        file,
+        serviceSlug: draft.slug,
+        index,
+      });
+      const base = images[index] ?? { alt: { en: "", fr: "" } };
+      setImages(
+        index < images.length
+          ? images.map((img, i) => (i === index ? { ...base, url: uploaded.url } : img))
+          : [...images, { ...base, url: uploaded.url }],
+      );
+      pushToast({ type: "success", title: "Image téléversée — pensez à enregistrer" });
+    } catch (err) {
+      pushToast({ type: "error", title: "Upload échoué", message: err.message });
+    }
+  };
 
   // ---------- helpers for includes ----------
   const includesRows = Math.max(includes.en.length, includes.fr.length);
@@ -5625,6 +5688,61 @@ function ServiceEditor({ record, title, meta, fields, onSave, onRefresh, onDelet
               <button type="button" className="svc-edit-add" onClick={addIncludeRow}>
                 <Plus size={12} /> Ajouter un item
               </button>
+            </div>
+          </div>
+
+          {/* Images (plans, etc.) — shown under "What you get" in the popup */}
+          <div style={{ marginTop: "32px" }}>
+            <div className="text-mono text-muted" style={{ fontSize: "11px", letterSpacing: "0.12em", marginBottom: "8px" }}>
+              {lang === "en" ? "IMAGES (PLANS, ETC.)" : "IMAGES (PLANS, ETC.)"}
+            </div>
+            <div style={{ display: "grid", gap: "12px" }}>
+              {images.map((img, i) => (
+                <div key={i} style={{ display: "grid", gridTemplateColumns: "120px 1fr auto", gap: "12px", alignItems: "start", padding: "12px", border: "1px solid var(--line)", borderRadius: "10px" }}>
+                  <div style={{ aspectRatio: "4 / 3", borderRadius: "8px", overflow: "hidden", background: "var(--cream-deep)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    {img.url
+                      ? <img src={img.url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                      : <span className="text-mono text-muted" style={{ fontSize: "10px" }}>Aucune image</span>}
+                  </div>
+                  <div style={{ display: "grid", gap: "8px", minWidth: 0 }}>
+                    <label className="btn btn-ghost" style={{ padding: "8px 12px", display: "inline-flex", gap: "8px", cursor: "pointer", justifySelf: "start" }}>
+                      <Plus size={13} /> {img.url ? "Remplacer le fichier" : "Choisir un fichier"}
+                      <input
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp,image/gif"
+                        style={{ display: "none" }}
+                        onChange={(e) => { uploadImage(i, e.target.files?.[0]); e.target.value = ""; }}
+                      />
+                    </label>
+                    <InlineGrowTextarea
+                      value={img.alt?.[lang] || ""}
+                      onChange={(v) => setImageAlt(i, v)}
+                      placeholder={lang === "en" ? "Alt text (accessibility / SEO)" : "Texto alternativo (accesibilidad / SEO)"}
+                      style={{ fontSize: "13px", color: "var(--muted)" }}
+                    />
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                    <button type="button" className="admin-icon-btn" onClick={() => moveImage(i, -1)} disabled={i === 0} title="Monter">
+                      <ChevronDown size={13} style={{ transform: "rotate(180deg)" }} />
+                    </button>
+                    <button type="button" className="admin-icon-btn" onClick={() => moveImage(i, 1)} disabled={i === images.length - 1} title="Descendre">
+                      <ChevronDown size={13} />
+                    </button>
+                    <button type="button" className="admin-icon-btn" onClick={() => removeImage(i)} title="Retirer">
+                      <Trash2 size={13} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+              <label className="svc-edit-add" style={{ cursor: "pointer", justifySelf: "start" }}>
+                <Plus size={12} /> Ajouter une image
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/gif"
+                  style={{ display: "none" }}
+                  onChange={(e) => { uploadImage(images.length, e.target.files?.[0]); e.target.value = ""; }}
+                />
+              </label>
             </div>
           </div>
 

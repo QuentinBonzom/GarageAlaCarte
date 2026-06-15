@@ -477,6 +477,20 @@ function ServiceModal({ svc, lang, onClose, onNav }) {
               </ul>
             </div>}
 
+            {svc.images?.length > 0 && (
+              <div style={{marginTop:"32px", display:"grid", gap:"16px"}}>
+                {svc.images.map((img, i) => (
+                  <img
+                    key={i}
+                    src={img.url}
+                    alt={img.alt?.[lang] || ""}
+                    loading="lazy"
+                    style={{width:"100%", height:"auto", display:"block", borderRadius:"12px", border:"1px solid var(--line)"}}
+                  />
+                ))}
+              </div>
+            )}
+
             {svc.not_included && (
               <p style={{marginTop:"24px", padding:"16px", background:"var(--cream-deep)", borderRadius:"8px", fontSize:"13px", color:"var(--muted)"}}>
                 <strong>{lang==="en"?"Not included: ":"No incluido: "}</strong><span {...cmsRecordAttr("service", svc.id, "not_included")}>{svc.not_included[lang]}</span>

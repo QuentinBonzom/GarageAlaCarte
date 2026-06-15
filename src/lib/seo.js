@@ -1,6 +1,12 @@
-const viteSiteUrl = typeof import.meta !== "undefined" ? import.meta.env?.VITE_SITE_URL : "";
-const nodeSiteUrl = typeof process !== "undefined" ? process.env?.VITE_SITE_URL : "";
-export const SITE_URL = (viteSiteUrl || nodeSiteUrl || "https://garagealacarte.com").replace(/\/$/, "");
+const viteSiteUrl =
+  typeof import.meta !== "undefined" ? import.meta.env?.VITE_SITE_URL : "";
+const nodeSiteUrl =
+  typeof process !== "undefined" ? process.env?.VITE_SITE_URL : "";
+export const SITE_URL = (
+  viteSiteUrl ||
+  nodeSiteUrl ||
+  "https://garagealacarte.com"
+).replace(/\/$/, "");
 
 const BRAND = "Garage a la Carte";
 const DEFAULT_IMAGE = `${SITE_URL}/og-image.svg`;
@@ -21,6 +27,16 @@ export const SERVICE_AREA_PLACES = [
   "Doctor Phillips, FL",
   "Orange County, FL",
   "Central Florida",
+  "Thornton Park, FL",
+  "Colonialtown, FL",
+  "Lake Eustis, FL",
+  "Altamonte Springs, FL",
+  "Longwood, FL",
+  "Casselberry, FL",
+  "Sanford, FL",
+  "Apopka, FL",
+  "Oviedo, FL",
+  "Heathrow, FL",
 ];
 
 export const PRIMARY_SEO_KEYWORDS = [
@@ -38,6 +54,17 @@ export const PRIMARY_SEO_KEYWORDS = [
   "Orlando FL",
   "Central Florida",
   "Orange County",
+  "home gym garage Orlando",
+  "garage office conversion Orlando",
+  "garage lounge design",
+  "garage bar setup Orlando",
+  "garage workshop organization",
+  "3D garage design Orlando",
+  "garage storage systems Orlando",
+  "luxury garage renovation",
+  "garage transformation ideas",
+  "affordable garage remodel",
+  "garage design consultation",
 ];
 
 export const SERVICE_SEO = {
@@ -76,7 +103,8 @@ export const SERVICE_SEO = {
       "garage cabinets Orlando",
       "custom garage design Orlando",
     ],
-    serviceType: "Garage design, product sourcing, setup planning, and storage coordination",
+    serviceType:
+      "Garage design, product sourcing, setup planning, and storage coordination",
   },
   transform: {
     path: SERVICES_SECTION_PATH,
@@ -114,7 +142,8 @@ export const SERVICE_SEO = {
       "garage transformation Orlando",
       "custom garage design Orlando",
     ],
-    serviceType: "Smart garage systems, HVAC, lighting, electrical, media, and integrated technical planning",
+    serviceType:
+      "Smart garage systems, HVAC, lighting, electrical, media, and integrated technical planning",
   },
 };
 
@@ -195,6 +224,60 @@ export const SEO_ROUTES = {
     },
     noindex: true,
   },
+  blog_remodeling_guide: {
+    path: "/blog/garage-remodeling-guide/",
+    title: {
+      en: "Complete Garage Remodeling Guide for Orlando Homeowners",
+      fr: "Guía completa de reforma de garaje para propietarios de Orlando",
+    },
+    description: {
+      en: "Complete guide to garage remodeling in Orlando. Learn about costs, timeline, permits, and contractor tips for successful garage transformations.",
+      fr: "Guía completa para reformar tu garaje en Orlando. Costos, plazos, permisos y consejos de contratistas para transformaciones de garaje exitosas.",
+    },
+    keywords: [
+      "garage remodeling guide",
+      "garage remodeling cost Orlando",
+      "how much garage remodel Orlando",
+      "garage renovation timeline",
+      "garage remodel permits Orlando",
+    ],
+  },
+  blog_transformation_ideas: {
+    path: "/blog/garage-transformation-ideas/",
+    title: {
+      en: "Garage Transformation Ideas: Man Cave, Home Gym, Office, Lounge",
+      fr: "Ideas de transformación de garaje: cueva de hombre, gimnasio, oficina, lounge",
+    },
+    description: {
+      en: "Explore 4 garage transformation ideas: man cave, home gym, office, and lounge. See designs, costs, and how to convert your garage into your favorite room.",
+      fr: "Descubre 4 ideas de transformación de garaje: cueva de hombre, gimnasio, oficina y lounge. Diseños, costos y cómo convertir tu garaje.",
+    },
+    keywords: [
+      "garage transformation ideas",
+      "garage man cave",
+      "home gym garage",
+      "garage office conversion",
+      "garage lounge design",
+    ],
+  },
+  blog_storage_solutions: {
+    path: "/blog/garage-storage-solutions/",
+    title: {
+      en: "Best Garage Storage Solutions & Organization Systems 2026",
+      fr: "Mejores soluciones de almacenamiento de garaje y sistemas de organización 2026",
+    },
+    description: {
+      en: "Comprehensive guide to garage storage solutions. Compare wall, ceiling, modular systems & custom storage. Find the best organization system for your garage.",
+      fr: "Guía completa de soluciones de almacenamiento de garaje. Compara sistemas de pared, techo, modulares y almacenamiento personalizado para tu garaje.",
+    },
+    keywords: [
+      "garage storage solutions",
+      "best garage storage systems",
+      "garage organization systems",
+      "garage wall storage",
+      "garage shelving systems Orlando",
+    ],
+  },
 };
 
 export function routeToPath(route) {
@@ -206,7 +289,9 @@ export function routeFromLocation(location) {
   if (SEO_ROUTES[hashRoute]) return hashRoute;
 
   const path = location.pathname.replace(/\/+$/, "") || "/";
-  const entry = Object.entries(SEO_ROUTES).find(([, config]) => (config.path.replace(/\/+$/, "") || "/") === path);
+  const entry = Object.entries(SEO_ROUTES).find(
+    ([, config]) => (config.path.replace(/\/+$/, "") || "/") === path,
+  );
   return entry?.[0] || "home";
 }
 
@@ -264,17 +349,19 @@ function setJsonLd(id, data) {
 }
 
 export function buildBusinessJsonLd() {
-  const serviceOffers = Object.entries(SERVICE_SEO).map(([serviceId, service]) => ({
-    "@type": "Offer",
-    url: `${SITE_URL}${SERVICES_SECTION_PATH}`,
-    itemOffered: {
-      "@type": "Service",
-      "@id": `${SITE_URL}/#service-${serviceId}`,
-      name: service.label,
-      serviceType: service.serviceType,
-      areaServed: "Orlando, FL",
-    },
-  }));
+  const serviceOffers = Object.entries(SERVICE_SEO).map(
+    ([serviceId, service]) => ({
+      "@type": "Offer",
+      url: `${SITE_URL}${SERVICES_SECTION_PATH}`,
+      itemOffered: {
+        "@type": "Service",
+        "@id": `${SITE_URL}/#service-${serviceId}`,
+        name: service.label,
+        serviceType: service.serviceType,
+        areaServed: "Orlando, FL",
+      },
+    }),
+  );
 
   return {
     "@context": "https://schema.org",
@@ -317,6 +404,12 @@ export function buildBusinessJsonLd() {
       "Garage lounge design",
       "Smart garage integration",
       "HVAC and electrical planning for garages",
+      "Epoxy flooring garage",
+      "Garage wall organization",
+      "Garage lighting design",
+      "Climate control garage",
+      "Garage security systems",
+      "Garage soundproofing",
     ],
     hasOfferCatalog: {
       "@type": "OfferCatalog",
@@ -332,6 +425,62 @@ export function buildBusinessJsonLd() {
       areaServed: "US-FL",
       availableLanguage: ["English", "Spanish"],
     },
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "4.9",
+      reviewCount: "32",
+      bestRating: "5",
+      worstRating: "1",
+    },
+  };
+}
+
+export function buildFaqJsonLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "How much does a garage remodel cost in Orlando?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Garage remodeling costs in Orlando typically range from $3,000 to $25,000+ depending on scope. Design-only projects start at $950, while full transformations with custom cabinetry, flooring, and smart systems cost more. We provide free estimates tailored to your specific project.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "What's the best garage storage system?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "The best garage storage system depends on your needs. Options include wall-mounted shelving, ceiling-mounted systems, modular cabinets, and vertical storage. We recommend a combination approach tailored to your lifestyle, tools, and space. Our team designs custom solutions that maximize usable space.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Can a garage be converted into a home gym or office?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes, garages make excellent home gyms, offices, or lounges. Proper climate control, lighting, flooring, and electrical planning are essential. Our design services ensure your converted garage is functional, comfortable, and aligned with your lifestyle needs.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "How long does a garage transformation take?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Timeline varies by project. Design-only projects take 1-2 weeks. Installation timelines depend on scope, permits, and contractor availability. A typical full remodel takes 4-12 weeks. We provide detailed project schedules during your consultation.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Do you offer free garage design consultations?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes, we offer free initial consultations to understand your vision and project goals. For detailed 3D designs and professional plans, we provide services starting at $950. Contact us for your free consultation.",
+        },
+      },
+    ],
   };
 }
 
@@ -447,31 +596,79 @@ export function applyPageSeo({ route, lang }) {
   document.documentElement.lang = lang === "fr" ? "es" : "en";
   document.title = page.title;
 
-  setMeta('meta[name="description"]', { name: "description", content: page.description });
+  setMeta('meta[name="description"]', {
+    name: "description",
+    content: page.description,
+  });
   setMeta('meta[name="robots"]', {
     name: "robots",
-    content: page.noindex ? "noindex, nofollow" : "index, follow, max-image-preview:large",
+    content: page.noindex
+      ? "noindex, nofollow"
+      : "index, follow, max-image-preview:large",
   });
   setMeta('meta[name="geo.region"]', { name: "geo.region", content: "US-FL" });
-  setMeta('meta[name="geo.placename"]', { name: "geo.placename", content: "Orlando" });
+  setMeta('meta[name="geo.placename"]', {
+    name: "geo.placename",
+    content: "Orlando",
+  });
   setMeta('meta[name="ICBM"]', { name: "ICBM", content: "28.5383, -81.3792" });
 
-  setMeta('meta[property="og:type"]', { property: "og:type", content: "website" });
-  setMeta('meta[property="og:site_name"]', { property: "og:site_name", content: BRAND });
-  setMeta('meta[property="og:title"]', { property: "og:title", content: page.title });
-  setMeta('meta[property="og:description"]', { property: "og:description", content: page.description });
-  setMeta('meta[property="og:url"]', { property: "og:url", content: page.canonical });
-  setMeta('meta[property="og:image"]', { property: "og:image", content: page.image });
-  setMeta('meta[property="og:image:width"]', { property: "og:image:width", content: "1200" });
-  setMeta('meta[property="og:image:height"]', { property: "og:image:height", content: "630" });
-  setMeta('meta[property="og:locale"]', { property: "og:locale", content: page.locale });
+  setMeta('meta[property="og:type"]', {
+    property: "og:type",
+    content: "website",
+  });
+  setMeta('meta[property="og:site_name"]', {
+    property: "og:site_name",
+    content: BRAND,
+  });
+  setMeta('meta[property="og:title"]', {
+    property: "og:title",
+    content: page.title,
+  });
+  setMeta('meta[property="og:description"]', {
+    property: "og:description",
+    content: page.description,
+  });
+  setMeta('meta[property="og:url"]', {
+    property: "og:url",
+    content: page.canonical,
+  });
+  setMeta('meta[property="og:image"]', {
+    property: "og:image",
+    content: page.image,
+  });
+  setMeta('meta[property="og:image:width"]', {
+    property: "og:image:width",
+    content: "1200",
+  });
+  setMeta('meta[property="og:image:height"]', {
+    property: "og:image:height",
+    content: "630",
+  });
+  setMeta('meta[property="og:locale"]', {
+    property: "og:locale",
+    content: page.locale,
+  });
 
-  setMeta('meta[name="twitter:card"]', { name: "twitter:card", content: "summary_large_image" });
-  setMeta('meta[name="twitter:title"]', { name: "twitter:title", content: page.title });
-  setMeta('meta[name="twitter:description"]', { name: "twitter:description", content: page.description });
-  setMeta('meta[name="twitter:image"]', { name: "twitter:image", content: page.image });
+  setMeta('meta[name="twitter:card"]', {
+    name: "twitter:card",
+    content: "summary_large_image",
+  });
+  setMeta('meta[name="twitter:title"]', {
+    name: "twitter:title",
+    content: page.title,
+  });
+  setMeta('meta[name="twitter:description"]', {
+    name: "twitter:description",
+    content: page.description,
+  });
+  setMeta('meta[name="twitter:image"]', {
+    name: "twitter:image",
+    content: page.image,
+  });
 
   setLink("canonical", page.canonical);
   setJsonLd("seo-business-jsonld", buildBusinessJsonLd());
+  setJsonLd("seo-faq-jsonld", buildFaqJsonLd());
   setJsonLd("seo-page-jsonld", buildPageJsonLd(page));
 }

@@ -229,6 +229,12 @@ export function Footer({ onNav, lang }) {
           <div className="footer-v2__address">{address}</div>
         </div>
         <div className="footer-v2__col">
+          <h4>{lang==="en"?"Resources":"Recursos"}</h4>
+          <a href={routeToPath("blog_remodeling_guide")} onClick={(e)=>{e.preventDefault();onNav("blog_remodeling_guide");}}>{lang==="en"?"Remodeling Guide":"Guía de Reforma"}</a>
+          <a href={routeToPath("blog_transformation_ideas")} onClick={(e)=>{e.preventDefault();onNav("blog_transformation_ideas");}}>{lang==="en"?"Transformation Ideas":"Ideas de Transformación"}</a>
+          <a href={routeToPath("blog_storage_solutions")} onClick={(e)=>{e.preventDefault();onNav("blog_storage_solutions");}}>{lang==="en"?"Storage Solutions":"Soluciones de Almacenamiento"}</a>
+        </div>
+        <div className="footer-v2__col">
           <h4>{lang==="en"?"Legal":"Legal"}</h4>
           <a href={routeToPath("conditions")} onClick={(e)=>{e.preventDefault();onNav("conditions");}}>{lang==="en"?"Project conditions":"Condiciones del proyecto"}</a>
           <a href={routeToPath("admin")} onClick={(e)=>{e.preventDefault();onNav("admin");}}>Admin</a>

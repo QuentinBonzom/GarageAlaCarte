@@ -7,6 +7,7 @@ import {
   SEO_ROUTES,
   SITE_URL,
   buildBusinessJsonLd,
+  buildFaqJsonLd,
   buildPageJsonLd,
   getPageSeo,
 } from "../src/lib/seo.js";
@@ -38,25 +39,45 @@ function replaceOrInsert(html, regex, replacement) {
 
 function setMeta(html, attr, key, content) {
   const selector = escapeRegExp(key);
-  const regex = new RegExp(`<meta\\b(?=[^>]*\\b${attr}="${selector}")[^>]*>`, "i");
-  return replaceOrInsert(html, regex, `<meta ${attr}="${key}" content="${escapeHtml(content)}" />`);
+  const regex = new RegExp(
+    `<meta\\b(?=[^>]*\\b${attr}="${selector}")[^>]*>`,
+    "i",
+  );
+  return replaceOrInsert(
+    html,
+    regex,
+    `<meta ${attr}="${key}" content="${escapeHtml(content)}" />`,
+  );
 }
 
 function setLink(html, rel, href) {
   const selector = escapeRegExp(rel);
-  const regex = new RegExp(`<link\\s+rel="${selector}"\\s+href="[^"]*"\\s*/?>`, "i");
-  return replaceOrInsert(html, regex, `<link rel="${rel}" href="${escapeHtml(href)}" />`);
+  const regex = new RegExp(
+    `<link\\s+rel="${selector}"\\s+href="[^"]*"\\s*/?>`,
+    "i",
+  );
+  return replaceOrInsert(
+    html,
+    regex,
+    `<link rel="${rel}" href="${escapeHtml(href)}" />`,
+  );
 }
 
 function setJsonLd(html, id, data) {
-  const regex = new RegExp(`<script\\s+type="application/ld\\+json"\\s+id="${escapeRegExp(id)}">[\\s\\S]*?<\\/script>`, "i");
+  const regex = new RegExp(
+    `<script\\s+type="application/ld\\+json"\\s+id="${escapeRegExp(id)}">[\\s\\S]*?<\\/script>`,
+    "i",
+  );
   const replacement = `<script type="application/ld+json" id="${id}">${safeJson(data)}</script>`;
   return replaceOrInsert(html, regex, replacement);
 }
 
 function serviceLinksHtml() {
   return Object.values(SERVICE_SEO)
-    .map((service) => `<li><a href="${escapeHtml(service.path)}">${escapeHtml(service.title.en)}</a></li>`)
+    .map(
+      (service) =>
+        `<li><a href="${escapeHtml(service.path)}">${escapeHtml(service.title.en)}</a></li>`,
+    )
     .join("");
 }
 
@@ -65,7 +86,9 @@ function keywordListHtml(keywords = PRIMARY_SEO_KEYWORDS) {
 }
 
 function buildStaticFallback(route, page) {
-  const areaList = SERVICE_AREA_PLACES.map((place) => `<li>${escapeHtml(place)}</li>`).join("");
+  const areaList = SERVICE_AREA_PLACES.map(
+    (place) => `<li>${escapeHtml(place)}</li>`,
+  ).join("");
 
   if (route === "projects") {
     return `
@@ -154,8 +177,16 @@ function resolvePublicUrl(value, supabaseUrl) {
 // indisponible (Supabase non configuré, erreur réseau…) — le build continue.
 async function fetchHeroImageUrl() {
   const env = readDotenv();
-  const url = (process.env.VITE_SUPABASE_URL || env.VITE_SUPABASE_URL || "").trim();
-  const key = (process.env.VITE_SUPABASE_PUBLISHABLE_KEY || env.VITE_SUPABASE_PUBLISHABLE_KEY || "").trim();
+  const url = (
+    process.env.VITE_SUPABASE_URL ||
+    env.VITE_SUPABASE_URL ||
+    ""
+  ).trim();
+  const key = (
+    process.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+    env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+    ""
+  ).trim();
   if (!url || !key) return "";
   try {
     const { createClient } = await import("@supabase/supabase-js");
@@ -171,7 +202,9 @@ async function fetchHeroImageUrl() {
     const first =
       (Array.isArray(c.images) ? c.images : [])
         .map((img) => (typeof img === "string" ? img : img?.image || img?.url))
-        .filter(Boolean)[0] || c.image || c.after_image;
+        .filter(Boolean)[0] ||
+      c.image ||
+      c.after_image;
     return resolvePublicUrl(first, url);
   } catch {
     return "";
@@ -191,9 +224,19 @@ function renderPage(html, route, heroPreloadUrl = "") {
   if (route === "home") next = setHeroPreload(next, heroPreloadUrl);
 
   next = next.replace(/<html\s+lang="[^"]*"/i, '<html lang="en"');
-  next = next.replace(/<title>[\s\S]*?<\/title>/i, `<title>${escapeHtml(page.title)}</title>`);
+  next = next.replace(
+    /<title>[\s\S]*?<\/title>/i,
+    `<title>${escapeHtml(page.title)}</title>`,
+  );
   next = setMeta(next, "name", "description", page.description);
-  next = setMeta(next, "name", "robots", page.noindex ? "noindex, nofollow" : "index, follow, max-image-preview:large");
+  next = setMeta(
+    next,
+    "name",
+    "robots",
+    page.noindex
+      ? "noindex, nofollow"
+      : "index, follow, max-image-preview:large",
+  );
   next = setLink(next, "canonical", page.canonical);
 
   next = setMeta(next, "property", "og:type", "website");
@@ -202,14 +245,25 @@ function renderPage(html, route, heroPreloadUrl = "") {
   next = setMeta(next, "property", "og:description", page.description);
   next = setMeta(next, "property", "og:url", page.canonical);
   next = setMeta(next, "property", "og:image", page.image);
-  next = setMeta(next, "property", "og:image:alt", `${page.title} - Garage a la Carte Orlando`);
+  next = setMeta(
+    next,
+    "property",
+    "og:image:alt",
+    `${page.title} - Garage a la Carte Orlando`,
+  );
   next = setMeta(next, "property", "og:locale", page.locale);
   next = setMeta(next, "name", "twitter:title", page.title);
   next = setMeta(next, "name", "twitter:description", page.description);
   next = setMeta(next, "name", "twitter:image", page.image);
-  next = setMeta(next, "name", "twitter:image:alt", `${page.title} - Garage a la Carte Orlando`);
+  next = setMeta(
+    next,
+    "name",
+    "twitter:image:alt",
+    `${page.title} - Garage a la Carte Orlando`,
+  );
 
   next = setJsonLd(next, "seo-business-jsonld", buildBusinessJsonLd());
+  next = setJsonLd(next, "seo-faq-jsonld", buildFaqJsonLd());
   next = setJsonLd(next, "seo-page-jsonld", buildPageJsonLd(page));
   next = setRootFallback(next, buildStaticFallback(route, page));
 
@@ -274,6 +328,14 @@ for (const route of Object.keys(SEO_ROUTES)) {
 
 const sitemapDate = writeSitemap();
 
-console.log("SEO prerendered routes:", Object.keys(SEO_ROUTES).map((route) => SEO_ROUTES[route].path).join(", "));
+console.log(
+  "SEO prerendered routes:",
+  Object.keys(SEO_ROUTES)
+    .map((route) => SEO_ROUTES[route].path)
+    .join(", "),
+);
 console.log("Sitemap generated with lastmod:", sitemapDate);
-console.log("Hero preload:", heroPreloadUrl || "(none — Supabase indisponible au build)");
+console.log(
+  "Hero preload:",
+  heroPreloadUrl || "(none — Supabase indisponible au build)",
+);

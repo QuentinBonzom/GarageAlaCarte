@@ -6,7 +6,8 @@ import {
   slugifyProjectImagePart,
 } from "./projectImageUrls";
 
-const adminEmail = import.meta.env.VITE_SUPABASE_ADMIN_EMAIL || "admin@garagealacarte.com";
+const adminEmail =
+  import.meta.env.VITE_SUPABASE_ADMIN_EMAIL || "admin@garagealacarte.com";
 
 function requireSupabase() {
   if (!isSupabaseConfigured) {
@@ -30,7 +31,9 @@ export async function getAdminSession() {
 
 export function onAdminAuthChange(callback) {
   if (!isSupabaseConfigured) return () => {};
-  const { data } = supabase.auth.onAuthStateChange((_event, session) => callback(session));
+  const { data } = supabase.auth.onAuthStateChange((_event, session) =>
+    callback(session),
+  );
   return () => data.subscription.unsubscribe();
 }
 
@@ -74,25 +77,46 @@ export async function loadAdminData() {
     crmActivities,
     crmDeals,
   ] = await Promise.all([
-    supabase.from("email_leads").select("*").order("captured_at", { ascending: false }),
-    supabase.from("contact_submissions").select("*").order("submitted_at", { ascending: false }),
+    supabase
+      .from("email_leads")
+      .select("*")
+      .order("captured_at", { ascending: false }),
+    supabase
+      .from("contact_submissions")
+      .select("*")
+      .order("submitted_at", { ascending: false }),
     supabase.from("services").select("*").order("display_order"),
     supabase.from("team_members").select("*").order("display_order"),
     supabase.from("process_steps").select("*").order("display_order"),
     supabase.from("projects").select("*").order("display_order"),
-    supabase.from("cms_sections").select("*").order("page_key").order("display_order"),
+    supabase
+      .from("cms_sections")
+      .select("*")
+      .order("page_key")
+      .order("display_order"),
     supabase.from("contact_channels").select("*").order("display_order"),
     supabase.from("legal_documents").select("*").order("document_key"),
     supabase.from("legal_sections").select("*").order("display_order"),
     supabase.from("site_settings").select("*").order("key"),
     supabase.from("project_images").select("*").order("display_order"),
-    supabase.from("crm_contacts").select("*").order("last_activity_at", { ascending: false }),
-    supabase.from("crm_activities").select("*").order("created_at", { ascending: false }),
-    supabase.from("crm_deals").select("*").order("created_at", { ascending: false }),
+    supabase
+      .from("crm_contacts")
+      .select("*")
+      .order("last_activity_at", { ascending: false }),
+    supabase
+      .from("crm_activities")
+      .select("*")
+      .order("created_at", { ascending: false }),
+    supabase
+      .from("crm_deals")
+      .select("*")
+      .order("created_at", { ascending: false }),
   ]);
 
   const projectRows = unwrap("projects", projects);
-  const projectSlugsById = Object.fromEntries(projectRows.map((project) => [project.id, project.slug]));
+  const projectSlugsById = Object.fromEntries(
+    projectRows.map((project) => [project.id, project.slug]),
+  );
 
   return {
     emailLeads: unwrap("email_leads", emailLeads),
@@ -108,7 +132,11 @@ export async function loadAdminData() {
     siteSettings: unwrap("site_settings", siteSettings),
     projectImages: unwrap("project_images", projectImages).map((image) => ({
       ...image,
-      image_url: getProjectImagePublicUrl(image.image_url, projectSlugsById[image.project_id]) || image.image_url,
+      image_url:
+        getProjectImagePublicUrl(
+          image.image_url,
+          projectSlugsById[image.project_id],
+        ) || image.image_url,
     })),
     crmContacts: unwrap("crm_contacts", crmContacts),
     crmActivities: unwrap("crm_activities", crmActivities),
@@ -118,14 +146,21 @@ export async function loadAdminData() {
 
 export async function createCrmDeal(payload) {
   requireSupabase();
-  const { data, error } = await supabase.from("crm_deals").insert(payload).select().single();
+  const { data, error } = await supabase
+    .from("crm_deals")
+    .insert(payload)
+    .select()
+    .single();
   if (error) throw error;
   return data;
 }
 
 export async function updateCrmDeal(id, payload) {
   requireSupabase();
-  const { error } = await supabase.from("crm_deals").update(payload).eq("id", id);
+  const { error } = await supabase
+    .from("crm_deals")
+    .update(payload)
+    .eq("id", id);
   if (error) throw error;
 }
 
@@ -137,7 +172,10 @@ export async function deleteCrmDeal(id) {
 
 export async function updateCrmContact(id, payload) {
   requireSupabase();
-  const { error } = await supabase.from("crm_contacts").update(payload).eq("id", id);
+  const { error } = await supabase
+    .from("crm_contacts")
+    .update(payload)
+    .eq("id", id);
   if (error) throw error;
 }
 
@@ -241,7 +279,9 @@ export async function uploadProjectImageFile({ file, projectSlug, imageId }) {
   file = await compressImageFile(file);
   const safeProject = slugifyProjectImagePart(projectSlug || "project");
   const ext = (file.name || "").split(".").pop().toLowerCase();
-  const safeName = slugifyProjectImagePart((file.name || "image").replace(/\.[^.]+$/, "")) + (ext ? `.${ext}` : "");
+  const safeName =
+    slugifyProjectImagePart((file.name || "image").replace(/\.[^.]+$/, "")) +
+    (ext ? `.${ext}` : "");
   const path = `${safeProject}/${imageId}-${Date.now()}-${safeName}`;
 
   const { error } = await supabase.storage
@@ -254,12 +294,15 @@ export async function uploadProjectImageFile({ file, projectSlug, imageId }) {
 
   if (error) {
     const code = error.statusCode || error.status || "";
-    const hint = code === "404" || error.message?.includes("Bucket")
-      ? " — Vérifiez que le bucket 'project-images' existe dans Supabase Storage."
-      : code === "403" || error.message?.includes("policy")
-      ? " — Vérifiez les politiques RLS du bucket Supabase."
-      : "";
-    throw new Error(`Upload échoué${code ? ` (${code})` : ""}: ${error.message}${hint}`);
+    const hint =
+      code === "404" || error.message?.includes("Bucket")
+        ? " — Vérifiez que le bucket 'project-images' existe dans Supabase Storage."
+        : code === "403" || error.message?.includes("policy")
+          ? " — Vérifiez les politiques RLS du bucket Supabase."
+          : "";
+    throw new Error(
+      `Upload échoué${code ? ` (${code})` : ""}: ${error.message}${hint}`,
+    );
   }
 
   return {
@@ -295,12 +338,51 @@ export async function uploadCmsImage({ file, sectionKey, fieldKey }) {
         : code === "403" || error.message?.includes("policy")
           ? " — Vérifiez les politiques RLS du bucket Supabase."
           : "";
-    throw new Error(`Upload échoué${code ? ` (${code})` : ""}: ${error.message}${hint}`);
+    throw new Error(
+      `Upload échoué${code ? ` (${code})` : ""}: ${error.message}${hint}`,
+    );
   }
 
   return {
     path,
     url: getProjectImagePublicUrl(path, "cms"),
+  };
+}
+
+export async function uploadServiceImageFile({ file, serviceSlug, index = 0 }) {
+  requireSupabase();
+  file = await compressImageFile(file);
+  const safeService = slugifyProjectImagePart(serviceSlug || "service");
+  const ext = (file.name || "").split(".").pop().toLowerCase();
+  const safeName =
+    slugifyProjectImagePart((file.name || "image").replace(/\.[^.]+$/, "")) +
+    (ext ? `.${ext}` : "");
+  const path = `services/${safeService}/${index}-${Date.now()}-${safeName}`;
+
+  const { error } = await supabase.storage
+    .from(PROJECT_IMAGE_BUCKET)
+    .upload(path, file, {
+      cacheControl: "31536000",
+      contentType: file.type || "image/jpeg",
+      upsert: true,
+    });
+
+  if (error) {
+    const code = error.statusCode || error.status || "";
+    const hint =
+      code === "404" || error.message?.includes("Bucket")
+        ? " — Vérifiez que le bucket 'project-images' existe dans Supabase Storage."
+        : code === "403" || error.message?.includes("policy")
+          ? " — Vérifiez les politiques RLS du bucket Supabase."
+          : "";
+    throw new Error(
+      `Upload échoué${code ? ` (${code})` : ""}: ${error.message}${hint}`,
+    );
+  }
+
+  return {
+    path,
+    url: getProjectImagePublicUrl(path),
   };
 }
 
@@ -326,10 +408,7 @@ export async function createService(payload) {
 
 export async function deleteService(id) {
   requireSupabase();
-  const { error } = await supabase
-    .from("services")
-    .delete()
-    .eq("id", id);
+  const { error } = await supabase.from("services").delete().eq("id", id);
   if (error) throw error;
 }
 
@@ -384,5 +463,44 @@ export async function updateLegalSection(id, payload) {
     .from("legal_sections")
     .update(payload)
     .eq("id", id);
+  if (error) throw error;
+}
+
+// =====================================================
+// Blog Articles CMS
+// =====================================================
+
+export async function loadBlogArticles() {
+  requireSupabase();
+  const { data, error } = await supabase
+    .from("blog_articles")
+    .select("*")
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return data || [];
+}
+
+export async function updateBlogArticle(id, payload) {
+  requireSupabase();
+  const { error } = await supabase
+    .from("blog_articles")
+    .update({ ...payload, updated_at: new Date().toISOString() })
+    .eq("id", id);
+  if (error) throw error;
+}
+
+export async function createBlogArticle(payload) {
+  requireSupabase();
+  const { data, error } = await supabase
+    .from("blog_articles")
+    .insert([{ ...payload, created_at: new Date().toISOString() }])
+    .select();
+  if (error) throw error;
+  return data?.[0];
+}
+
+export async function deleteBlogArticle(id) {
+  requireSupabase();
+  const { error } = await supabase.from("blog_articles").delete().eq("id", id);
   if (error) throw error;
 }
