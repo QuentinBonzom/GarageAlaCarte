@@ -442,6 +442,7 @@ function ServiceModal({ svc, lang, onClose, onNav }) {
   const rawIncludes = svc.includes?.[lang] ?? svc.includes?.en ?? svc.includes?.fr;
   const includes = Array.isArray(rawIncludes) ? rawIncludes : rawIncludes ? [rawIncludes] : [];
   const details = svc.details ?? svc.detail_sections ?? [];
+  const [openImage, setOpenImage] = useState(null);
 
   useEffect(() => {
     const prevOverflow = document.body.style.overflow;
@@ -468,18 +469,54 @@ function ServiceModal({ svc, lang, onClose, onNav }) {
             {includes.length > 0 && <div style={{marginTop:"40px"}}>
               <div className="text-mono text-muted" style={{marginBottom:"16px"}}>{lang==="en"?"WHAT YOU GET":"LO QUE INCLUYE"}</div>
               <ul style={{listStyle:"none", padding:0, margin:0}}>
-                {includes.map((it, i) => (
-                  <li key={i} style={{padding:"12px 0", borderBottom:"1px solid var(--line)", display:"flex", gap:"16px"}}>
-                    <span style={{color:"var(--accent)", fontFamily:"var(--mono)", fontSize:"12px"}}>0{i+1}</span>
-                    <span>{it}</span>
-                  </li>
-                ))}
+                {includes.map((it, i) => {
+                  const itemImages = (svc.images || []).filter((img) => img.slot === i);
+                  const isOpen = openImage === i;
+                  return (
+                    <li key={i} style={{padding:"12px 0", borderBottom:"1px solid var(--line)"}}>
+                      <div style={{display:"flex", gap:"16px", alignItems:"center"}}>
+                        <span style={{color:"var(--accent)", fontFamily:"var(--mono)", fontSize:"12px"}}>0{i+1}</span>
+                        <span style={{flex:1}}>{it}</span>
+                        {itemImages.length > 0 && (
+                          <button
+                            type="button"
+                            onClick={() => setOpenImage(isOpen ? null : i)}
+                            data-cms-allow
+                            style={{
+                              flexShrink:0, display:"inline-flex", alignItems:"center", gap:"6px",
+                              padding:"4px 12px", borderRadius:"999px", cursor:"pointer",
+                              border:"1px solid var(--line)", background:"transparent",
+                              fontFamily:"var(--mono)", fontSize:"11px", letterSpacing:"0.08em",
+                              textTransform:"uppercase", color:"var(--accent)",
+                            }}
+                          >
+                            {isOpen ? (lang==="en"?"Hide":"Ocultar") : (lang==="en"?"View":"Ver")}
+                            <span style={{fontSize:"13px"}}>{isOpen ? "−" : "+"}</span>
+                          </button>
+                        )}
+                      </div>
+                      {isOpen && itemImages.length > 0 && (
+                        <div style={{marginTop:"16px", display:"grid", gap:"12px"}}>
+                          {itemImages.map((img, k) => (
+                            <img
+                              key={k}
+                              src={img.url}
+                              alt={img.alt?.[lang] || ""}
+                              loading="lazy"
+                              style={{width:"100%", height:"auto", display:"block", borderRadius:"12px", border:"1px solid var(--line)"}}
+                            />
+                          ))}
+                        </div>
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
             </div>}
 
-            {svc.images?.length > 0 && (
+            {svc.images?.some((img) => img.slot == null) && (
               <div style={{marginTop:"32px", display:"grid", gap:"16px"}}>
-                {svc.images.map((img, i) => (
+                {svc.images.filter((img) => img.slot == null).map((img, i) => (
                   <img
                     key={i}
                     src={img.url}

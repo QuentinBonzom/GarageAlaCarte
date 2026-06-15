@@ -5498,6 +5498,9 @@ function ServiceEditor({ record, title, meta, fields, onSave, onRefresh, onDelet
       i === index ? { ...img, alt: setLocalized(img.alt, lang, value) } : img,
     ));
   };
+  const setImageSlot = (index, slot) => {
+    setImages(images.map((img, i) => (i === index ? { ...img, slot } : img)));
+  };
   const removeImage = (index) => setImages(images.filter((_, i) => i !== index));
   const moveImage = (index, dir) => {
     const target = index + dir;
@@ -5691,10 +5694,13 @@ function ServiceEditor({ record, title, meta, fields, onSave, onRefresh, onDelet
             </div>
           </div>
 
-          {/* Images (plans, etc.) — shown under "What you get" in the popup */}
+          {/* Images (plans, etc.) — revealed by a "View" button on a "What you get" item */}
           <div style={{ marginTop: "32px" }}>
-            <div className="text-mono text-muted" style={{ fontSize: "11px", letterSpacing: "0.12em", marginBottom: "8px" }}>
-              {lang === "en" ? "IMAGES (PLANS, ETC.)" : "IMAGES (PLANS, ETC.)"}
+            <div className="text-mono text-muted" style={{ fontSize: "11px", letterSpacing: "0.12em", marginBottom: "4px" }}>
+              IMAGES (PLANS, ETC.)
+            </div>
+            <div className="text-mono text-muted" style={{ fontSize: "10px", marginBottom: "10px", textTransform: "none", letterSpacing: 0 }}>
+              Rattachez une image à un item « What you get » : un bouton « View » apparaît dessus et révèle l'image.
             </div>
             <div style={{ display: "grid", gap: "12px" }}>
               {images.map((img, i) => (
@@ -5714,6 +5720,18 @@ function ServiceEditor({ record, title, meta, fields, onSave, onRefresh, onDelet
                         onChange={(e) => { uploadImage(i, e.target.files?.[0]); e.target.value = ""; }}
                       />
                     </label>
+                    <LabeledSelect
+                      label="Bouton « View » sur l'item"
+                      value={Number.isInteger(img.slot) ? String(img.slot) : ""}
+                      onChange={(v) => setImageSlot(i, v === "" ? null : Number(v))}
+                      options={[
+                        { value: "", label: "Aucun (affichée sous la liste)" },
+                        ...Array.from({ length: includesRows }).map((_, n) => ({
+                          value: String(n),
+                          label: `Item 0${n + 1}${(includes[lang]?.[n] || includes.en?.[n]) ? ` — ${(includes[lang]?.[n] || includes.en[n]).slice(0, 32)}` : ""}`,
+                        })),
+                      ]}
+                    />
                     <InlineGrowTextarea
                       value={img.alt?.[lang] || ""}
                       onChange={(v) => setImageAlt(i, v)}

@@ -100,6 +100,7 @@ function mapServices(services, serviceTeams) {
         .map((image) => ({
           url: getProjectImagePublicUrl(image?.url),
           alt: image?.alt ?? null,
+          slot: Number.isInteger(image?.slot) ? image.slot : null,
         }))
         .filter((image) => image.url),
     };
