@@ -33,8 +33,22 @@ function Hero({ lang, onNav }) {
           .filter(Boolean)
       : [];
     if (fromCap.length > 0) return fromCap;
-    return heroImage ? [heroImage] : [];
+    if (heroImage) return [heroImage];
+    // Repli : URLs mises en cache lors d'une visite précédente. Permet d'afficher
+    // l'image du hero immédiatement, sans attendre l'hydratation Supabase.
+    try {
+      const cached = JSON.parse(localStorage.getItem("galc_hero_images") || "[]");
+      if (Array.isArray(cached) && cached.length) return cached;
+    } catch { /* ignore */ }
+    return [];
   }, [cap.images, heroImage]);
+
+  // Persiste les URLs réelles du hero pour accélérer les visites suivantes.
+  useEffect(() => {
+    if (carouselImages.length) {
+      try { localStorage.setItem("galc_hero_images", JSON.stringify(carouselImages)); } catch { /* ignore */ }
+    }
+  }, [carouselImages]);
 
   const [activeIdx, setActiveIdx] = useState(0);
   useEffect(() => {

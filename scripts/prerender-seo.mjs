@@ -144,9 +144,71 @@ function setRootFallback(html, fallback) {
   return html.replace(rootRegex, `<div id="root">${fallback}</div>`);
 }
 
-function renderPage(html, route) {
+// --- Préchargement de l'image du hero (récupérée depuis Supabase au build) ---
+
+// Lit le .env local (utile en dev ; sur Vercel les variables sont dans process.env).
+function readDotenv() {
+  try {
+    const txt = fs.readFileSync(path.join(root, ".env"), "utf8");
+    const out = {};
+    for (const line of txt.split(/\r?\n/)) {
+      const m = line.match(/^\s*([A-Za-z0-9_]+)\s*=\s*(.*)\s*$/);
+      if (m) out[m[1]] = m[2].replace(/^["']|["']$/g, "").trim();
+    }
+    return out;
+  } catch {
+    return {};
+  }
+}
+
+function resolvePublicUrl(value, supabaseUrl) {
+  const raw = String(value || "").trim();
+  if (!raw) return "";
+  if (/^https?:\/\//i.test(raw)) return raw;
+  let p = raw.replace(/^\/+/, "");
+  if (p.startsWith("project-images/")) p = p.slice("project-images/".length);
+  return `${supabaseUrl.replace(/\/$/, "")}/storage/v1/object/public/project-images/${p}`;
+}
+
+// Récupère l'URL de la 1re image du hero depuis cms_sections. Retourne "" si
+// indisponible (Supabase non configuré, erreur réseau…) — le build continue.
+async function fetchHeroImageUrl() {
+  const env = readDotenv();
+  const url = (process.env.VITE_SUPABASE_URL || env.VITE_SUPABASE_URL || "").trim();
+  const key = (process.env.VITE_SUPABASE_PUBLISHABLE_KEY || env.VITE_SUPABASE_PUBLISHABLE_KEY || "").trim();
+  if (!url || !key) return "";
+  try {
+    const { createClient } = await import("@supabase/supabase-js");
+    const supabase = createClient(url, key);
+    const { data, error } = await supabase
+      .from("cms_sections")
+      .select("content")
+      .eq("section_key", "hero_caption")
+      .eq("is_active", true)
+      .maybeSingle();
+    if (error || !data?.content) return "";
+    const c = data.content;
+    const first =
+      (Array.isArray(c.images) ? c.images : [])
+        .map((img) => (typeof img === "string" ? img : img?.image || img?.url))
+        .filter(Boolean)[0] || c.image || c.after_image;
+    return resolvePublicUrl(first, url);
+  } catch {
+    return "";
+  }
+}
+
+function setHeroPreload(html, heroUrl) {
+  if (!heroUrl) return html;
+  const tag = `<link rel="preload" as="image" href="${escapeHtml(heroUrl)}" fetchpriority="high" />`;
+  if (html.includes(tag)) return html;
+  return html.replace("</head>", `    ${tag}\n  </head>`);
+}
+
+function renderPage(html, route, heroPreloadUrl = "") {
   const page = getPageSeo(route, "en");
   let next = html;
+  if (route === "home") next = setHeroPreload(next, heroPreloadUrl);
 
   next = next.replace(/<html\s+lang="[^"]*"/i, '<html lang="en"');
   next = next.replace(/<title>[\s\S]*?<\/title>/i, `<title>${escapeHtml(page.title)}</title>`);
@@ -220,9 +282,11 @@ if (!fs.existsSync(baseIndexPath)) {
 
 const baseHtml = fs.readFileSync(baseIndexPath, "utf8");
 
+const heroPreloadUrl = await fetchHeroImageUrl();
+
 for (const route of Object.keys(SEO_ROUTES)) {
   const page = getPageSeo(route, "en");
-  const html = renderPage(baseHtml, route);
+  const html = renderPage(baseHtml, route, heroPreloadUrl);
   const outputPath =
     route === "home"
       ? baseIndexPath
@@ -236,3 +300,4 @@ const sitemapDate = writeSitemap();
 
 console.log("SEO prerendered routes:", Object.keys(SEO_ROUTES).map((route) => SEO_ROUTES[route].path).join(", "));
 console.log("Sitemap generated with lastmod:", sitemapDate);
+console.log("Hero preload:", heroPreloadUrl || "(none — Supabase indisponible au build)");
