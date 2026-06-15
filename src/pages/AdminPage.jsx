@@ -471,7 +471,7 @@ const SITE_SETTING_META = {
   },
   default_locale: {
     label: "Langue par défaut",
-    hint: "Langue affichée à l'arrivée d'un visiteur (« fr » pour français, « en » pour anglais).",
+    hint: "Langue affichée à l'arrivée d'un visiteur (« fr » correspond à l'espagnol, « en » à l'anglais).",
   },
   service_area: {
     label: "Zone d'intervention",
@@ -4136,7 +4136,7 @@ function LocalizedField({ label, value, onChange }) {
                 color: lang === code ? "var(--cream)" : "var(--muted)",
               }}
             >
-              {code}
+              {code === "fr" ? "ES" : code}
             </button>
           ))}
         </div>
@@ -4603,7 +4603,7 @@ function NewProjectModal({ services, existingSlugs, onCancel, onCreated, onRefre
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
           <div>
-            <FieldLabel label="Nom (FR)" />
+            <FieldLabel label="Nom (ES)" />
             <input className="admin-input" value={nameFr} onChange={(event) => setNameFr(event.target.value)} />
           </div>
           <div>
@@ -4611,7 +4611,7 @@ function NewProjectModal({ services, existingSlugs, onCancel, onCreated, onRefre
             <input className="admin-input" value={nameEn} onChange={(event) => setNameEn(event.target.value)} />
           </div>
           <div>
-            <FieldLabel label="Accroche (FR)" />
+            <FieldLabel label="Accroche (ES)" />
             <input
               className="admin-input"
               value={taglineFr}
@@ -5537,12 +5537,12 @@ function ServiceEditor({ record, title, meta, fields, onSave, onRefresh, onDelet
                   cursor: "pointer",
                 }}
               >
-                {code === "fr" ? "Français" : "English"}
+                {code === "fr" ? "Español" : "English"}
               </button>
             ))}
           </div>
           <div className="text-mono text-muted" style={{ fontSize: "10px", textAlign: "right", maxWidth: "240px" }}>
-            Basculez entre FR et EN pour saisir l'autre langue. Tout est sauvegardé en même temps.
+            Basculez entre ES et EN pour saisir l'autre langue. Tout est sauvegardé en même temps.
           </div>
         </div>
       </div>
@@ -6298,7 +6298,7 @@ function DetailItemsList({ items, onChange }) {
           <div key={index} style={{ display: "grid", gridTemplateColumns: "1fr 1fr auto", gap: "8px", alignItems: "center" }}>
             <input
               className="admin-input"
-              placeholder="FR"
+              placeholder="ES"
               value={fr[index] || ""}
               onChange={(e) => setRow(index, "fr", e.target.value)}
             />
