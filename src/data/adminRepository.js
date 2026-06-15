@@ -3,6 +3,7 @@ import { compressImageFile } from "../lib/imageOptimize";
 import {
   PROJECT_IMAGE_BUCKET,
   getProjectImagePublicUrl,
+  getProjectImageStoragePath,
   slugifyProjectImagePart,
 } from "./projectImageUrls";
 
@@ -258,6 +259,21 @@ export async function updateProjectImage(id, payload) {
   if (error) throw error;
 }
 
+export async function deleteProjectImage(id, imageUrl = "", projectSlug = "") {
+  requireSupabase();
+  // Best-effort removal of the stored file (ignore failures — orphan cleanup is not critical).
+  const path = getProjectImageStoragePath(imageUrl, projectSlug);
+  if (path && !/^https?:\/\//i.test(path)) {
+    try {
+      await supabase.storage.from(PROJECT_IMAGE_BUCKET).remove([path]);
+    } catch {
+      /* ignore */
+    }
+  }
+  const { error } = await supabase.from("project_images").delete().eq("id", id);
+  if (error) throw error;
+}
+
 export async function createProjectImage(projectId, displayOrder = 0) {
   requireSupabase();
   const { data, error } = await supabase
@@ -502,5 +518,40 @@ export async function createBlogArticle(payload) {
 export async function deleteBlogArticle(id) {
   requireSupabase();
   const { error } = await supabase.from("blog_articles").delete().eq("id", id);
+  if (error) throw error;
+}
+
+export async function loadFaqItems() {
+  requireSupabase();
+  const { data, error } = await supabase
+    .from("faq_items")
+    .select("*")
+    .order("display_order", { ascending: true });
+  if (error) throw error;
+  return data || [];
+}
+
+export async function updateFaqItem(id, payload) {
+  requireSupabase();
+  const { error } = await supabase
+    .from("faq_items")
+    .update({ ...payload, updated_at: new Date().toISOString() })
+    .eq("id", id);
+  if (error) throw error;
+}
+
+export async function createFaqItem(payload) {
+  requireSupabase();
+  const { data, error } = await supabase
+    .from("faq_items")
+    .insert([payload])
+    .select();
+  if (error) throw error;
+  return data?.[0];
+}
+
+export async function deleteFaqItem(id) {
+  requireSupabase();
+  const { error } = await supabase.from("faq_items").delete().eq("id", id);
   if (error) throw error;
 }

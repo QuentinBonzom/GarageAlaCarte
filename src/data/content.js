@@ -1,5 +1,5 @@
 /* =========================================================
-   Content Store — bilingue ES/EN
+   Content Store, bilingue ES/EN
    Édition possible via l'interface Admin (CMS)
    ========================================================= */
 
@@ -17,8 +17,8 @@ export const CONTENT = {
 
   hero: {
     eyebrow: {
-      en: "Orlando, FL · Custom garage transformations",
-      fr: "Orlando, FL · Transformaciones de garaje a medida"
+      en: "Garage remodeling Orlando, FL",
+      fr: "Reforma de garajes en Orlando, FL"
     },
     title: {
       en: ["Your garage,", "reimagined."],
@@ -31,8 +31,8 @@ export const CONTENT = {
     },
 
     sub: {
-      en: "Custom garage transformations in Orlando.",
-      fr: "Transformaciones de garaje a medida en Orlando."
+      en: "Custom garage remodeling, 3D design, storage, and full transformations in Orlando.",
+      fr: "Reformas de garaje a medida, diseño 3D, almacenamiento y transformaciones completas en Orlando."
     },
     primary_cta: { en: "Get my free estimate", fr: "Obtener mi presupuesto gratuito" },
     secondary_cta: { en: "See our work", fr: "Ver nuestros proyectos" }
@@ -60,8 +60,8 @@ export const CONTENT = {
       fr: "Un garaje limpio, planificado y funcional, diseñado en torno a tu estilo de vida."
     },
     statement: {
-      en: "Experience American practicality and precision combined with European mood-visual design and advanced Color, Material & Finish (CMF) expertise for a stunning, functional space.",
-      fr: "Descubre la practicidad y precisión americanas combinadas con el diseño visual y la atmósfera europeos, junto a una experiencia avanzada en Color, Material y Acabado (CMF), para un espacio funcional e impresionante."
+      en: "Experience American practicality and precision combined with European mood-visual design and advanced Color, Material & Finish (CMF) expertise for a stunning, functional Orlando garage remodel.",
+      fr: "Descubre la practicidad y precisión americanas combinadas con el diseño visual y la atmósfera europeos, junto a una experiencia avanzada en Color, Material y Acabado (CMF), para una reforma de garaje en Orlando funcional e impresionante."
     },
     before_image: "",
     after_image: ""
@@ -74,8 +74,8 @@ export const CONTENT = {
       fr: "Descubre nuestros cuatro servicios estrella"
     },
     sub: {
-      en: "Avoid costly mistakes. Start with a plan — or go all the way. Upgrade anytime.",
-      fr: "Evita errores costosos. Empieza con un plan — o ve hasta el final. Mejora cuando quieras."
+      en: "Garage remodeling in Orlando starts with a clear plan: 3D design, organization, storage, cabinets, lighting, and full transformation support.",
+      fr: "La reforma de garaje en Orlando empieza con un plan claro: diseño 3D, organización, almacenamiento, armarios, iluminación y apoyo para la transformación completa."
     },
     items: [
       {
@@ -85,8 +85,8 @@ export const CONTENT = {
         sub: { en: "Plan It Right. Build It Your Way.", fr: "Hazlo bien desde el principio. Construye a tu manera." },
         tag: { en: "Ideal for getting started", fr: "Ideal para empezar" },
         description: {
-          en: "You want to plan your garage with confidence before making decisions. See your future garage before you build anything — with a custom layout and 3D design, three realistic views, and expert guidance to avoid costly mistakes. Most clients start here, then move forward once they see their design.",
-          fr: "Quieres planificar tu garaje con seguridad antes de tomar decisiones. Visualiza tu futuro garaje antes de construir nada — con una distribución a medida y diseño 3D, tres vistas realistas y asesoramiento experto para evitar errores costosos. La mayoría de los clientes empieza aquí y avanza una vez que ve su diseño."
+          en: "You want to plan your garage with confidence before making decisions. See your future garage before you build anything, with a custom layout and 3D design, three realistic views, and expert guidance to avoid costly mistakes. Most clients start here, then move forward once they see their design.",
+          fr: "Quieres planificar tu garaje con seguridad antes de tomar decisiones. Visualiza tu futuro garaje antes de construir nada, con una distribución a medida y diseño 3D, tres vistas realistas y asesoramiento experto para evitar errores costosos. La mayoría de los clientes empieza aquí y avanza una vez que ve su diseño."
         },
         price: { en: "starts at $950", fr: "desde 950 $" },
         led_by: ["Aymeric", "Juliette", "Guillaume"],
@@ -147,8 +147,8 @@ export const CONTENT = {
         title: { en: "Design & Setup", fr: "Design & Setup" },
         sub: { en: "Plan It Right. Prepare It With Confidence.", fr: "Hazlo bien desde el principio. Prepáralo con confianza." },
         description: {
-          en: "You want more than a design — you want the right products, materials, and a clear setup plan. Move from vision to execution without the sourcing headache. We take your project beyond design, ensuring every detail is addressed before purchasing, delivery, or installation begins. Most clients move forward with a full transformation once everything is planned and ready.",
-          fr: "Quieres algo más que un diseño — quieres los productos adecuados, los materiales correctos y un plan de instalación claro. Pasa de la visión a la ejecución sin la carga del sourcing. Llevamos tu proyecto más allá del diseño, asegurándonos de que cada detalle esté resuelto antes de iniciar compras, entrega o instalación. La mayoría de los clientes pasa a la transformación completa una vez que todo está planificado y listo."
+          en: "You want more than a design, you want the right products, materials, and a clear setup plan. Move from vision to execution without the sourcing headache. We take your project beyond design, ensuring every detail is addressed before purchasing, delivery, or installation begins. Most clients move forward with a full transformation once everything is planned and ready.",
+          fr: "Quieres algo más que un diseño, quieres los productos adecuados, los materiales correctos y un plan de instalación claro. Pasa de la visión a la ejecución sin la carga del sourcing. Llevamos tu proyecto más allá del diseño, asegurándonos de que cada detalle esté resuelto antes de iniciar compras, entrega o instalación. La mayoría de los clientes pasa a la transformación completa una vez que todo está planificado y listo."
         },
         price: { en: "starts at $1,500", fr: "desde 1 500 $" },
         badge: { en: "Most popular", fr: "El más elegido" },
@@ -177,8 +177,8 @@ export const CONTENT = {
           {
             title: { en: "How it works", fr: "Cómo funciona" },
             items: {
-              en: ["Free consultation to define your project", "Clear scope before commitment", "Fixed starting price — final pricing depends on size, complexity, and sourcing needs", "Design package delivered digitally", "Product sourcing, delivery, and assembly coordinated by our team"],
-              fr: ["Consulta gratuita para definir tu proyecto", "Alcance claro antes del compromiso", "Precio inicial fijo — el precio final depende del tamaño, la complejidad y las necesidades de sourcing", "Paquete de diseño entregado digitalmente", "Sourcing de productos, entrega y montaje coordinados por nuestro equipo"]
+              en: ["Free consultation to define your project", "Clear scope before commitment", "Fixed starting price, final pricing depends on size, complexity, and sourcing needs", "Design package delivered digitally", "Product sourcing, delivery, and assembly coordinated by our team"],
+              fr: ["Consulta gratuita para definir tu proyecto", "Alcance claro antes del compromiso", "Precio inicial fijo, el precio final depende del tamaño, la complejidad y las necesidades de sourcing", "Paquete de diseño entregado digitalmente", "Sourcing de productos, entrega y montaje coordinados por nuestro equipo"]
             }
           },
           {
@@ -219,10 +219,10 @@ export const CONTENT = {
         id: "transform",
         num: "03",
         title: { en: "Full Transformation", fr: "Transformación Completa" },
-        sub: { en: "From Concept to Completion — We Handle Everything", fr: "Del concepto a la entrega — nos encargamos de todo" },
+        sub: { en: "From Concept to Completion: We Handle Everything", fr: "Del concepto a la entrega: nos encargamos de todo" },
         description: {
-          en: "Experience our most comprehensive service. You want a complete, worry-free transformation — fully designed, fully managed, fully delivered. A complete, turnkey solution where we design, plan, and coordinate your full garage transformation, handling scheduling and coordination so your project runs smoothly. Most clients enhance their transformation with integrated upgrades, such as lighting, electrical, climate control, and smart features, designed to work seamlessly together. We don't just design your garage — we manage the entire transformation, from initial concept to final walkthrough.",
-          fr: "Vive nuestro servicio más completo. Quieres una transformación completa y sin preocupaciones — totalmente diseñada, gestionada y entregada. Una solución llave en mano donde diseñamos, planificamos y coordinamos toda la transformación de tu garaje, encargándonos de la planificación y la coordinación para que tu proyecto avance sin contratiempos. La mayoría de los clientes complementa su transformación con integraciones, como iluminación, electricidad, climatización y funciones inteligentes, pensadas para funcionar en conjunto. No solo diseñamos tu garaje — gestionamos toda la transformación, desde el concepto inicial hasta la visita final."
+          en: "Experience our most comprehensive service. You want a complete, worry-free transformation, fully designed, fully managed, fully delivered. A complete, turnkey solution where we design, plan, and coordinate your full garage transformation, handling scheduling and coordination so your project runs smoothly. Most clients enhance their transformation with integrated upgrades, such as lighting, electrical, climate control, and smart features, designed to work seamlessly together. We don't just design your garage, we manage the entire transformation, from initial concept to final walkthrough.",
+          fr: "Vive nuestro servicio más completo. Quieres una transformación completa y sin preocupaciones, totalmente diseñada, gestionada y entregada. Una solución llave en mano donde diseñamos, planificamos y coordinamos toda la transformación de tu garaje, encargándonos de la planificación y la coordinación para que tu proyecto avance sin contratiempos. La mayoría de los clientes complementa su transformación con integraciones, como iluminación, electricidad, climatización y funciones inteligentes, pensadas para funcionar en conjunto. No solo diseñamos tu garaje, gestionamos toda la transformación, desde el concepto inicial hasta la visita final."
         },
         price: { en: "starts at $2,750", fr: "desde 2 750 $" },
         badge: { en: "Premium Experience", fr: "Experiencia premium" },
@@ -282,8 +282,8 @@ export const CONTENT = {
           {
             title: { en: "Continue your project", fr: "Continúa tu proyecto" },
             body: {
-              en: "Ready to go further? Upgrade your space with integrated systems — plumbing, electrical, climate control, and smart features — designed to work seamlessly together. Transform your garage into a fully equipped, high-performance space.",
-              fr: "¿Quieres ir más allá? Mejora tu espacio con sistemas integrados — fontanería, electricidad, climatización y funciones inteligentes — diseñados para funcionar en conjunto. Transforma tu garaje en un espacio totalmente equipado y de alto rendimiento."
+              en: "Ready to go further? Upgrade your space with integrated systems, plumbing, electrical, climate control, and smart features, designed to work seamlessly together. Transform your garage into a fully equipped, high-performance space.",
+              fr: "¿Quieres ir más allá? Mejora tu espacio con sistemas integrados, fontanería, electricidad, climatización y funciones inteligentes, diseñados para funcionar en conjunto. Transforma tu garaje en un espacio totalmente equipado y de alto rendimiento."
             }
           },
           {
@@ -299,10 +299,10 @@ export const CONTENT = {
         id: "smart",
         num: "04",
         title: { en: "Smart Integration", fr: "Smart Integration" },
-        sub: { en: "Designed for daily performance — not just visual appeal.", fr: "Pensado para el rendimiento diario — no solo para la estética." },
+        sub: { en: "Designed for daily performance, not just visual appeal.", fr: "Pensado para el rendimiento diario, no solo para la estética." },
         description: {
-          en: "You want more than a beautiful space — you want a garage that works seamlessly every day. We integrate the systems that bring your space to life: technical planning for plumbing, electrical, HVAC, ventilation, media, smart features, and built-in systems — typically integrated within Design & Setup or Full Transformation.",
-          fr: "Quieres algo más que un espacio bonito — quieres un garaje que funcione perfectamente cada día. Integramos los sistemas que dan vida a tu espacio: fontanería, electricidad, HVAC, ventilación, multimedia, funciones inteligentes y sistemas integrados — generalmente combinados con Design & Setup o Transformación Completa."
+          en: "You want more than a beautiful space, you want a garage that works seamlessly every day. We integrate the systems that bring your space to life: technical planning for plumbing, electrical, HVAC, ventilation, media, smart features, and built-in systems, typically integrated within Design & Setup or Full Transformation.",
+          fr: "Quieres algo más que un espacio bonito, quieres un garaje que funcione perfectamente cada día. Integramos los sistemas que dan vida a tu espacio: fontanería, electricidad, HVAC, ventilación, multimedia, funciones inteligentes y sistemas integrados, generalmente combinados con Design & Setup o Transformación Completa."
         },
         price: { en: "starts at $3,500", fr: "desde 3 500 $" },
         tag: { en: "Add-on", fr: "Add-on" },
@@ -408,7 +408,7 @@ export const CONTENT = {
         phone: "+1 (689) 217-4074",
         email: "garagealacarte@gmail.com",
         bio: {
-          en: "Combines American precision with European creativity and space-saving design — turning ideas into immersive visuals so you see your future space before it's built.",
+          en: "Combines American precision with European creativity and space-saving design, turning ideas into immersive visuals so you see your future space before it's built.",
           fr: "Combina la precisión americana con la creatividad europea. Juliette crea imágenes inmersivas para que veas tu espacio antes incluso de que exista."
         },
         long_bio: {
@@ -420,8 +420,8 @@ export const CONTENT = {
         name: "Nelly",
         role: { en: "Project Coordination Lead", fr: "Responsable de Coordinación de Proyecto" },
         bio: {
-          en: "Nelly keeps every project on track — coordinating schedules, suppliers, and your peace of mind from kickoff to handover.",
-          fr: "Nelly mantiene cada proyecto en marcha — coordina agendas, proveedores y tu tranquilidad, desde el inicio hasta la entrega."
+          en: "Nelly keeps every project on track, coordinating schedules, suppliers, and your peace of mind from kickoff to handover.",
+          fr: "Nelly mantiene cada proyecto en marcha, coordina agendas, proveedores y tu tranquilidad, desde el inicio hasta la entrega."
         }
       }
     ]
@@ -443,7 +443,7 @@ export const CONTENT = {
     sub: { en: "Tell us about your space. We'll send a free estimate within 48 hours.", fr: "Cuéntanos sobre tu espacio. Te enviaremos un presupuesto gratuito en 48 h." }
   },
 
-  // ===== USE CASES (Landing V2) — 4 cas d'usage visuels =====
+  // ===== USE CASES (Landing V2), 4 cas d'usage visuels =====
   use_cases: {
     eyebrow: { en: "Transformations", fr: "Transformaciones" },
     title: {
@@ -464,7 +464,7 @@ export const CONTENT = {
       {
         image: "",
         project_slug: "the-social-hub",
-        name: { en: "The Social Hub — Smart Living Garage", fr: "The Social Hub — Smart Living Garage" },
+        name: { en: "The Social Hub: Smart Living Garage", fr: "The Social Hub: Smart Living Garage" },
         tagline: {
           en: "A Garage Designed for Entertainment and Lifestyle",
           fr: "Un garaje diseñado para el entretenimiento y el estilo de vida"
@@ -518,8 +518,8 @@ export const CONTENT = {
       featured: true,
       large: true,
       description: {
-        en: "A complete transformation that turns your garage into a social, functional, and high-impact living space. Turn your garage into the centerpiece of your home — built for entertaining, relaxing, and everyday enjoyment. A modern, time- and cost-saving alternative to traditional home additions — a value-packed solution that outshines conventional builds.",
-        fr: "Una transformación completa que convierte tu garaje en un espacio social, funcional y de gran impacto. Convierte tu garaje en el corazón de tu casa — pensado para recibir, relajarse y disfrutar a diario. Una alternativa moderna que ahorra tiempo y dinero frente a una ampliación tradicional — una solución de gran valor que supera las ampliaciones convencionales."
+        en: "A complete transformation that turns your garage into a social, functional, and high-impact living space. Turn your garage into the centerpiece of your home, built for entertaining, relaxing, and everyday enjoyment. A modern, time- and cost-saving alternative to traditional home additions, a value-packed solution that outshines conventional builds.",
+        fr: "Una transformación completa que convierte tu garaje en un espacio social, funcional y de gran impacto. Convierte tu garaje en el corazón de tu casa, pensado para recibir, relajarse y disfrutar a diario. Una alternativa moderna que ahorra tiempo y dinero frente a una ampliación tradicional, una solución de gran valor que supera las ampliaciones convencionales."
       },
       includes: {
         en: ["Wet bar", "Custom cabinetry", "Built-in appliances", "Decorative wood wall panels", "Pool table"],
@@ -534,8 +534,8 @@ export const CONTENT = {
         fr: "Según hasta dónde quieras llegar. Cada garaje se personaliza por completo y el precio final depende de tu espacio, distribución y nivel de transformación."
       },
       closing_line: {
-        en: "Start with a design — and turn your garage into a space built around your lifestyle.",
-        fr: "Empieza por el diseño — y convierte tu garaje en un espacio diseñado en torno a tu estilo de vida."
+        en: "Start with a design, and turn your garage into a space built around your lifestyle.",
+        fr: "Empieza por el diseño, y convierte tu garaje en un espacio diseñado en torno a tu estilo de vida."
       },
       images: [
         { label: "Hero · Bar view", color: "#3a2c22" },
@@ -559,8 +559,8 @@ export const CONTENT = {
       year: "2025",
       featured: true,
       description: {
-        en: "A complete transformation that turns your garage into a flexible, everyday living space designed to support your routine. A space designed to support your daily routine — from movement to focus to relaxation.",
-        fr: "Una transformación completa que convierte tu garaje en un espacio de vida flexible y cotidiano, diseñado para acompañar tu rutina. Un espacio pensado para apoyar tu día a día — del movimiento a la concentración y la relajación."
+        en: "A complete transformation that turns your garage into a flexible, everyday living space designed to support your routine. A space designed to support your daily routine, from movement to focus to relaxation.",
+        fr: "Una transformación completa que convierte tu garaje en un espacio de vida flexible y cotidiano, diseñado para acompañar tu rutina. Un espacio pensado para apoyar tu día a día, del movimiento a la concentración y la relajación."
       },
       includes: {
         en: ["Home fitness area (cardio equipment, floor space, mirror)", "Lounge zone (sofa, TV, relaxation area)", "Compact workspace or home office", "Coffee / utility corner with storage", "Integrated lighting and layout for daily use"],
@@ -575,8 +575,8 @@ export const CONTENT = {
         fr: "Según hasta dónde quieras llegar. Cada garaje se personaliza por completo y el precio final depende de tu espacio, distribución y nivel de transformación."
       },
       closing_line: {
-        en: "Start with a design — and turn your garage into a space that truly supports your everyday life.",
-        fr: "Empieza por el diseño — y convierte tu garaje en un espacio que realmente acompañe tu día a día."
+        en: "Start with a design, and turn your garage into a space that truly supports your everyday life.",
+        fr: "Empieza por el diseño, y convierte tu garaje en un espacio que realmente acompañe tu día a día."
       },
       images: [
         { label: "Lounge zone", color: "#c4a575" },
@@ -599,7 +599,7 @@ export const CONTENT = {
       year: "2025",
       featured: true,
       description: {
-        en: "A complete transformation that turns your garage into a functional, comfortable extension of your home. A space that combines utility, comfort, and style — designed to simplify your daily life and elevate your home.",
+        en: "A complete transformation that turns your garage into a functional, comfortable extension of your home. A space that combines utility, comfort, and style, designed to simplify your daily life and elevate your home.",
         fr: "Una transformación completa que convierte tu garaje en una extensión funcional y cómoda de tu hogar. Un espacio que combina utilidad, confort y estilo, diseñado para simplificar tu día a día y realzar tu hogar."
       },
       includes: {
@@ -615,8 +615,8 @@ export const CONTENT = {
         fr: "Según hasta dónde quieras llegar. Cada garaje se personaliza por completo y el precio final depende de tu espacio, distribución y nivel de transformación."
       },
       closing_line: {
-        en: "Start with a design — and turn your garage into a space that truly works for your life.",
-        fr: "Empieza por el diseño — y convierte tu garaje en un espacio que realmente funcione para tu vida."
+        en: "Start with a design, and turn your garage into a space that truly works for your life.",
+        fr: "Empieza por el diseño, y convierte tu garaje en un espacio que realmente funcione para tu vida."
       },
       images: [
         { label: "Bar & media wall", color: "#3a2c22" },
@@ -639,8 +639,8 @@ export const CONTENT = {
       year: "2025",
       featured: true,
       description: {
-        en: "Transform your garage into the ultimate hybrid lifestyle space — designed for the way you live. This complete transformation blends premium vehicle display, a productive workspace, entertainment, and comfort into one beautifully designed, fully integrated environment. A garage designed to showcase your passion, support your productivity, and elevate your everyday living.",
-        fr: "Convierte tu garaje en el espacio de estilo de vida híbrido definitivo — diseñado para tu forma de vivir. Esta transformación completa combina una exposición premium del vehículo, un espacio de trabajo productivo, entretenimiento y confort en un único entorno bellamente diseñado y totalmente integrado. Un garaje pensado para mostrar tu pasión, apoyar tu productividad y elevar tu día a día."
+        en: "Transform your garage into the ultimate hybrid lifestyle space, designed for the way you live. This complete transformation blends premium vehicle display, a productive workspace, entertainment, and comfort into one beautifully designed, fully integrated environment. A garage designed to showcase your passion, support your productivity, and elevate your everyday living.",
+        fr: "Convierte tu garaje en el espacio de estilo de vida híbrido definitivo, diseñado para tu forma de vivir. Esta transformación completa combina una exposición premium del vehículo, un espacio de trabajo productivo, entretenimiento y confort en un único entorno bellamente diseñado y totalmente integrado. Un garaje pensado para mostrar tu pasión, apoyar tu productividad y elevar tu día a día."
       },
       includes: {
         en: ["Premium vehicle display area", "Lounge zone with sofa and oversized screen", "Modern workspace or gaming setup", "Beverage / coffee corner with storage", "Integrated lighting and upscale finishes", "Functional layout designed for everyday use"],
@@ -655,8 +655,8 @@ export const CONTENT = {
         fr: "Rango típico del proyecto (garaje para 3 coches). Según hasta dónde quieras llegar. Cada garaje se personaliza por completo. El precio final depende de tu espacio, distribución y nivel de transformación (acabados, integración tecnológica y nivel de personalización)."
       },
       closing_line: {
-        en: "Start with a design — and transform your garage into a space built for cars, work, and entertainment.",
-        fr: "Empieza por el diseño — y transforma tu garaje en un espacio pensado para coches, trabajo y entretenimiento."
+        en: "Start with a design, and transform your garage into a space built for cars, work, and entertainment.",
+        fr: "Empieza por el diseño, y transforma tu garaje en un espacio pensado para coches, trabajo y entretenimiento."
       },
       images: [
         { label: "Lounge & workspace · overview", color: "#2c2722" },
@@ -683,22 +683,39 @@ export const CONTENT = {
     main_email: "garagealacarte@gmail.com",
     main_phone: "+1 (917) 353-4950",
     form: {
+      brief: { en: "Project brief", fr: "Tu proyecto" },
+      heading: { en: "Tell us about your space.", fr: "Cuéntanos sobre tu espacio." },
       name: { en: "Your name", fr: "Tu nombre" },
       email: { en: "Email", fr: "Email" },
       phone: { en: "Phone (optional)", fr: "Teléfono (opcional)" },
       service: { en: "Service interested in", fr: "Servicio de interés" },
+      service_not_sure: { en: "Not sure yet", fr: "Aún no estoy seguro" },
       message: { en: "Tell us about your project", fr: "Cuéntanos sobre tu proyecto" },
+      message_placeholder: {
+        en: "Size, goals, timeline, anything we should know…",
+        fr: "Superficie, objetivos, plazos, todo lo que nos pueda ayudar…"
+      },
       submit: { en: "Send my request", fr: "Enviar mi solicitud" },
+      hint: {
+        en: "A real person replies, never a bot.",
+        fr: "Te responde una persona real, nunca un bot."
+      },
       consent: {
         en: "I have read and agreed to the",
         fr: "He leído y acepto las"
       },
-      consent_link: { en: "project conditions", fr: "condiciones del proyecto" }
+      consent_link: { en: "project conditions", fr: "condiciones del proyecto" },
+      sent_title: { en: "Message received.", fr: "Mensaje recibido." },
+      sent_text: {
+        en: "We'll come back to you within 48 hours.",
+        fr: "Te responderemos en 48 h."
+      },
+      sent_again: { en: "Send another", fr: "Enviar otro" }
     }
   },
 
   popup: {
-    title: { en: "Before you go —", fr: "Antes de irte —" },
+    title: { en: "Before you go…", fr: "Antes de irte…" },
     sub: {
       en: "Get our free guide: 5 mistakes to avoid before transforming your garage.",
       fr: "Recibe nuestra guía gratuita: 5 errores que evitar antes de transformar tu garaje."
@@ -706,6 +723,6 @@ export const CONTENT = {
     placeholder: { en: "Your email", fr: "Tu email" },
     cta: { en: "Send me the guide", fr: "Enviarme la guía" },
     decline: { en: "No thanks", fr: "No, gracias" },
-    success: { en: "Thanks — check your inbox.", fr: "Gracias — revisa tu bandeja de entrada." }
+    success: { en: "Thanks, check your inbox.", fr: "Gracias, revisa tu bandeja de entrada." }
   }
 };

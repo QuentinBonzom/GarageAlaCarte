@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { CONTENT } from "../data/content";
 import { createContactSubmission } from "../data/contentRepository";
-import { Reveal } from "../components/common";
+import { Reveal, FaqSection } from "../components/common";
 import { cmsAttr } from "../lib/cmsEdit";
 
 export function ContactPage({ lang, onNav }) {
@@ -30,7 +30,7 @@ export function ContactPage({ lang, onNav }) {
 
   return (
     <div className="page contact-v2">
-      {/* Hero — minimal premium pattern */}
+      {/* Hero, minimal premium pattern */}
       <section className="contact-v2-head">
         <div className="contact-v2-head__inner">
           <Reveal as="h1" className="contact-v2-head__title" {...cmsAttr("contact_page", "title")}>
@@ -51,17 +51,17 @@ export function ContactPage({ lang, onNav }) {
           <Reveal>
             <div className="contact-form-card">
               <div className="contact-form-card__head">
-                <div className="text-mono text-muted">{lang === "en" ? "Project brief" : "Tu proyecto"}</div>
-                <h2 className="contact-v2-form-title">{lang === "en" ? "Tell us about your space." : "Cuéntanos sobre tu espacio."}</h2>
+                <div className="text-mono text-muted" {...cmsAttr("contact_page", "form.brief")}>{text(C.form.brief, lang, lang === "en" ? "Project brief" : "Tu proyecto")}</div>
+                <h2 className="contact-v2-form-title" {...cmsAttr("contact_page", "form.heading")}>{text(C.form.heading, lang, lang === "en" ? "Tell us about your space." : "Cuéntanos sobre tu espacio.")}</h2>
               </div>
 
               {sent ? (
                 <div className="contact-form-card__sent">
                   <div className="contact-form-card__check" aria-hidden>✓</div>
-                  <h3 className="contact-v2-form-title">{lang === "en" ? "Message received." : "Mensaje recibido."}</h3>
-                  <p className="lead">{lang === "en" ? "We'll come back to you within 48 hours." : "Te responderemos en 48 h."}</p>
+                  <h3 className="contact-v2-form-title" {...cmsAttr("contact_page", "form.sent_title")}>{text(C.form.sent_title, lang, lang === "en" ? "Message received." : "Mensaje recibido.")}</h3>
+                  <p className="lead" {...cmsAttr("contact_page", "form.sent_text")}>{text(C.form.sent_text, lang, lang === "en" ? "We'll come back to you within 48 hours." : "Te responderemos en 48 h.")}</p>
                   <button className="btn" onClick={() => setSent(false)}>
-                    {lang === "en" ? "Send another" : "Enviar otro"} <span className="arrow">↗</span>
+                    <span {...cmsAttr("contact_page", "form.sent_again")}>{text(C.form.sent_again, lang, lang === "en" ? "Send another" : "Enviar otro")}</span> <span className="arrow">↗</span>
                   </button>
                 </div>
               ) : (
@@ -90,7 +90,7 @@ export function ContactPage({ lang, onNav }) {
                         <option value="delivery">Design & Setup</option>
                         <option value="transform">Full Transformation</option>
                         <option value="smart">Smart Integration</option>
-                        <option value="not-sure">{lang === "en" ? "Not sure yet" : "Aún no estoy seguro"}</option>
+                        <option value="not-sure">{text(C.form.service_not_sure, lang, lang === "en" ? "Not sure yet" : "Aún no estoy seguro")}</option>
                       </select>
                     </div>
                   </div>
@@ -100,7 +100,7 @@ export function ContactPage({ lang, onNav }) {
                     <textarea
                       value={form.message}
                       onChange={(e) => setForm({...form, message: e.target.value})}
-                      placeholder={lang === "en" ? "Size, goals, timeline, anything we should know…" : "Superficie, objetivos, plazos, todo lo que nos pueda ayudar…"}
+                      placeholder={text(C.form.message_placeholder, lang, lang === "en" ? "Size, goals, timeline, anything we should know…" : "Superficie, objetivos, plazos, todo lo que nos pueda ayudar…")}
                       required
                     />
                   </div>
@@ -116,8 +116,8 @@ export function ContactPage({ lang, onNav }) {
                       {submitting ? (lang === "en" ? "Sending..." : "Enviando...") : <span {...cmsAttr("contact_page", "form.submit")}>{C.form.submit[lang]}</span>} <span className="arrow">↗</span>
 
                     </button>
-                    <span className="contact-form__hint text-mono text-muted">
-                      {lang === "en" ? "A real person replies — never a bot." : "Te responde una persona real, nunca un bot."}
+                    <span className="contact-form__hint text-mono text-muted" {...cmsAttr("contact_page", "form.hint")}>
+                      {text(C.form.hint, lang, lang === "en" ? "A real person replies, never a bot." : "Te responde una persona real, nunca un bot.")}
                     </span>
                   </div>
                   {error && <div className="contact-form__error">{error}</div>}
@@ -131,7 +131,24 @@ export function ContactPage({ lang, onNav }) {
               <div className="contact-info-card">
                 <div className="contact-info-card__eyebrow text-mono" {...cmsAttr("contact_page", "info_title")}>{text(C.info_title, lang, lang === "en" ? "Direct line" : "Contacto directo")}</div>
                 <a className="contact-info-card__contact" href={`mailto:${C.main_email}`}>{C.main_email}</a>
-                <a className="contact-info-card__contact contact-info-card__contact--brass" href={`tel:${C.main_phone}`}>{C.main_phone}</a>
+                {(() => {
+                  const phones = (CONTENT.team?.members || []).filter((m) => m.phone);
+                  if (phones.length === 0 && C.main_phone) {
+                    return (
+                      <a className="contact-info-card__contact contact-info-card__contact--brass" href={`tel:${C.main_phone}`}>{C.main_phone}</a>
+                    );
+                  }
+                  return phones.map((m) => (
+                    <a
+                      key={m.name}
+                      className="contact-info-card__contact contact-info-card__contact--brass"
+                      href={`tel:${String(m.phone).replace(/[^+\d]/g, "")}`}
+                    >
+                      <span className="contact-info-card__contact-name">{String(m.name).split(" ")[0]}</span>
+                      {m.phone}
+                    </a>
+                  ));
+                })()}
                 <div className="contact-info-card__divider"></div>
                 <p className="contact-info-card__address">{text(C.address, lang, "Orlando, FL · USA")}</p>
               </div>
@@ -144,6 +161,8 @@ export function ContactPage({ lang, onNav }) {
           </Reveal>
         </div>
       </section>
+
+      <FaqSection lang={lang} />
 
     </div>
   );
@@ -167,8 +186,8 @@ export function ConditionsPage({ lang }) {
         : "Cada servicio incluye únicamente lo que está claramente definido en el nivel elegido: Garage Design & Build Plan (planificación y diseño), Design & Setup (diseño, sourcing y preparación), Transformación Completa (coordinación y ejecución), Smart Integration (sistemas técnicos). Cualquier solicitud fuera del alcance se trata como un ajuste de proyecto." },
     { num:"04", title: lang==="en"?"Design Visuals & Approval":"Visuales y Aprobación",
       body: lang==="en"
-        ? "Our 3D visuals represent the overall design intent, layout, and atmosphere. As every garage is unique, small variations may occur in the final result due to materials, lighting, or product availability. Before moving forward, you'll review and approve your design — this is your opportunity to make sure everything feels right."
-        : "Nuestras imágenes 3D representan la intención de diseño, la distribución y la atmósfera. Como cada garaje es único, pueden producirse pequeñas variaciones según los materiales, la iluminación o la disponibilidad. Antes de avanzar, revisas y validas tu diseño — es tu momento para asegurarte de que todo encaja." },
+        ? "Our 3D visuals represent the overall design intent, layout, and atmosphere. As every garage is unique, small variations may occur in the final result due to materials, lighting, or product availability. Before moving forward, you'll review and approve your design, this is your opportunity to make sure everything feels right."
+        : "Nuestras imágenes 3D representan la intención de diseño, la distribución y la atmósfera. Como cada garaje es único, pueden producirse pequeñas variaciones según los materiales, la iluminación o la disponibilidad. Antes de avanzar, revisas y validas tu diseño, es tu momento para asegurarte de que todo encaja." },
     { num:"05", title: lang==="en"?"Client Responsibilities":"Responsabilidades del Cliente",
       body: lang==="en"
         ? "You agree to provide accurate information about your space and needs, review and approve designs in a timely manner, ensure access to the property, and obtain any required approvals (HOA, building management). The garage must be fully prepared before delivery: personal items removed, workspace cleared, access unobstructed."
@@ -183,8 +202,8 @@ export function ConditionsPage({ lang }) {
         : "Algunos proyectos pueden requerir permisos según el alcance y la normativa local. El cliente es responsable salvo que se indique lo contrario. Coordinamos con profesionales cualificados y acreditados cuando es necesario." },
     { num:"08", title: lang==="en"?"Timeline & Payment":"Plazos y Pagos",
       body: lang==="en"
-        ? "Timelines are estimated and may be influenced by material availability, supplier delays, weather, permits, and site readiness. A deposit is required to secure your project — typically: initial deposit, progress payments, final balance prior to completion. No work begins without confirmed payment."
-        : "Los plazos son estimativos y pueden verse afectados por la disponibilidad de materiales, los proveedores, la meteorología, los permisos y la preparación del sitio. Se requiere un anticipo para asegurar el proyecto — habitualmente: anticipo inicial, pagos intermedios y saldo final antes de la entrega. Ningún trabajo se inicia sin pago confirmado." },
+        ? "Timelines are estimated and may be influenced by material availability, supplier delays, weather, permits, and site readiness. A deposit is required to secure your project, typically: initial deposit, progress payments, final balance prior to completion. No work begins without confirmed payment."
+        : "Los plazos son estimativos y pueden verse afectados por la disponibilidad de materiales, los proveedores, la meteorología, los permisos y la preparación del sitio. Se requiere un anticipo para asegurar el proyecto, habitualmente: anticipo inicial, pagos intermedios y saldo final antes de la entrega. Ningún trabajo se inicia sin pago confirmado." },
     { num:"09", title: lang==="en"?"Adjustments & Cancellation":"Ajustes y Cancelación",
       body: lang==="en"
         ? "Any change after approval is a project adjustment and may impact pricing and timeline. Custom work and orders may not be canceled once initiated; work completed up to cancellation remains payable."

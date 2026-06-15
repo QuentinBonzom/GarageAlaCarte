@@ -25,6 +25,7 @@ import {
 import { ConditionsPage, ContactPage } from "../pages/ContactPage";
 import { HomePage } from "../pages/HomePage";
 import { ProjectsPage } from "../pages/ProjectsPage";
+import { BlogIndex } from "../pages/BlogIndex";
 import { BlogRemodelingGuide } from "../pages/BlogRemodelingGuide";
 import { BlogTransformationIdeas } from "../pages/BlogTransformationIdeas";
 import { BlogStorageSolutions } from "../pages/BlogStorageSolutions";
@@ -177,7 +178,7 @@ export function App() {
   }, []);
 
   useEffect(() => {
-    applyPageSeo({ route, lang });
+    applyPageSeo({ route, lang, faqItems: CONTENT.faq });
     window.scrollTo({ top: 0, left: 0, behavior: "instant" });
     trackPageView(routeToPath(route));
   }, [route, lang, contentVersion]);
@@ -251,6 +252,7 @@ export function App() {
         {route === "projects" && <ProjectsPage lang={lang} onNav={onNav} />}
         {route === "contact" && <ContactPage lang={lang} onNav={onNav} />}
         {route === "conditions" && <ConditionsPage lang={lang} />}
+        {route === "blog" && <BlogIndex lang={lang} onNav={onNav} />}
         {route === "blog_remodeling_guide" && <BlogRemodelingGuide lang={lang} onNav={onNav} />}
         {route === "blog_transformation_ideas" && <BlogTransformationIdeas lang={lang} onNav={onNav} />}
         {route === "blog_storage_solutions" && <BlogStorageSolutions lang={lang} onNav={onNav} />}

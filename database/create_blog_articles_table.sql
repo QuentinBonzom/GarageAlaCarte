@@ -1,5 +1,5 @@
 -- =========================================================
--- Blog Articles Table — Supabase CMS
+-- Blog Articles Table, Supabase CMS
 -- Structure: en (English) + fr (Spanish)
 -- =========================================================
 
@@ -97,21 +97,21 @@ VALUES (
   'Programar Consulta Gratuita',
   '[
     {
-      "heading": "The Man Cave — Entertainment Hub for Relaxation & Sports",
+      "heading": "The Man Cave, Entertainment Hub for Relaxation & Sports",
       "body": "Perfect for: Sports fans, gamers, social butterflies\nKey features: Seating area, bar or beverage station, TV/media setup, sound system\nEstimated cost: $5,000–$15,000\nTimeline: 4–8 weeks"
     },
     {
-      "heading": "The Home Gym — Your Personal Fitness Studio",
+      "heading": "The Home Gym, Your Personal Fitness Studio",
       "body": "Perfect for: Fitness enthusiasts, busy professionals\nKey features: Epoxy flooring, mirrors, equipment racks, ventilation\nEstimated cost: $4,000–$12,000\nTimeline: 3–6 weeks"
     }
   ]'::jsonb,
   '[
     {
-      "heading": "La Cueva de Hombre — Centro de Entretenimiento",
+      "heading": "La Cueva de Hombre, Centro de Entretenimiento",
       "body": "Perfecto para: Aficionados al deporte, jugadores\nCaracterísticas principales: Área de asientos, bar, TV, sistema de sonido\nCosto estimado: $5,000–$15,000\nCronograma: 4–8 semanas"
     },
     {
-      "heading": "El Gimnasio en Casa — Tu Estudio Fitness Personal",
+      "heading": "El Gimnasio en Casa, Tu Estudio Fitness Personal",
       "body": "Perfecto para: Entusiastas del fitness, profesionales ocupados\nCaracterísticas principales: Pisos de epoxi, espejos, estantes de equipos\nCosto estimado: $4,000–$12,000\nCronograma: 3–6 semanas"
     }
   ]'::jsonb,

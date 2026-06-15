@@ -9,7 +9,9 @@ export const SITE_URL = (
 ).replace(/\/$/, "");
 
 const BRAND = "Garage a la Carte";
-const DEFAULT_IMAGE = `${SITE_URL}/og-image.svg`;
+const DEFAULT_IMAGE = `${SITE_URL}/og-image.png`;
+export const CONTACT_EMAIL = "garagealacarte@gmail.com";
+export const CONTACT_PHONE = "+1-917-353-4950";
 const DEFAULT_LOCALE = {
   en: "en_US",
   fr: "es_ES",
@@ -151,11 +153,11 @@ export const SEO_ROUTES = {
   home: {
     path: "/",
     title: {
-      en: "Garage Remodeling Orlando | Custom Garage Design Orlando",
+      en: "Garage Remodeling Orlando, FL | Custom Garage Design",
       fr: "Diseño y reforma de garajes en Orlando, FL | Garage a la Carte",
     },
     description: {
-      en: "Garage remodeling Orlando, custom garage design Orlando, and garage transformation Orlando for home gyms, offices, lounges, storage, and premium rooms.",
+      en: "Custom garage remodeling in Orlando, FL for home gyms, offices, lounges, storage, and premium garage transformations. Request a free design estimate.",
       fr: "Garage a la Carte diseña y reforma garajes en Orlando para crear gimnasios, oficinas, lounges, espacios de ocio, almacenamiento inteligente y estancias multiuso.",
     },
     keywords: PRIMARY_SEO_KEYWORDS,
@@ -181,11 +183,11 @@ export const SEO_ROUTES = {
   contact: {
     path: "/contact/",
     title: {
-      en: "Garage Renovation Orlando | Free Remodel Estimate",
+      en: "Free Garage Remodeling Estimate Orlando | Garage a la Carte",
       fr: "Presupuesto gratuito para reformar tu garaje en Orlando, FL",
     },
     description: {
-      en: "Request a free estimate for garage renovation Orlando, garage organization Orlando, garage storage solutions Orlando, garage cabinets Orlando, or remodel.",
+      en: "Request a free estimate for garage remodeling in Orlando, garage organization, garage storage solutions, garage cabinets, or a full garage renovation.",
       fr: "Solicita un presupuesto gratuito para diseño, reforma, almacenamiento o transformación completa de garaje en Orlando y Central Florida.",
     },
     keywords: [
@@ -224,8 +226,29 @@ export const SEO_ROUTES = {
     },
     noindex: true,
   },
+  blog: {
+    path: "/blog/",
+    title: {
+      en: "Garage Remodeling Blog: Guides, Ideas & Tips | Orlando",
+      fr: "Blog de Reforma de Garaje: Guías, Ideas y Consejos | Orlando",
+    },
+    description: {
+      en: "Garage remodeling guides, transformation ideas, and storage solutions for Orlando homeowners. Expert tips on costs, design, permits, and organization.",
+      fr: "Guías de reforma de garaje, ideas de transformación y soluciones de almacenamiento para propietarios de Orlando. Consejos sobre costos, diseño y organización.",
+    },
+    keywords: [
+      "garage remodeling blog",
+      "garage design tips Orlando",
+      "garage transformation ideas",
+      "garage storage solutions",
+      "garage renovation guide",
+    ],
+  },
   blog_remodeling_guide: {
     path: "/blog/garage-remodeling-guide/",
+    slug: "garage-remodeling-guide",
+    isArticle: true,
+    datePublished: "2026-06-15",
     title: {
       en: "Complete Garage Remodeling Guide for Orlando Homeowners",
       fr: "Guía completa de reforma de garaje para propietarios de Orlando",
@@ -244,6 +267,9 @@ export const SEO_ROUTES = {
   },
   blog_transformation_ideas: {
     path: "/blog/garage-transformation-ideas/",
+    slug: "garage-transformation-ideas",
+    isArticle: true,
+    datePublished: "2026-06-15",
     title: {
       en: "Garage Transformation Ideas: Man Cave, Home Gym, Office, Lounge",
       fr: "Ideas de transformación de garaje: cueva de hombre, gimnasio, oficina, lounge",
@@ -262,6 +288,9 @@ export const SEO_ROUTES = {
   },
   blog_storage_solutions: {
     path: "/blog/garage-storage-solutions/",
+    slug: "garage-storage-solutions",
+    isArticle: true,
+    datePublished: "2026-06-15",
     title: {
       en: "Best Garage Storage Solutions & Organization Systems 2026",
       fr: "Mejores soluciones de almacenamiento de garaje y sistemas de organización 2026",
@@ -373,8 +402,8 @@ export function buildBusinessJsonLd() {
     image: [DEFAULT_IMAGE, `${SITE_URL}/logo.png`],
     description:
       "Custom garage design, garage remodeling, 3D space planning, storage, and smart garage transformation services based in Orlando, Florida.",
-    email: "garagealacarte@gmail.com",
-    telephone: "+1-917-353-4950",
+    email: CONTACT_EMAIL,
+    telephone: CONTACT_PHONE,
     slogan: "American precision, European design.",
     priceRange: "$$",
     address: {
@@ -419,68 +448,111 @@ export function buildBusinessJsonLd() {
     makesOffer: serviceOffers,
     contactPoint: {
       "@type": "ContactPoint",
-      email: "garagealacarte@gmail.com",
-      telephone: "+1-917-353-4950",
+      email: CONTACT_EMAIL,
+      telephone: CONTACT_PHONE,
       contactType: "customer service",
       areaServed: "US-FL",
       availableLanguage: ["English", "Spanish"],
     },
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "4.9",
-      reviewCount: "32",
-      bestRating: "5",
-      worstRating: "1",
-    },
   };
 }
 
-export function buildFaqJsonLd() {
+// Bilingual FAQ (EN + ES). Used BOTH for the visible FAQ section and the
+// FAQPage structured data, so the markup always matches on-page content
+// (a Google requirement). The "fr" key stores Spanish on this site.
+export const FAQ_ITEMS = [
+  {
+    q: {
+      en: "How much does a garage remodel cost in Orlando?",
+      fr: "¿Cuánto cuesta reformar un garaje en Orlando?",
+    },
+    a: {
+      en: "Garage remodeling costs in Orlando typically range from $3,000 to $25,000+ depending on scope. Design-only projects start at $950, while full transformations with custom cabinetry, flooring, and smart systems cost more. We provide free estimates tailored to your specific project.",
+      fr: "El coste de reformar un garaje en Orlando suele oscilar entre 3 000 $ y 25 000 $ o más, según el alcance. Los proyectos solo de diseño parten desde 950 $, mientras que las transformaciones completas con armarios a medida, suelo y sistemas inteligentes cuestan más. Ofrecemos presupuestos gratuitos adaptados a tu proyecto.",
+    },
+  },
+  {
+    q: {
+      en: "What's the best garage storage system?",
+      fr: "¿Cuál es el mejor sistema de almacenamiento para el garaje?",
+    },
+    a: {
+      en: "The best garage storage system depends on your needs. Options include wall-mounted shelving, ceiling-mounted systems, modular cabinets, and vertical storage. We recommend a combination approach tailored to your lifestyle, tools, and space. Our team designs custom solutions that maximize usable space.",
+      fr: "El mejor sistema depende de tus necesidades. Las opciones incluyen estanterías de pared, sistemas suspendidos del techo, armarios modulares y almacenamiento vertical. Recomendamos un enfoque combinado, adaptado a tu estilo de vida, tus herramientas y tu espacio. Nuestro equipo diseña soluciones a medida que maximizan el espacio útil.",
+    },
+  },
+  {
+    q: {
+      en: "Can a garage be converted into a home gym or office?",
+      fr: "¿Se puede convertir un garaje en gimnasio u oficina?",
+    },
+    a: {
+      en: "Yes, garages make excellent home gyms, offices, or lounges. Proper climate control, lighting, flooring, and electrical planning are essential. Our design services ensure your converted garage is functional, comfortable, and aligned with your lifestyle needs.",
+      fr: "Sí, los garajes son excelentes como gimnasios, oficinas o lounges. Son esenciales un buen control de la temperatura, iluminación, suelo y planificación eléctrica. Nuestro servicio de diseño garantiza que tu garaje convertido sea funcional, cómodo y acorde a tu estilo de vida.",
+    },
+  },
+  {
+    q: {
+      en: "How long does a garage transformation take?",
+      fr: "¿Cuánto tarda una transformación de garaje?",
+    },
+    a: {
+      en: "Timeline varies by project. Design-only projects take 1-2 weeks. Installation timelines depend on scope, permits, and contractor availability. A typical full remodel takes 4-12 weeks. We provide detailed project schedules during your consultation.",
+      fr: "El plazo varía según el proyecto. Los proyectos solo de diseño tardan de 1 a 2 semanas. Los plazos de instalación dependen del alcance, los permisos y la disponibilidad. Una reforma completa típica lleva de 4 a 12 semanas. Te entregamos un calendario detallado durante la consulta.",
+    },
+  },
+  {
+    q: {
+      en: "Do you offer free garage design consultations?",
+      fr: "¿Ofrecen consultas de diseño gratuitas?",
+    },
+    a: {
+      en: "Yes, we offer free initial consultations to understand your vision and project goals. For detailed 3D designs and professional plans, we provide services starting at $950. Contact us for your free consultation.",
+      fr: "Sí, ofrecemos consultas iniciales gratuitas para entender tu visión y tus objetivos. Para diseños 3D detallados y planos profesionales, ofrecemos servicios desde 950 $. Contáctanos para tu consulta gratuita.",
+    },
+  },
+];
+
+export const LOCAL_SEO_FAQ_ITEM = {
+  q: {
+    en: "Do you remodel garages in Orlando and nearby areas?",
+    fr: "¿Reforman garajes en Orlando y zonas cercanas?",
+  },
+  a: {
+    en: "Yes. Garage a la Carte designs and coordinates garage remodeling projects across Orlando and Central Florida, including Winter Park, Lake Nona, Windermere, Winter Garden, Kissimmee, Maitland, and Doctor Phillips. Projects can include 3D garage design, organization systems, cabinets, flooring, lighting, storage, and smart integrations.",
+    fr: "Sí. Garage a la Carte diseña y coordina reformas de garaje en Orlando y Central Florida, incluyendo Winter Park, Lake Nona, Windermere, Winter Garden, Kissimmee, Maitland y Doctor Phillips. Los proyectos pueden incluir diseño 3D, organización, armarios, suelo, iluminación, almacenamiento e integraciones smart.",
+  },
+};
+
+export function getVisibleFaqItems(items = FAQ_ITEMS) {
+  const base = Array.isArray(items) && items.length ? items : FAQ_ITEMS;
+  const hasLocalQuestion = base.some(
+    (item) => item.q?.en === LOCAL_SEO_FAQ_ITEM.q.en,
+  );
+  return hasLocalQuestion ? base : [...base, LOCAL_SEO_FAQ_ITEM];
+}
+
+// Routes where the FAQ is visible on the page, the FAQPage schema is only
+// emitted on these, to stay compliant with Google's structured-data guidelines.
+export const FAQ_ROUTES = ["home", "contact"];
+
+export function routeHasFaq(route) {
+  return FAQ_ROUTES.includes(route);
+}
+
+export function buildFaqJsonLd(lang = "en", items = FAQ_ITEMS) {
+  const list = getVisibleFaqItems(items);
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: "How much does a garage remodel cost in Orlando?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Garage remodeling costs in Orlando typically range from $3,000 to $25,000+ depending on scope. Design-only projects start at $950, while full transformations with custom cabinetry, flooring, and smart systems cost more. We provide free estimates tailored to your specific project.",
-        },
+    mainEntity: list.map((item) => ({
+      "@type": "Question",
+      name: item.q[lang] || item.q.en,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.a[lang] || item.a.en,
       },
-      {
-        "@type": "Question",
-        name: "What's the best garage storage system?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "The best garage storage system depends on your needs. Options include wall-mounted shelving, ceiling-mounted systems, modular cabinets, and vertical storage. We recommend a combination approach tailored to your lifestyle, tools, and space. Our team designs custom solutions that maximize usable space.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Can a garage be converted into a home gym or office?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Yes, garages make excellent home gyms, offices, or lounges. Proper climate control, lighting, flooring, and electrical planning are essential. Our design services ensure your converted garage is functional, comfortable, and aligned with your lifestyle needs.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "How long does a garage transformation take?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Timeline varies by project. Design-only projects take 1-2 weeks. Installation timelines depend on scope, permits, and contractor availability. A typical full remodel takes 4-12 weeks. We provide detailed project schedules during your consultation.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Do you offer free garage design consultations?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Yes, we offer free initial consultations to understand your vision and project goals. For detailed 3D designs and professional plans, we provide services starting at $950. Contact us for your free consultation.",
-        },
-      },
-    ],
+    })),
   };
 }
 
@@ -488,7 +560,27 @@ function getPageType(route) {
   if (route === "home") return "WebPage";
   if (route === "projects") return "CollectionPage";
   if (route === "contact") return "ContactPage";
+  if (route === "blog") return "Blog";
   return "WebPage";
+}
+
+function buildArticleJsonLd(page) {
+  if (!page.isArticle) return null;
+  return {
+    "@type": "BlogPosting",
+    "@id": `${page.canonical}#article`,
+    headline: page.title,
+    description: page.description,
+    image: page.image,
+    keywords: page.keywords?.join(", "),
+    inLanguage: page.lang === "fr" ? "es-ES" : "en-US",
+    datePublished: page.datePublished,
+    dateModified: page.dateModified || page.datePublished,
+    mainEntityOfPage: { "@id": `${page.canonical}#webpage` },
+    isPartOf: { "@id": `${SITE_URL}/blog/#webpage` },
+    author: { "@id": `${SITE_URL}/#business` },
+    publisher: { "@id": `${SITE_URL}/#business` },
+  };
 }
 
 function buildServiceJsonLd(page) {
@@ -585,13 +677,16 @@ export function buildPageJsonLd(page) {
   const serviceJsonLd = buildServiceJsonLd(page);
   if (serviceJsonLd) graph.push(serviceJsonLd);
 
+  const articleJsonLd = buildArticleJsonLd(page);
+  if (articleJsonLd) graph.push(articleJsonLd);
+
   return {
     "@context": "https://schema.org",
     "@graph": graph,
   };
 }
 
-export function applyPageSeo({ route, lang }) {
+export function applyPageSeo({ route, lang, faqItems }) {
   const page = getPageSeo(route, lang);
   document.documentElement.lang = lang === "fr" ? "es" : "en";
   document.title = page.title;
@@ -615,8 +710,18 @@ export function applyPageSeo({ route, lang }) {
 
   setMeta('meta[property="og:type"]', {
     property: "og:type",
-    content: "website",
+    content: page.isArticle ? "article" : "website",
   });
+  if (page.isArticle) {
+    setMeta('meta[property="article:published_time"]', {
+      property: "article:published_time",
+      content: page.datePublished || "",
+    });
+    setMeta('meta[property="article:modified_time"]', {
+      property: "article:modified_time",
+      content: page.dateModified || page.datePublished || "",
+    });
+  }
   setMeta('meta[property="og:site_name"]', {
     property: "og:site_name",
     content: BRAND,
@@ -669,6 +774,11 @@ export function applyPageSeo({ route, lang }) {
 
   setLink("canonical", page.canonical);
   setJsonLd("seo-business-jsonld", buildBusinessJsonLd());
-  setJsonLd("seo-faq-jsonld", buildFaqJsonLd());
+  // FAQ schema only on pages that actually display the FAQ (Google requirement).
+  if (routeHasFaq(route)) {
+    setJsonLd("seo-faq-jsonld", buildFaqJsonLd(lang, faqItems));
+  } else {
+    document.getElementById("seo-faq-jsonld")?.remove();
+  }
   setJsonLd("seo-page-jsonld", buildPageJsonLd(page));
 }

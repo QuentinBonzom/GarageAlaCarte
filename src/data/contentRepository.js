@@ -44,6 +44,8 @@ function mergeCmsSections(nextContent, sections) {
     nextContent.contact = {
       ...nextContent.contact,
       ...sectionMap.contact_page,
+      // Deep-merge form so a partial DB override never drops default labels.
+      form: { ...nextContent.contact.form, ...(sectionMap.contact_page.form || {}) },
     };
   }
 }
@@ -105,6 +107,17 @@ function mapServices(services, serviceTeams) {
         .filter((image) => image.url),
     };
   });
+}
+
+function mapFaqItems(items) {
+  return items
+    // Ignore rows from a legacy/incompatible schema (e.g. no bilingual columns).
+    .filter((item) => item.question_en && item.answer_en)
+    .sort(byOrder)
+    .map((item) => ({
+      q: { en: item.question_en, fr: item.question_fr || item.question_en },
+      a: { en: item.answer_en, fr: item.answer_fr || item.answer_en },
+    }));
 }
 
 function mapTeamMembers(members) {
@@ -204,6 +217,7 @@ export async function hydrateContentFromSupabase() {
     legalDocumentsResult,
     legalSectionsResult,
     siteSettingsResult,
+    faqItemsResult,
   ] = await Promise.all([
     supabase.from("cms_sections").select("*").eq("is_active", true).order("display_order"),
     supabase.from("contact_channels").select("*").eq("is_active", true).order("display_order"),
@@ -216,6 +230,7 @@ export async function hydrateContentFromSupabase() {
     supabase.from("legal_documents").select("*").eq("is_active", true),
     supabase.from("legal_sections").select("*").eq("is_active", true).order("display_order"),
     supabase.from("site_settings").select("key, value").eq("key", "theme"),
+    supabase.from("faq_items").select("*").eq("is_active", true).order("display_order"),
   ]);
 
   const cmsSections = assertNoError("cms_sections", cmsSectionsResult);
@@ -229,6 +244,8 @@ export async function hydrateContentFromSupabase() {
   const legalDocuments = assertNoError("legal_documents", legalDocumentsResult);
   const legalSections = assertNoError("legal_sections", legalSectionsResult);
   const siteSettings = assertNoError("site_settings", siteSettingsResult);
+  // FAQ is optional — if the table doesn't exist yet, fall back silently.
+  const faqItems = faqItemsResult?.error ? [] : faqItemsResult?.data ?? [];
 
   const servicesById = Object.fromEntries(services.map((service) => [service.id, service]));
   const nextContent = JSON.parse(JSON.stringify(CONTENT));
@@ -244,6 +261,8 @@ export async function hydrateContentFromSupabase() {
   if (teamMembers.length) nextContent.team.members = mapTeamMembers(teamMembers);
   if (processSteps.length) nextContent.process.steps = mapProcessSteps(processSteps);
   if (projects.length) nextContent.projects = mapProjects(projects, projectImages, servicesById);
+  const mappedFaq = mapFaqItems(faqItems);
+  if (mappedFaq.length) nextContent.faq = mappedFaq;
   mergeLegal(nextContent, legalDocuments, legalSections);
 
   Object.keys(CONTENT).forEach((key) => delete CONTENT[key]);

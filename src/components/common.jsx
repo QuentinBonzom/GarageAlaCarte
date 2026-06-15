@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { CONTENT } from "../data/content";
-import { routeToPath } from "../lib/seo";
+import { routeToPath, FAQ_ITEMS, getVisibleFaqItems } from "../lib/seo";
 import { cmsAttr } from "../lib/cmsEdit";
 
 function teamText(value, lang, fallback = "") {
@@ -183,7 +183,7 @@ export function Footer({ onNav, lang }) {
                 <span>
                   Experience American practicality and precision combined with
                   European-inspired design and advanced Color, Material &amp; Finish
-                  (CMF) expertise — creating stunning, functional spaces designed
+                  (CMF) expertise, creating stunning, functional spaces designed
                   around your lifestyle.
                 </span>
                 <em>Inclusive &amp; Welcoming.</em>
@@ -195,7 +195,7 @@ export function Footer({ onNav, lang }) {
                 <span>
                   Descubre la practicidad y la precisión americanas combinadas con un
                   diseño de inspiración europea y una experiencia avanzada en
-                  Color, Material y Acabado (CMF) — para crear espacios funcionales
+                  Color, Material y Acabado (CMF), para crear espacios funcionales
                   e impresionantes diseñados en torno a tu estilo de vida.
                 </span>
                 <em>Inclusivo y acogedor.</em>
@@ -230,6 +230,7 @@ export function Footer({ onNav, lang }) {
         </div>
         <div className="footer-v2__col">
           <h4>{lang==="en"?"Resources":"Recursos"}</h4>
+          <a href={routeToPath("blog")} onClick={(e)=>{e.preventDefault();onNav("blog");}}>{lang==="en"?"Blog":"Blog"}</a>
           <a href={routeToPath("blog_remodeling_guide")} onClick={(e)=>{e.preventDefault();onNav("blog_remodeling_guide");}}>{lang==="en"?"Remodeling Guide":"Guía de Reforma"}</a>
           <a href={routeToPath("blog_transformation_ideas")} onClick={(e)=>{e.preventDefault();onNav("blog_transformation_ideas");}}>{lang==="en"?"Transformation Ideas":"Ideas de Transformación"}</a>
           <a href={routeToPath("blog_storage_solutions")} onClick={(e)=>{e.preventDefault();onNav("blog_storage_solutions");}}>{lang==="en"?"Storage Solutions":"Soluciones de Almacenamiento"}</a>
@@ -333,7 +334,7 @@ export function TeamSection({ lang }) {
                     role={hasLongBio ? "button" : undefined}
                     tabIndex={hasLongBio ? 0 : undefined}
                     onKeyDown={(e) => { if (hasLongBio && e.key === "Enter") openModal(); }}
-                    aria-label={hasLongBio ? `${m.name} — read full bio` : undefined}
+                    aria-label={hasLongBio ? `${m.name}, read full bio` : undefined}
                   >
                     <div className="team-card__avatar" aria-hidden="true">{m.name?.charAt(0)}</div>
                     <h3 className="team-card__name">{m.name}</h3>
@@ -484,3 +485,53 @@ export function EmailPopup({ lang, onClose, onSubmit }) {
     </div>
   );
 };
+
+// ---------- FAQ (visible + matches the FAQPage schema) ----------
+export function FaqSection({ lang = "en", onNav, className = "" }) {
+  const t = (v) => v[lang] || v.en;
+  const items = getVisibleFaqItems(
+    Array.isArray(CONTENT.faq) && CONTENT.faq.length ? CONTENT.faq : FAQ_ITEMS,
+  );
+  if (!items.length) return null;
+  return (
+    <section id="faq" className={`faq-v2 ${className}`.trim()}>
+      <div className="faq-v2__inner">
+        <Reveal as="div" className="faq-v2__eyebrow text-mono">
+          {lang === "en" ? "FAQ" : "Preguntas frecuentes"}
+        </Reveal>
+        <Reveal as="h2" className="faq-v2__title" delay={0.05}>
+          {lang === "en"
+            ? "Frequently asked questions"
+            : "Preguntas frecuentes"}
+        </Reveal>
+        <div className="faq-v2__list">
+          {items.map((item, i) => (
+            <Reveal as="div" key={i} delay={0.05 + i * 0.04}>
+              <details className="faq-v2__item">
+                <summary className="faq-v2__q">{t(item.q)}</summary>
+                <div className="faq-v2__a">{t(item.a)}</div>
+              </details>
+            </Reveal>
+          ))}
+        </div>
+        {onNav && (
+          <Reveal as="div" className="faq-v2__cta" delay={0.1}>
+            <a
+              href={routeToPath("contact")}
+              className="btn"
+              onClick={(e) => {
+                e.preventDefault();
+                onNav("contact");
+              }}
+            >
+              {lang === "en"
+                ? "Still have questions? Contact us"
+                : "¿Tienes más preguntas? Contáctanos"}{" "}
+              <span className="arrow">↗</span>
+            </a>
+          </Reveal>
+        )}
+      </div>
+    </section>
+  );
+}

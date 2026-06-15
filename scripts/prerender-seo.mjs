@@ -1,6 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import {
+  CONTACT_EMAIL,
+  FAQ_ITEMS,
   PRIMARY_SEO_KEYWORDS,
   SERVICE_AREA_PLACES,
   SERVICE_SEO,
@@ -9,7 +11,9 @@ import {
   buildBusinessJsonLd,
   buildFaqJsonLd,
   buildPageJsonLd,
+  getVisibleFaqItems,
   getPageSeo,
+  routeHasFaq,
 } from "../src/lib/seo.js";
 
 const root = process.cwd();
@@ -85,10 +89,115 @@ function keywordListHtml(keywords = PRIMARY_SEO_KEYWORDS) {
   return keywords.map((keyword) => `<li>${escapeHtml(keyword)}</li>`).join("");
 }
 
-function buildStaticFallback(route, page) {
+function articleBodyHtml(body) {
+  return String(body || "")
+    .split(/\n\n+/)
+    .map((para) => para.trim())
+    .filter(Boolean)
+    .map((para) => `<p>${escapeHtml(para)}</p>`)
+    .join("");
+}
+
+function blogIndexFallback(page, articles) {
+  const items = Object.values(articles || {});
+  const cards = items.length
+    ? items
+        .map(
+          (a) =>
+            `<li><a href="/blog/${escapeHtml(a.slug)}/"><h2>${escapeHtml(a.title_en)}</h2></a><p>${escapeHtml(a.intro_en || "")}</p></li>`,
+        )
+        .join("")
+    : Object.values(SEO_ROUTES)
+        .filter((cfg) => cfg.isArticle && cfg.slug)
+        .map(
+          (cfg) =>
+            `<li><a href="${escapeHtml(cfg.path)}"><h2>${escapeHtml(cfg.title.en)}</h2></a><p>${escapeHtml(cfg.description.en)}</p></li>`,
+        )
+        .join("");
+  return `
+    <section class="seo-fallback">
+      <h1>${escapeHtml(page.title)}</h1>
+      <p>${escapeHtml(page.description)}</p>
+      <ul>${cards}</ul>
+    </section>`;
+}
+
+function blogArticleFallback(page, article) {
+  if (!article) {
+    return `
+      <article class="seo-fallback">
+        <h1>${escapeHtml(page.title)}</h1>
+        <p>${escapeHtml(page.description)}</p>
+        <h2>Garage remodeling in Orlando</h2>
+        <p>Plan your garage transformation around the way you want to use the space: home gym, office, lounge, workshop, storage, or a full custom remodel.</p>
+        <h2>Popular searches</h2>
+        <ul>${keywordListHtml(page.keywords)}</ul>
+        <p><a href="/contact/">Request a free garage remodeling estimate</a></p>
+      </article>`;
+  }
+  const sections = Array.isArray(article.content_en) ? article.content_en : [];
+  const sectionsHtml = sections
+    .map(
+      (s) =>
+        `<section><h2>${escapeHtml(s.heading || "")}</h2>${articleBodyHtml(s.body)}</section>`,
+    )
+    .join("");
+  const cta = article.cta_en
+    ? `<aside><p>${escapeHtml(article.cta_en)}</p><a href="/contact/">${escapeHtml(article.cta_button_en || "Contact us")}</a></aside>`
+    : "";
+  return `
+    <article class="seo-fallback">
+      <h1>${escapeHtml(article.title_en || page.title)}</h1>
+      <p>${escapeHtml(article.intro_en || page.description)}</p>
+      ${sectionsHtml}
+      ${cta}
+    </article>`;
+}
+
+function faqFallbackHtml(faqItems = FAQ_ITEMS) {
+  const list = getVisibleFaqItems(faqItems);
+  const items = list
+    .map(
+      (item) =>
+        `<div><h3>${escapeHtml(item.q.en)}</h3><p>${escapeHtml(item.a.en)}</p></div>`,
+    )
+    .join("");
+  return `
+      <section class="seo-fallback">
+        <h2>Frequently asked questions</h2>
+        ${items}
+      </section>`;
+}
+
+function localSeoFallbackHtml() {
+  return `
+    <section class="seo-fallback" aria-labelledby="local-seo-title">
+      <h2 id="local-seo-title">Garage remodeling in Orlando, built from a clear design plan.</h2>
+      <p>Garage a la Carte designs and coordinates custom garage transformations across Orlando and Central Florida: home gyms, offices, lounges, workshops, storage systems, cabinets, lighting, flooring, and smart integrations.</p>
+      <p>Every project starts with a layout, 3D views, product direction, and a realistic scope before materials are purchased or installation begins.</p>
+      <ul>
+        <li>Custom garage design and 3D planning</li>
+        <li>Garage organization, cabinets, and storage systems</li>
+        <li>Full garage renovation for a gym, office, lounge, or workshop</li>
+        <li>Lighting, HVAC, electrical, media, and smart integration planning</li>
+      </ul>
+      <p>Service area: Orlando, Winter Park, Lake Nona, Windermere, Winter Garden, Kissimmee, Maitland, Doctor Phillips, and Central Florida.</p>
+      <p><a href="/contact/">Request a free estimate</a></p>
+    </section>`;
+}
+
+function buildStaticFallback(route, page, articles = {}, faqItems = FAQ_ITEMS) {
   const areaList = SERVICE_AREA_PLACES.map(
     (place) => `<li>${escapeHtml(place)}</li>`,
   ).join("");
+
+  if (route === "blog") {
+    return blogIndexFallback(page, articles);
+  }
+
+  if (page.isArticle) {
+    return blogArticleFallback(page, articles[page.slug]);
+  }
 
   if (route === "projects") {
     return `
@@ -108,8 +217,8 @@ function buildStaticFallback(route, page) {
         <p>${escapeHtml(page.description)}</p>
         <h2>Estimate requests</h2>
         <ul>${keywordListHtml(page.keywords)}</ul>
-        <p>Email Garage a la Carte at <a href="mailto:hello@garagealacarte.com">hello@garagealacarte.com</a> to plan a custom garage design, remodel, or transformation in Orlando, Florida.</p>
-      </article>`;
+        <p>Email Garage a la Carte at <a href="mailto:${escapeHtml(CONTACT_EMAIL)}">${escapeHtml(CONTACT_EMAIL)}</a> to plan a custom garage design, remodel, or transformation in Orlando, Florida.</p>
+      </article>${faqFallbackHtml(faqItems)}`;
   }
 
   if (route === "conditions") {
@@ -129,6 +238,7 @@ function buildStaticFallback(route, page) {
   }
 
   return `
+    ${localSeoFallbackHtml()}
     <article class="seo-fallback">
       <h1>${escapeHtml(page.title)}</h1>
       <p>${escapeHtml(page.description)}</p>
@@ -139,7 +249,7 @@ function buildStaticFallback(route, page) {
       <h2>Service area</h2>
       <ul>${areaList}</ul>
       <p><a href="/contact/">Request a free garage transformation estimate</a></p>
-    </article>`;
+    </article>${faqFallbackHtml(faqItems)}`;
 }
 
 function setRootFallback(html, fallback) {
@@ -211,6 +321,80 @@ async function fetchHeroImageUrl() {
   }
 }
 
+// Build a Supabase client from env/.env, or null if unavailable.
+async function getBuildSupabase() {
+  const env = readDotenv();
+  const url = (process.env.VITE_SUPABASE_URL || env.VITE_SUPABASE_URL || "").trim();
+  const key = (
+    process.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+    env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+    ""
+  ).trim();
+  if (!url || !key) return null;
+  try {
+    const { createClient } = await import("@supabase/supabase-js");
+    return createClient(url, key);
+  } catch {
+    return null;
+  }
+}
+
+// Fetch active blog articles at build time so their text can be baked into the
+// prerendered HTML (real content for crawlers, not just an empty shell).
+// Returns a map keyed by slug; empty object if Supabase is unavailable.
+async function fetchBlogArticles() {
+  const supabase = await getBuildSupabase();
+  if (!supabase) return {};
+  try {
+    const { data, error } = await supabase
+      .from("blog_articles")
+      .select(
+        "slug, title_en, intro_en, content_en, cta_en, cta_button_en, updated_at, is_active",
+      )
+      .eq("is_active", true);
+    if (error || !Array.isArray(data)) return {};
+    return Object.fromEntries(data.map((a) => [a.slug, a]));
+  } catch {
+    return {};
+  }
+}
+
+// Fetch CMS-managed FAQ at build time (falls back to the static FAQ_ITEMS in
+// seo.js if the table is empty/unavailable). Returns the {q,a} shape.
+async function fetchFaqItems() {
+  const supabase = await getBuildSupabase();
+  if (!supabase) return [];
+  try {
+    const { data, error } = await supabase
+      .from("faq_items")
+      .select("*")
+      .eq("is_active", true)
+      .order("display_order");
+    if (error || !Array.isArray(data) || !data.length) return [];
+    return data
+      .filter((item) => item.question_en && item.answer_en)
+      .map((item) => ({
+        q: { en: item.question_en, fr: item.question_fr || item.question_en },
+        a: { en: item.answer_en, fr: item.answer_fr || item.answer_en },
+      }));
+  } catch {
+    return [];
+  }
+}
+
+function isoDate(value) {
+  const d = value ? new Date(value) : null;
+  return d && !Number.isNaN(d.getTime())
+    ? d.toISOString().slice(0, 10)
+    : todayIsoDate();
+}
+
+function todayIsoDate() {
+  const now = new Date();
+  const local = new Date(now.getTime() - now.getTimezoneOffset() * 60_000);
+  return local.toISOString().slice(0, 10);
+}
+
 function setHeroPreload(html, heroUrl) {
   if (!heroUrl) return html;
   const tag = `<link rel="preload" as="image" href="${escapeHtml(heroUrl)}" fetchpriority="high" />`;
@@ -218,8 +402,12 @@ function setHeroPreload(html, heroUrl) {
   return html.replace("</head>", `    ${tag}\n  </head>`);
 }
 
-function renderPage(html, route, heroPreloadUrl = "") {
+function renderPage(html, route, heroPreloadUrl = "", articles = {}, faqItems = FAQ_ITEMS) {
   const page = getPageSeo(route, "en");
+  if (page.isArticle) {
+    const article = articles[page.slug];
+    page.dateModified = isoDate(article?.updated_at || page.datePublished);
+  }
   let next = html;
   if (route === "home") next = setHeroPreload(next, heroPreloadUrl);
 
@@ -239,7 +427,11 @@ function renderPage(html, route, heroPreloadUrl = "") {
   );
   next = setLink(next, "canonical", page.canonical);
 
-  next = setMeta(next, "property", "og:type", "website");
+  next = setMeta(next, "property", "og:type", page.isArticle ? "article" : "website");
+  if (page.isArticle) {
+    next = setMeta(next, "property", "article:published_time", page.datePublished || "");
+    next = setMeta(next, "property", "article:modified_time", page.dateModified || page.datePublished || "");
+  }
   next = setMeta(next, "property", "og:site_name", "Garage a la Carte");
   next = setMeta(next, "property", "og:title", page.title);
   next = setMeta(next, "property", "og:description", page.description);
@@ -263,9 +455,12 @@ function renderPage(html, route, heroPreloadUrl = "") {
   );
 
   next = setJsonLd(next, "seo-business-jsonld", buildBusinessJsonLd());
-  next = setJsonLd(next, "seo-faq-jsonld", buildFaqJsonLd());
+  // FAQ schema only on pages that visibly display the FAQ (Google requirement).
+  if (routeHasFaq(route)) {
+    next = setJsonLd(next, "seo-faq-jsonld", buildFaqJsonLd("en", faqItems));
+  }
   next = setJsonLd(next, "seo-page-jsonld", buildPageJsonLd(page));
-  next = setRootFallback(next, buildStaticFallback(route, page));
+  next = setRootFallback(next, buildStaticFallback(route, page, articles, faqItems));
 
   return next;
 }
@@ -277,15 +472,24 @@ const SITEMAP_META = {
   projects: { changefreq: "weekly", priority: "0.9" },
   contact: { changefreq: "monthly", priority: "0.8" },
   conditions: { changefreq: "yearly", priority: "0.3" },
+  blog: { changefreq: "weekly", priority: "0.7" },
+  blog_remodeling_guide: { changefreq: "monthly", priority: "0.7" },
+  blog_transformation_ideas: { changefreq: "monthly", priority: "0.7" },
+  blog_storage_solutions: { changefreq: "monthly", priority: "0.7" },
 };
 
-function writeSitemap() {
-  const lastmod = new Date().toISOString().slice(0, 10);
+function writeSitemap(articles = {}) {
+  const today = todayIsoDate();
   const entries = Object.keys(SEO_ROUTES)
     .filter((route) => SITEMAP_META[route] && !SEO_ROUTES[route].noindex)
     .map((route) => {
+      const cfg = SEO_ROUTES[route];
       const { changefreq, priority } = SITEMAP_META[route];
-      const loc = `${SITE_URL}${SEO_ROUTES[route].path}`;
+      const loc = `${SITE_URL}${cfg.path}`;
+      const lastmod =
+        cfg.isArticle && articles[cfg.slug]?.updated_at
+          ? isoDate(articles[cfg.slug].updated_at)
+          : today;
       return [
         "  <url>",
         `    <loc>${loc}</loc>`,
@@ -303,7 +507,7 @@ ${entries.join("\n")}
 `;
 
   fs.writeFileSync(path.join(distDir, "sitemap.xml"), xml);
-  return lastmod;
+  return today;
 }
 
 if (!fs.existsSync(baseIndexPath)) {
@@ -313,10 +517,12 @@ if (!fs.existsSync(baseIndexPath)) {
 const baseHtml = fs.readFileSync(baseIndexPath, "utf8");
 
 const heroPreloadUrl = await fetchHeroImageUrl();
+const blogArticles = await fetchBlogArticles();
+const faqItems = await fetchFaqItems();
 
 for (const route of Object.keys(SEO_ROUTES)) {
   const page = getPageSeo(route, "en");
-  const html = renderPage(baseHtml, route, heroPreloadUrl);
+  const html = renderPage(baseHtml, route, heroPreloadUrl, blogArticles, faqItems);
   const outputPath =
     route === "home"
       ? baseIndexPath
@@ -326,7 +532,7 @@ for (const route of Object.keys(SEO_ROUTES)) {
   fs.writeFileSync(outputPath, html);
 }
 
-const sitemapDate = writeSitemap();
+const sitemapDate = writeSitemap(blogArticles);
 
 console.log(
   "SEO prerendered routes:",
@@ -338,4 +544,12 @@ console.log("Sitemap generated with lastmod:", sitemapDate);
 console.log(
   "Hero preload:",
   heroPreloadUrl || "(none — Supabase indisponible au build)",
+);
+console.log(
+  "Blog articles baked into HTML:",
+  Object.keys(blogArticles).length || "(none — Supabase indisponible au build)",
+);
+console.log(
+  "FAQ items baked into HTML:",
+  faqItems.length || "(static fallback — table empty or unavailable)",
 );

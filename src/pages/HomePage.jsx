@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { CONTENT } from "../data/content";
-import { ImagePlaceholder, Reveal, useReveal, TeamSection } from "../components/common";
+import { ImagePlaceholder, Reveal, useReveal, TeamSection, FaqSection } from "../components/common";
 import { cmsAttr, cmsRecordAttr } from "../lib/cmsEdit";
 
 
@@ -13,13 +13,14 @@ export function HomePage({ lang, onNav }) {
       <BeforeAfterSection lang={lang} />
       <ServicesSection lang={lang} onNav={onNav} />
       <TeamSection lang={lang} />
+      <FaqSection lang={lang} onNav={onNav} />
 
       <FinalCTA lang={lang} onNav={onNav} />
     </div>
   );
 };
 
-// ============================ HERO — "Your garage, reimagined." ============================
+// ============================ HERO, "Your garage, reimagined." ============================
 function Hero({ lang, onNav }) {
   const C = CONTENT.hero;
   const cap = CONTENT.hero_caption || {};
@@ -85,6 +86,11 @@ function Hero({ lang, onNav }) {
       <div className="hero-v2__scrim" aria-hidden="true" />
 
       <div className="hero-v2__inner">
+        {C.eyebrow?.[lang] && (
+          <Reveal as="div" className="hero-v2__eyebrow text-mono" {...cmsAttr("hero", "eyebrow")}>
+            {C.eyebrow[lang]}
+          </Reveal>
+        )}
         <Reveal as="h1" className="hero-v2__title" {...cmsAttr("hero", "title", "lines")}>
 
           {titleLines.map((line, i) => {
@@ -125,7 +131,7 @@ function Hero({ lang, onNav }) {
   );
 }
 
-// ============================ USE CASES — "Pick your room" (4 transformations) ============================
+// ============================ USE CASES, "Pick your room" (4 transformations) ============================
 function UseCasesSection({ lang, onNav }) {
   const C = CONTENT.use_cases;
   if (!C || !Array.isArray(C.items) || C.items.length === 0) return null;
@@ -189,7 +195,7 @@ function UseCaseCard({ item, index, lang, onNav }) {
       role="button"
       tabIndex={0}
       onKeyDown={(e) => { if (e.key === "Enter") goToProject(); }}
-      aria-label={`${name} — voir le projet`}
+      aria-label={`${name}, voir le projet`}
     >
       <div className="usecase-card__media">
         {coverUrl ? (
@@ -259,6 +265,13 @@ function BeforeAfterSection({ lang }) {
             <p className="ba-v2__statement" {...cmsAttr("before_after", "statement")}>{C.statement[lang]}</p>
           </Reveal>
         )}
+        <Reveal delay={0.18}>
+          <p className="ba-v2__seo-note">
+            {lang === "en"
+              ? "For Orlando garages, every remodel is planned around daily use first: storage, flooring, lighting, climate comfort, and the room you want the garage to become."
+              : "En Orlando, cada reforma de garaje se planifica primero alrededor del uso diario: almacenamiento, suelo, iluminación, confort climático y la estancia que quieres crear."}
+          </p>
+        </Reveal>
       </div>
     </section>
   );
@@ -393,8 +406,8 @@ function ServicesSection({ lang, onNav }) {
 
         <Reveal as="p" className="svc-v2__expertise" delay={0.18}>
           {lang === "en"
-            ? "Our expert team delivers space optimization, organization systems, and innovative renovations — enhanced by mood visual design and advanced Color, Material, and Finish (CMF) expertise to maximize garage functionality, improve curb appeal, and add lasting value to your property."
-            : "Nuestro equipo experto ofrece optimización del espacio, sistemas de organización y reformas innovadoras — potenciadas por el mood visual design y una experiencia avanzada en Color, Material y Acabado (CMF) para maximizar la funcionalidad del garaje, mejorar el atractivo exterior y aportar un valor duradero a tu propiedad."}
+            ? "Our Orlando garage remodeling services cover custom 3D design, garage organization, cabinets, storage systems, flooring, lighting, and smart integration, enhanced by mood visual design and advanced Color, Material, and Finish (CMF) expertise."
+            : "Nuestros servicios de reforma de garaje en Orlando cubren diseño 3D a medida, organización, armarios, sistemas de almacenamiento, suelos, iluminación e integración smart, con mood visual design y experiencia avanzada en Color, Material y Acabado (CMF)."}
         </Reveal>
 
 
@@ -463,8 +476,8 @@ function ServiceModal({ svc, lang, onClose, onNav }) {
           <div>
             <div className="text-mono text-muted">SERVICE {svc.num}</div>
             <h2 className="display-m" style={{marginTop:"16px"}} {...cmsRecordAttr("service", svc.id, "title")}>{svc.title[lang]}</h2>
-            <p style={{fontStyle:"italic", color:"var(--accent)", fontSize:"20px", marginTop:"12px"}} {...cmsRecordAttr("service", svc.id, "subtitle")}>{svc.sub[lang]}</p>
-            <p className="lead" style={{marginTop:"24px"}} {...cmsRecordAttr("service", svc.id, "description")}>{svc.description[lang]}</p>
+            <p style={{fontStyle:"italic", color:"var(--accent)", fontSize:"20px", marginTop:"12px", whiteSpace:"pre-line"}} {...cmsRecordAttr("service", svc.id, "subtitle")}>{svc.sub[lang]}</p>
+            <p className="lead" style={{marginTop:"24px", whiteSpace:"pre-line"}} {...cmsRecordAttr("service", svc.id, "description")}>{svc.description[lang]}</p>
 
             {includes.length > 0 && <div style={{marginTop:"40px"}}>
               <div className="text-mono text-muted" style={{marginBottom:"16px"}}>{lang==="en"?"WHAT YOU GET":"LO QUE INCLUYE"}</div>
@@ -592,7 +605,7 @@ function ServiceModal({ svc, lang, onClose, onNav }) {
   );
 }
 
-// ============================ FINAL CTA — single button, dark ============================
+// ============================ FINAL CTA, single button, dark ============================
 function FinalCTA({ lang, onNav }) {
   const C = CONTENT.final_cta;
   return (

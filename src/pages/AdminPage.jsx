@@ -21,6 +21,7 @@ import { setLocalizedAtPath } from "../lib/cmsEdit";
 import {
   createProject,
   createProjectImage,
+  deleteProjectImage,
   getAdminSession,
   loadAdminData,
   onAdminAuthChange,
@@ -96,6 +97,7 @@ import {
   X,
   ZoomIn,
   BookOpen,
+  HelpCircle,
 } from "lucide-react";
 import {
   DndContext,
@@ -117,6 +119,7 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import Cropper from "react-easy-crop";
 import { BlogArticlesPanel } from "../components/BlogArticlesPanel";
+import { FaqPanel } from "../components/FaqPanel";
 
 /* ==========================================================================
    Constants — preserved exactly from previous implementation
@@ -1204,6 +1207,8 @@ function AdminPageInner({ onNav }) {
         {tab === "messages" && <MessagesAdmin data={data} onRefresh={refresh} />}
         {tab === "emails" && <EmailsAdmin data={data} onRefresh={refresh} />}
         {tab === "legal" && <LegalAdmin data={data} onRefresh={refresh} />}
+        {tab === "blog" && <BlogArticlesPanel onSave={refresh} />}
+        {tab === "faq" && <FaqPanel onSave={refresh} />}
         {tab === "settings" && <SettingsAdmin data={data} onRefresh={refresh} />}
       </main>
     </div>
@@ -1227,6 +1232,8 @@ const NAV_GROUPS = [
       { id: "projects", label: "Projets", icon: FolderKanban },
       { id: "services", label: "Services", icon: Wrench },
       { id: "team", label: "Équipe", icon: Users },
+      { id: "blog", label: "Blog", icon: BookOpen },
+      { id: "faq", label: "FAQ", icon: HelpCircle },
       { id: "legal", label: "Mentions légales", icon: Scale },
     ],
   },
@@ -4765,6 +4772,17 @@ function ProjectEditor({ project, services, images, onRefresh }) {
     }
   };
 
+  const deleteImage = async (image) => {
+    if (!window.confirm("Supprimer cette image ? Cette action est définitive.")) return;
+    try {
+      await deleteProjectImage(image.id, image.image_url, editor.draft.data.slug);
+      pushToast({ type: "success", title: "Image supprimée" });
+      await onRefresh();
+    } catch (err) {
+      pushToast({ type: "error", title: "Suppression échouée", message: err.message });
+    }
+  };
+
   return (
     <div>
       <EditorHeader title={text(project.name)} meta={project.slug} editor={editor} onSave={save} />
@@ -4846,6 +4864,7 @@ function ProjectEditor({ project, services, images, onRefresh }) {
           onReorder={reorderImages}
           onSetField={setImage}
           onUpload={uploadImage}
+          onDelete={deleteImage}
         />
       </div>
     </div>
@@ -4892,7 +4911,7 @@ function LabeledSelect({ label, value, options, onChange }) {
    Image grid (sortable) + Lightbox + Cropper
    ========================================================================== */
 
-function ImageGrid({ images, onReorder, onSetField, onUpload }) {
+function ImageGrid({ images, onReorder, onSetField, onUpload, onDelete }) {
   const [editingId, setEditingId] = useState(null);
   const [lightboxId, setLightboxId] = useState(null);
   const [cropContext, setCropContext] = useState(null);
@@ -4943,6 +4962,7 @@ function ImageGrid({ images, onReorder, onSetField, onUpload }) {
                 onPreview={() => setLightboxId(image.id)}
                 onEdit={() => setEditingId(image.id)}
                 onPickFile={(file) => startCrop(image, file)}
+                onDelete={onDelete ? () => onDelete(image) : null}
               />
             ))}
           </div>
@@ -4973,7 +4993,7 @@ function ImageGrid({ images, onReorder, onSetField, onUpload }) {
   );
 }
 
-function SortableImageCard({ image, onPreview, onEdit, onPickFile }) {
+function SortableImageCard({ image, onPreview, onEdit, onPickFile, onDelete }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: image.id,
   });
@@ -5090,6 +5110,16 @@ function SortableImageCard({ image, onPreview, onEdit, onPickFile }) {
           <button className="admin-icon-btn" style={overlayButtonStyle} onClick={onEdit} title="Modifier">
             <Pencil size={14} />
           </button>
+          {onDelete && (
+            <button
+              className="admin-icon-btn"
+              style={{ ...overlayButtonStyle, color: "#b3261e" }}
+              onClick={onDelete}
+              title="Supprimer"
+            >
+              <Trash2 size={14} />
+            </button>
+          )}
         </div>
         <button
           className="admin-icon-btn"

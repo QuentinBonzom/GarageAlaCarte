@@ -53,8 +53,8 @@ export function ProjectsPage({ lang, onNav }) {
           {!projects.length && (
             <div className="projects-v2-empty">
               {lang === "en"
-                ? "Projects coming soon — upload one via the admin."
-                : "Proyectos próximamente — añade uno desde el admin."}
+                ? "Projects coming soon, upload one via the admin."
+                : "Proyectos próximamente, añade uno desde el admin."}
             </div>
           )}
         </div>
@@ -82,7 +82,7 @@ function ProjectTile({ project, lang, index, featured, onClick }) {
       role={isPh ? undefined : "button"}
       tabIndex={isPh ? undefined : 0}
       onKeyDown={(e) => { if (!isPh && e.key === "Enter") onClick(); }}
-      aria-label={isPh ? `${projectName} — coming soon` : `${projectName} — view case`}
+      aria-label={isPh ? `${projectName}, coming soon` : `${projectName}, view case`}
     >
       <div className="project-v2-tile__media">
         <ImagePlaceholder
@@ -98,7 +98,7 @@ function ProjectTile({ project, lang, index, featured, onClick }) {
       <div className="project-v2-tile__body">
         <div className="project-v2-tile__meta-row">
           {service && !isPh && <span className="project-v2-tile__service">{service}</span>}
-          <span className="project-v2-tile__year">{isPh ? (lang === "en" ? "Coming" : "Próximamente") : (project.year || "—")}</span>
+          <span className="project-v2-tile__year">{isPh ? (lang === "en" ? "Coming" : "Próximamente") : (project.year || "-")}</span>
         </div>
         <h3 className="project-v2-tile__name">{projectName}</h3>
         {tagline && !isPh && <p className="project-v2-tile__tagline">{tagline}</p>}
@@ -208,7 +208,7 @@ function ProjectModal({ project, lang, onClose, onNav }) {
             <Meta label={lang === "en" ? "Type" : "Tipo"} value={text(project.type, lang)} />
             <Meta label={lang === "en" ? "Size" : "Tamaño"} value={text(project.size, lang)} />
             <Meta label={lang === "en" ? "Duration" : "Duración"} value={text(project.duration, lang)} />
-            <Meta label={lang === "en" ? "Year" : "Año"} value={project.year || "—"} />
+            <Meta label={lang === "en" ? "Year" : "Año"} value={project.year || "-"} />
           </div>
 
           {description && <p className="project-v2-modal__lead">{description}</p>}
@@ -283,7 +283,7 @@ function Meta({ label, value }) {
   );
 }
 
-function text(value, lang, fallback = "—") {
+function text(value, lang, fallback = "-") {
   if (!value) return fallback;
   if (typeof value === "string") return value;
   return value[lang] || value.en || value.fr || fallback;
