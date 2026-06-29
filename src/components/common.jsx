@@ -146,6 +146,52 @@ export function Header({ route, onNav, lang, onLang }) {
   );
 };
 
+// ---------- Site creator credit ("Behind the build") ----------
+// Personalise this block: name shown, optional photo URL, tagline, portfolio link.
+// This is the site's CREATOR credit — intentionally separate from the garage team.
+const SITE_CREATOR = {
+  name: "WebCode Studio",
+  url: "https://www.webcodestudio.fr",
+  photo: "", // optional: paste an avatar/logo URL to show a round image
+  role: { en: "Web Design & Development", fr: "Diseño y desarrollo web" },
+  tagline: {
+    en: "Custom, high-performance websites for ambitious local businesses.",
+    fr: "Sitios web a medida y de alto rendimiento para negocios locales con ambición.",
+  },
+};
+
+function SiteCreditBanner({ lang }) {
+  const c = SITE_CREATOR;
+  return (
+    <section className="site-credit" aria-label={lang === "en" ? "Site credit" : "Crédito del sitio"}>
+      <div className="site-credit__inner">
+        <span className="site-credit__eyebrow text-mono">
+          {lang === "en" ? "Behind the build" : "Detrás del sitio"}
+        </span>
+        <div className="site-credit__body">
+          {c.photo && <img className="site-credit__avatar" src={c.photo} alt={c.name} loading="lazy" />}
+          <div className="site-credit__text">
+            <p className="site-credit__line">
+              {lang === "en" ? "Designed & developed by " : "Diseñado y desarrollado por "}
+              <strong>{c.name}</strong>
+              <span className="site-credit__role"> · {c.role[lang] || c.role.en}</span>
+            </p>
+            <p className="site-credit__tagline">{c.tagline[lang] || c.tagline.en}</p>
+          </div>
+          <a
+            className="site-credit__link"
+            href={c.url}
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            {lang === "en" ? "View portfolio" : "Ver portfolio"} <span className="arrow">↗</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ---------- Footer ----------
 export function Footer({ onNav, lang }) {
   const t = CONTENT.nav[lang];
@@ -168,8 +214,12 @@ export function Footer({ onNav, lang }) {
     }, 80);
   };
 
+  const year = new Date().getFullYear();
+
   return (
-    <footer className="footer-v2">
+    <>
+      <SiteCreditBanner lang={lang} />
+      <footer className="footer-v2">
       <div className="footer-v2__grid">
         <div className="footer-v2__brand">
           <div className="footer-v2__wordmark">
@@ -203,6 +253,9 @@ export function Footer({ onNav, lang }) {
             )}
           </div>
 
+          <button className="btn footer-v2__cta" onClick={() => onNav("contact")}>
+            {lang === "en" ? "Get my free estimate" : "Obtener presupuesto gratis"} <span className="arrow">↗</span>
+          </button>
         </div>
         <div className="footer-v2__col">
           <h4>{lang==="en"?"Navigate":"Navegación"}</h4>
@@ -235,21 +288,22 @@ export function Footer({ onNav, lang }) {
           <a href={routeToPath("blog_transformation_ideas")} onClick={(e)=>{e.preventDefault();onNav("blog_transformation_ideas");}}>{lang==="en"?"Transformation Ideas":"Ideas de Transformación"}</a>
           <a href={routeToPath("blog_storage_solutions")} onClick={(e)=>{e.preventDefault();onNav("blog_storage_solutions");}}>{lang==="en"?"Storage Solutions":"Soluciones de Almacenamiento"}</a>
         </div>
-        <div className="footer-v2__col">
-          <h4>{lang==="en"?"Legal":"Legal"}</h4>
-          <a href={routeToPath("conditions")} onClick={(e)=>{e.preventDefault();onNav("conditions");}}>{lang==="en"?"Project conditions":"Condiciones del proyecto"}</a>
-          <a href={routeToPath("admin")} onClick={(e)=>{e.preventDefault();onNav("admin");}}>Admin</a>
-        </div>
       </div>
 
       <div className="footer-v2__bottom">
-        <span>© 2025 Garage a la Carte. All rights reserved.</span>
+        <span>© {year} Garage a la Carte. {lang==="en"?"All rights reserved.":"Todos los derechos reservados."}</span>
 
-        <a href="https://webcodestudio.fr" target="_blank" rel="noreferrer noopener">
+        <nav className="footer-v2__bottom-links">
+          <a href={routeToPath("conditions")} onClick={(e)=>{e.preventDefault();onNav("conditions");}}>{lang==="en"?"Project conditions":"Condiciones del proyecto"}</a>
+          <a href={routeToPath("admin")} onClick={(e)=>{e.preventDefault();onNav("admin");}}>Admin</a>
+        </nav>
+
+        <a href="https://www.webcodestudio.fr" target="_blank" rel="noreferrer noopener">
           Designed by WebCode Studio
         </a>
       </div>
     </footer>
+    </>
   );
 };
 
