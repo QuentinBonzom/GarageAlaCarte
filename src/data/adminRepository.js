@@ -250,6 +250,13 @@ export async function updateProjectStatus(id, status) {
   await updateProject(id, { status });
 }
 
+export async function deleteProject(id) {
+  requireSupabase();
+  // project_images rows are removed by the DB (ON DELETE CASCADE).
+  const { error } = await supabase.from("projects").delete().eq("id", id);
+  if (error) throw error;
+}
+
 export async function updateProjectImage(id, payload) {
   requireSupabase();
   const { error } = await supabase

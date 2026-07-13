@@ -21,6 +21,7 @@ import { setLocalizedAtPath } from "../lib/cmsEdit";
 import {
   createProject,
   createProjectImage,
+  deleteProject,
   deleteProjectImage,
   getAdminSession,
   loadAdminData,
@@ -589,7 +590,21 @@ function isPlainObject(value) {
 function isLocalizedObject(value) {
   if (!isPlainObject(value)) return false;
   const keys = Object.keys(value);
-  return keys.length > 0 && keys.every((key) => key === "en" || key === "fr") && ("en" in value || "fr" in value);
+  if (keys.length === 0) return false;
+  if (!keys.every((key) => key === "en" || key === "fr")) return false;
+  if (!("en" in value || "fr" in value)) return false;
+  // A localized *text* field, not a localized *list* ({en:[],fr:[]}).
+  return keys.every((key) => !Array.isArray(value[key]));
+}
+
+// {en:[...], fr:[...]} — a bilingual list (e.g. project "includes"/"value_points").
+function isLocalizedListObject(value) {
+  if (!isPlainObject(value)) return false;
+  const keys = Object.keys(value);
+  if (keys.length === 0) return false;
+  if (!keys.every((key) => key === "en" || key === "fr")) return false;
+  if (!("en" in value || "fr" in value)) return false;
+  return keys.every((key) => Array.isArray(value[key]));
 }
 
 function pickFields(record, fields) {
@@ -3601,6 +3616,9 @@ function AdvancedToggle({ advanced, onToggle }) {
    ========================================================================== */
 
 function InlineFieldEditor({ label, value, onChange, root = false, depth = 0 }) {
+  if (isLocalizedListObject(value)) {
+    return <LocalizedListField label={label} value={value} onChange={onChange} />;
+  }
   if (isLocalizedObject(value)) {
     return <LocalizedField label={label} value={value} onChange={onChange} />;
   }
@@ -4187,6 +4205,62 @@ function LocalizedField({ label, value, onChange }) {
   );
 }
 
+// Editor for a bilingual list ({en:[...], fr:[...]}) — e.g. project "includes".
+// Each row edits the ES + EN item together, and always saves proper arrays.
+function LocalizedListField({ label, value, onChange }) {
+  const en = Array.isArray(value?.en) ? value.en : [];
+  const fr = Array.isArray(value?.fr) ? value.fr : [];
+  const rows = Math.max(en.length, fr.length);
+  const emit = (nextEn, nextFr) => onChange({ en: nextEn, fr: nextFr });
+  const setCell = (lang, index, next) => {
+    const ne = [...en];
+    const nf = [...fr];
+    while (ne.length < rows) ne.push("");
+    while (nf.length < rows) nf.push("");
+    if (lang === "en") ne[index] = next;
+    else nf[index] = next;
+    emit(ne, nf);
+  };
+  const addRow = () => emit([...en, ""], [...fr, ""]);
+  const removeRow = (index) =>
+    emit(en.filter((_, i) => i !== index), fr.filter((_, i) => i !== index));
+
+  return (
+    <div>
+      {label && <FieldLabel label={label} />}
+      <div style={{ display: "grid", gap: "8px", marginTop: label ? "8px" : 0 }}>
+        {rows === 0 && (
+          <div className="text-mono text-muted" style={{ fontSize: "11px", padding: "6px 0" }}>
+            Aucun élément — cliquez sur « Ajouter » pour en créer un.
+          </div>
+        )}
+        {Array.from({ length: rows }).map((_, i) => (
+          <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 1fr auto", gap: "8px", alignItems: "center" }}>
+            <input
+              className="admin-input"
+              placeholder="Español"
+              value={fr[i] || ""}
+              onChange={(e) => setCell("fr", i, e.target.value)}
+            />
+            <input
+              className="admin-input"
+              placeholder="English"
+              value={en[i] || ""}
+              onChange={(e) => setCell("en", i, e.target.value)}
+            />
+            <button type="button" className="admin-icon-btn" onClick={() => removeRow(i)} title="Retirer">
+              <Trash2 size={13} />
+            </button>
+          </div>
+        ))}
+        <button type="button" className="svc-edit-add" onClick={addRow} style={{ justifySelf: "start" }}>
+          <Plus size={12} /> Ajouter un élément
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function StringField({ label, value, onChange }) {
   const multiline = String(value || "").length > 80 || String(value || "").includes("\n");
   return (
@@ -4504,6 +4578,7 @@ function ProjectsAdmin({ data, onRefresh }) {
               services={data.services}
               images={data.projectImages.filter((image) => image.project_id === active.id)}
               onRefresh={onRefresh}
+              onDeleted={() => setActiveId("")}
             />
           ) : (
             <EmptyState text="Sélectionnez un projet." />
@@ -4686,7 +4761,7 @@ function NewProjectModal({ services, existingSlugs, onCancel, onCreated, onRefre
   );
 }
 
-function ProjectEditor({ project, services, images, onRefresh }) {
+function ProjectEditor({ project, services, images, onRefresh, onDeleted }) {
   const initial = useMemo(
     () => {
       const data = pickFields(project, PROJECT_FIELDS);
@@ -4699,6 +4774,22 @@ function ProjectEditor({ project, services, images, onRefresh }) {
   );
   const editor = useEditorState(initial);
   const { push: pushToast } = useToast();
+  const [deleting, setDeleting] = useState(false);
+
+  const removeProject = async () => {
+    if (!window.confirm(`Supprimer le projet « ${text(project.name)} » ? Cette action est définitive (le projet et ses images seront retirés).`)) return;
+    try {
+      setDeleting(true);
+      await deleteProject(project.id);
+      pushToast({ type: "success", title: "Projet supprimé" });
+      onDeleted?.();
+      await onRefresh();
+    } catch (err) {
+      pushToast({ type: "error", title: "Suppression échouée", message: err.message });
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   const setField = (key, value) => {
     editor.setDraft((current) => ({ ...current, data: { ...current.data, [key]: value } }));
@@ -4866,6 +4957,19 @@ function ProjectEditor({ project, services, images, onRefresh }) {
           onUpload={uploadImage}
           onDelete={deleteImage}
         />
+      </div>
+
+      <div style={{ marginTop: "20px", paddingTop: "20px", borderTop: "1px solid var(--line)", display: "flex", justifyContent: "flex-end" }}>
+        <button
+          type="button"
+          className="btn btn-ghost"
+          onClick={removeProject}
+          disabled={deleting}
+          style={{ padding: "10px 16px", display: "inline-flex", gap: "8px", color: "var(--danger, #b3261e)", borderColor: "var(--danger, #b3261e)" }}
+        >
+          {deleting ? <Loader2 size={13} className="admin-spin" /> : <Trash2 size={13} />}
+          {deleting ? "Suppression..." : "Supprimer ce projet"}
+        </button>
       </div>
     </div>
   );
